@@ -22,6 +22,11 @@ Man merkt, dass das Gebiet ein Netz ist und kein Inhaltsverzeichnis.
 Arbeite in dieser Reihenfolge. Jeder Schritt endet mit einem Befehl, der grün sein muss, und mit einem Commit.
 
 ### 0. Rahmen klären
+**Gibt es `packs/<id>/BRIEFING.md` (und `BRIEFING.json`)? Dann ist das der Auftrag.** Das Onboarding (`npm run setup`, siehe `docs/ONBOARDING.md`) hat Thema, Zielgruppe, Ton, Umfang, Reisevorschläge, heikle Themen, Quellen, Look und Lizenz bereits mit dem Auftraggeber geklärt,
+`pack.json` ausgefüllt und das Gerüst angelegt. **Frage das nicht erneut**, sondern lies `BRIEFING.md` ganz (Sorgfaltsregeln und die Checkliste „Was der Agent liefern soll“ inklusive) und arbeite ab Schritt 1.
+Was im Briefing fehlt oder dort als „Standardwert“ markiert ist, entscheidest du vorsichtig und trägst es in `ARBEITSSTAND.md` unter „Annahmen“ ein (die Onboarding-Annahmen stehen schon dort; „Bestätigt“ bleibt „offen“). Das Gerüst darfst du im Plan umbauen; der Auftrag (Umfang, Quellen, Sorgfalt) gilt.
+Fehlt das Briefing, klärst du den Rahmen selbst, wie folgt.
+
 Kläre in wenigen Sätzen und schreibe es in `packs/<id>/pack.json` und `packs/<id>/ARBEITSSTAND.md` (das legt `new-pack` an; Vorlage: `packs/_vorlage/ARBEITSSTAND.md`):
 - Zielgruppe und Vorwissen (neugierige Laien? Studierende? Fachleute im Nachbargebiet?), Sprache, Ton.
 - Umfang: **6 bis 16 Reisen, je 11 bis 28 Stationen auf einer Reise (Mitgliedschaften), insgesamt höchstens rund 200 eindeutige Stationen.** Lieber 6 sehr gute Reisen als 16 dünne.
@@ -31,7 +36,7 @@ Kläre in wenigen Sätzen und schreibe es in `packs/<id>/pack.json` und `packs/<
 - **Museumsname kurz halten: etwa 24 Zeichen** (`check-pack` warnt ab 30). Der Name steht in Kopfleiste und als große Überschrift im Eingang; lange Namen brechen um oder werden abgeschnitten.
   Den Untertitel setzt du in `eyebrow` (Zeile über dem Titel) und `tagline`, nicht in `title`. Also „Spieltheorie“ als `title`, „Wie Entscheidungen aufeinander treffen“ in `eyebrow`/`tagline`.
 - Pflichtfelder von `pack.json` und was jedes bewirkt: `docs/ARCHITEKTUR.md`, Abschnitt 3.1 (u. a. `stationFiles`: optionale Ladereihenfolge der Dateien in `stationen/`; fehlt es, werden alle Dateien alphabetisch eingebunden, es ist also nicht nötig).
-Gerüst anlegen: `node tools/new-pack.mjs <id> --title="…" --journeys=<n> [--historical=<m>]` (die letzten `m` Reisen sind historisch; Rümpfe stehen in `stationen/<reise-id>.js`, je Reise 11 Stationen).
+Gerüst anlegen: `node tools/new-pack.mjs <id> --title="…" --journeys=<n> [--historical=<m>] [--stations=<s>]` (die letzten `m` Reisen sind historisch; Rümpfe stehen in `stationen/<reise-id>.js`, je Reise `s` Stationen, Standard 11; das Onboarding ruft das für dich auf).
 
 **Wenn niemand antwortet (autonomer Lauf).** Warte nicht auf den Auftraggeber. Triff die Entscheidung selbst, **schreibe sie in `ARBEITSSTAND.md` unter „Annahmen“ ausdrücklich als Annahme** (Datum, Entscheidung, Begründung, „Bestätigt: offen“) und arbeite weiter.
 Wähle im Zweifel die vorsichtigere Variante (kleiner Umfang, neutraler Ton, nur offene Quellen, keine historische Reise). Annahmen, die den Inhalt stark lenken (Zielgruppe, Schulenauswahl, Umfang), gehören auch in deinen Abschlussbericht.
