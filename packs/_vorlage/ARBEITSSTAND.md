@@ -30,6 +30,13 @@ Kurz, mit Grund (Warum diese Reisen? Warum keine historische Reise? Warum diese 
 
 Faktencheck-Stufen: **unabhängig geprüft** (anderer Agent oder Mensch, mit Quellen), **Selbstprüfung** (derselbe Agent im getrennten Durchgang mit Quellen), **Gedächtnis** (nicht belegt). Details: `docs/AGENTEN.md`, Schritt 5.
 
+## Anschauung (Schritt 2b)
+Geplant steht in `plan.json` (`visual` je Station); hier die Bilanz und alles, was bewusst verschoben wurde. `node tools/check-pack.mjs {{ID}}` nennt „Anschauung: X geplant, Y gebaut“.
+
+| Station | Geplant (abbildung/exponat) | Stand | Falls verschoben: Grund und Idee |
+|---|---|---|---|
+| | | | |
+
 ## Offen
 - [ ]
 

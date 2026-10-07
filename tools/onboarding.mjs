@@ -537,7 +537,7 @@ function summary(a, d, skins, e) {
 }
 
 function nextSteps(a, r) {
-  const prompt = `Lies docs/AGENTEN.md und packs/${a.id}/BRIEFING.md und richte das Paket packs/${a.id} nach der Anleitung ein: Das Gerüst steht schon, Schritt 0 (Rahmen) ist durch das Briefing erledigt. Arbeite die Schritte 1 bis 8 ab, halte Annahmen in packs/${a.id}/ARBEITSSTAND.md fest, committe nach jedem Schritt und melde am Ende, was geprüft ist und was offen bleibt.`;
+  const prompt = `Lies docs/AGENTEN.md und packs/${a.id}/BRIEFING.md und richte das Paket packs/${a.id} nach der Anleitung ein: Das Gerüst steht schon, Schritt 0 (Rahmen) ist durch das Briefing erledigt. Arbeite die Schritte 1 bis 8 ab (dazu gehört Schritt 2b, Anschauung planen und bauen), halte Annahmen in packs/${a.id}/ARBEITSSTAND.md fest, committe nach jedem Schritt und melde am Ende, was geprüft ist und was offen bleibt.`;
   return `
 Nächste Schritte
 ────────────────

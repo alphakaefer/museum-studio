@@ -17,7 +17,7 @@ Besucher gehen **Reisen** durch ein Fachgebiet, jede Reise besteht aus **Station
 und **dieselbe Station liegt auf mehreren Reisen**, sodass man umsteigen kann. Der Wert des Museums liegt in den Kreuzungen:
 Man merkt, dass das Gebiet ein Netz ist und kein Inhaltsverzeichnis.
 
-## Ablauf in acht Schritten
+## Ablauf in acht Schritten (plus Schritt 2b)
 
 Arbeite in dieser Reihenfolge. Jeder Schritt endet mit einem Befehl, der grün sein muss, und mit einem Commit.
 
@@ -56,6 +56,7 @@ Prüfe: Würde jemand die Reise von vorne bis hinten gehen wollen? Gibt es einen
 ### 2. Stationsplan (`plan.json`) zuerst, Texte danach
 Lege ALLE Stationen als Plan an, bevor du einen Absatz schreibst: `id` (kleinbuchstaben-mit-bindestrich), `title`, `kind`,
 `journeys` (die erste ist die Heimat-Reise), `year` und `yearLabel` (Pflicht bei Stationen auf historischen Reisen), `why` (ein Satz: warum diese Station, was lernt man),
+`visual` (die Anschauung, siehe Schritt 2b; Pflicht, wenn `pack.json` `requireVisualPlan: true` setzt, was bei neuen Paketen der Fall ist)
 und `exhibit` (optional: ID eines Exponats, siehe unten). Dazu `orders`: die Reihenfolge je Reise. Danach plane die **Kreuzungen** bewusst:
 - Ab 6 Reisen sollte jede Reise Kreuzungen zu mindestens 4 anderen haben (bei weniger Reisen zu mindestens einer, siehe `limits.minCrossJourneys`), das Netz muss zusammenhängen (keine Insel).
 - Eine Station gehört nur dann zu mehreren Reisen, wenn der Zusammenhang **echt** ist und sich in einem Satz begründen lässt.
@@ -69,6 +70,72 @@ und `exhibit` (optional: ID eines Exponats, siehe unten). Dazu `orders`: die Rei
 - **Icons** (`icon` bei Reisen und Stationen): `node tools/list-icons.mjs` listet alle gültigen Schlüssel nach Gruppen, `node tools/list-icons.mjs <suchwort>` filtert. Du musst `engine/js/icons.js` nicht lesen.
 Prüfen: `node tools/check-plan.mjs <id>`. Erst weiter, wenn grün. **Zeige den Plan dem Auftraggeber**, bevor du viel Text schreibst; ist niemand erreichbar, halte den Plan als Annahme in `ARBEITSSTAND.md` fest und schreibe weiter.
 
+### 2b. Anschauung planen (Pflicht, nach dem Stationsplan, vor den Texten)
+Abstrakte Gebiete brauchen Anschauung am meisten, und ohne Plan entsteht sie nicht (das Paket „spieltheorie“ hatte keine einzige Abbildung). Beantworte darum **für jede Station** die Frage:
+**„Was kann man hier sehen oder ausprobieren?“** Die Antwort steht in `plan.json` als Feld `visual`:
+```json
+"visual": { "kind": "abbildung", "idea": "Auszahlungstabelle zum Anklicken; Dominanz und Gleichgewicht werden hervorgehoben." }
+"visual": { "kind": "exponat",   "idea": "Mini-Spiel: zehn Runden Gefangenendilemma gegen drei Strategien." }
+"visual": { "kind": "keine",     "reason": "Eine Person und ihre Lebensdaten; es gibt nichts zu messen oder zu verstellen." }
+```
+`kind` ist `abbildung` (erscheint nach dem ersten Absatz, `visuals/<station-id>.js`), `exponat` (zum Ausprobieren, `exhibits/<id>.js`, plus Feld `exhibit`) oder `keine`. Auch „keine“ ist eine Entscheidung und braucht eine **ehrliche Begründung** („keine Lust“ ist keine). `idea` ist ein Satz: was sieht oder tut man?
+`node tools/check-pack.mjs <id>` prüft das: fehlendes `visual` ist ein Fehler (bei `requireVisualPlan: true`), ein zu geringer Anteil und Geplantes ohne Datei sind Warnungen, die Zusammenfassung nennt „Anschauung: X geplant, Y gebaut“.
+
+**Faustregeln.**
+- Anteil der Stationen mit Abbildung oder Exponat: **mindestens 30 %** (`limits.visualShare` in `pack.json`; das Onboarding setzt den vom Auftraggeber gewählten Wert). Je abstrakter das Thema, desto mehr: bei Mathematik, Physik, Ökonomie eher **40 bis 50 %**; bei Geschichte oder Biografien darf es weniger sein.
+- Stationen, die im Text Zahlen, Verhältnisse, Tabellen, Kurven, Abläufe oder „Stell dir vor …“-Gedankenexperimente tragen, brauchen fast immer ein Bild: Was man zeigen kann, sollte man nicht nur erzählen. `check-pack` gibt dazu sparsam Hinweise.
+- Streue die Anschauung über alle Reisen; jede Reise sollte mindestens zwei, besser vier Stationen mit Anschauung haben.
+- **Reihenfolge des Bauens:** erst die **fünf Stationen, die am meisten davon profitieren** (die abstraktesten, zahlenlastigsten, die Kernideen des Gebiets), dann der Rest. Ist die Zeit knapp, verschiebe bewusst und schreibe es in `ARBEITSSTAND.md` („Anschauung verschoben: Station, Grund, Idee“); stilles Weglassen gilt nicht.
+- Wenn ein Exponat schon die Station trägt, braucht sie nicht zusätzlich eine Abbildung.
+
+**Katalog der Anschauungsmuster** (mit Beispielen aus verschiedenen Fächern; Baustein im Baukasten in Klammern):
+| Muster | Wann | Beispiele |
+|---|---|---|
+| **Matrix / Tabelle** (`viz.matrix`) | Entscheidungen, Wahrheitswerte, Vergleiche mit zwei Achsen | Auszahlungstabelle des Gefangenendilemmas mit anklickbaren Zellen; Wahrheitstabelle einer logischen Verknüpfung; Vergleich Arabica gegen Robusta |
+| **Kurve mit Regler** (`viz.plot`) | ein Zusammenhang, der von einem Parameter abhängt | Vergessenskurve und Wiederholungen; Zinseszins mit Laufzeit-Regler; Halbwertszeit eines Stoffes; Angebot und Nachfrage mit Preisregler |
+| **Simulation mit Zufall** (`viz.rng`, `viz.bars`) | Statistik, Evolution, Quantenphysik: Muster entstehen aus vielen Zufallsereignissen | Doppelspalt: Teilchen für Teilchen, das Interferenzmuster wächst; Münzwürfe und das Gesetz der großen Zahlen; Genetische Drift |
+| **Netzwerk** (`viz.graph`) | Beziehungen, Rückkopplung, Ausbreitung | Spielbaum und Rückwärtsinduktion; Kommunikationswege in Teams; Neuronen und Hebbsches Lernen |
+| **Vorher / Nachher** (`viz.toggle`, `viz.choice`) | Wirkung eines Eingriffs, Täuschungen, Korrekturen | Müller-Lyer-Täuschung mit und ohne Hilfslinien; Nudge an/aus und die Wahlquote; Szenario mit/ohne Maßnahme |
+| **Ablauf in Schritten** (`viz.stepper`) | Verfahren, Beweise, Reaktionen | Röstung der Bohne; Rückwärtsinduktion; Aktionspotenzial; Kotters Wandel-Schritte |
+| **Skalen / Größenordnungen** (`viz.scale`, `viz.axis`, `viz.bars`) | sehr große oder kleine Zahlen | Von Atom bis Universum zum Hineinzoomen; Zeitskala der Kosmologie; Koffein in mg gegen Tagesgrenze |
+| **Mini-Spiel gegen Strategien** (Exponat) | Interaktion, Strategie, Lernen durch Tun | Gefangenendilemma gegen „immer verraten“, „Tit for Tat“, „Zufall“; Kalibrierungsspiel für Prognosen; Stroop-Test |
+| **Zeitleiste / Karte** (Schema in SVG) | Chronologie, Geografie | Die Entdeckungen der Quantentheorie 1900 bis 1927; Anbaugebiete zwischen den Wendekreisen |
+Gute Abbildungen sind selten „ein Bild zum Text“; sie lassen etwas **verstellen** oder zeigen etwas, das Text nicht kann.
+
+**Qualitätskriterien für eine Abbildung** (prüfe jede selbst, bevor du sie abhakst):
+1. **Eine Idee.** Was ist die eine Aussage? Alles andere raus.
+2. **Beschriftet.** Achsen, Einheiten, Legende, Zielbereiche; nie Farbe als einziges Merkmal.
+3. **Alt-Text und Bildunterschrift.** `alt` beschreibt, was man sieht und was passiert, wenn man etwas verstellt; `caption` sagt, was schematisch ist und woher Zahlen stammen (erfundene Modellwerte als „Veranschaulichung, keine Messwerte“ kennzeichnen).
+4. **Tastatur.** Alles bedienbar mit Tab, Pfeiltasten, Enter, Leertaste; sichtbarer Fokus.
+5. **Reduced Motion.** Bewegung nur auf Wunsch (Regler, Knopf), respektiere `prefers-reduced-motion` (der Baukasten tut es).
+6. **Ohne Fachjargon.** Beschriftungen in der Sprache der Zielgruppe; Fachwort nur mit Erklärung im Text.
+7. **Fehlerfrei.** Zahlen stimmen mit dem Text überein (und sind im Faktencheck); keine Konsolenfehler (`smoke.mjs`), kein horizontales Scrollen am Handy (390 px), lesbar in allen Skins, hell und dunkel (Bilder ansehen!).
+8. **Kein Dauerblinken,** keine Autoplay-Animation, kein Ton.
+
+**Der Baukasten `MUSEUM.viz`** (`engine/js/viz.js`, am Kopf der Datei jeder Baustein mit Optionen). Freiwillig, aber es ist viel schneller, als von Null zu zeichnen: Regler, Kurven, Tabellen, Balken, Netze und Schrittfolgen sind fertig, tastaturbedienbar, token-gefärbt und in allen Skins getestet (`node tools/viz-test.mjs`).
+Mini-Beispiel, eine komplette Abbildung (`packs/<id>/visuals/zinseszins.js`):
+```js
+(function () { 'use strict';
+  var V = MUSEUM.viz;
+  V.visual('zinseszins', {
+    alt: 'Kurve: Guthaben über 40 Jahre bei wählbarem Zins; sie steigt immer steiler.',
+    caption: 'Rechenbeispiel, 1000 Euro Startguthaben, jährliche Verzinsung.',
+    build: function (box) {
+      box.appendChild(V.plot({
+        xDomain: [0, 40], yDomain: [0, 6000], xLabel: 'Jahre', yLabel: 'Guthaben in €',
+        series: [{ name: 'Guthaben', f: function (t, p) { return 1000 * Math.pow(1 + p.zins / 100, t); } }],
+        controls: [{ key: 'zins', label: 'Zinssatz', min: 0, max: 8, step: 0.5, value: 3, unit: '%' }],
+        marks: function (p) { var y = 1000 * Math.pow(1 + p.zins / 100, 30); return { points: [{ x: 30, y: y, label: V.fmt(y, 0) + ' € nach 30 Jahren' }] }; }
+      }).el);
+    }
+  });
+})();
+```
+Die Datei muss nur unter `packs/<id>/visuals/<station-id>.js` liegen; Build und Kern hängen sie nach dem ersten Absatz der Station ein. Vollständige, kommentierte Muster: `packs/_vorlage/visuals/` (Kurve mit zwei Reglern, Balkenvergleich mit Umschalter, Schrittfolge, Vergleichstabelle).
+Wer lieber von Hand baut (Canvas, eigenes SVG), darf das: der Vertrag `MUSEUM.visuals[<id>] = { alt, caption, mount }` bleibt (`docs/ARCHITEKTUR.md` 3.7).
+
+**Ergebnis dieses Schritts:** `plan.json` hat bei JEDER Station `visual`, der Anteil erreicht die Vorgabe (`check-pack`, keine Warnung zum Anteil), die fünf Favoriten sind markiert. Zeige den Anschauungsplan zusammen mit dem Stationsplan dem Auftraggeber oder halte ihn als Annahme in `ARBEITSSTAND.md` fest. Committe.
+
 ### 3. Reise-Daten und Farben (`journeys.js`)
 Name, Kurzname (≤ 14 Zeichen empfohlen, Warnung ab 24), Tagline (≤ 70), Intro (2–3 Sätze), Outro (1–2 Sätze, eine offene Frage), Icon (`node tools/list-icons.mjs`), `color:{light,dark}`.
 Farben: gut unterscheidbar nebeneinander (auch für Farbfehlsichtigkeit nie das einzige Merkmal, der Name steht immer daneben),
@@ -79,6 +146,7 @@ Schema und Stilregeln: `docs/INHALT-SCHREIBEN.md`. Kurzfassung: 2–4 Absätze, 
 ein Satz `cross` für JEDE andere Reise der Station, Zitate nur, wenn du sie belegen kannst (sonst `null`), Mythos-Stationen mit `myth`.
 Mehrere Agenten dürfen parallel schreiben, **eine Datei je Reise** (`stationen/<reise-id>.js`, enthält die Stationen, deren Heimat-Reise sie ist), niemand schreibt in fremde Dateien.
 Nach jeder Datei: `node tools/check-data.mjs <id> packs/<id>/stationen/<reise-id>.js`. Die Meldungen nennen Station, Feld und Länge (z. B. „facts[1] ist 171 Zeichen lang“).
+**Baue die geplante Anschauung mit den Texten (Schritt 2b):** zu jeder Station mit `visual.kind` „abbildung“ oder „exponat“ gehört die Datei `visuals/<station-id>.js` bzw. `exhibits/<id>.js`; der Text darf sich darauf beziehen („Zieh am Regler“), muss aber auch ohne sie verständlich sein. Was du nicht baust, ist **bewusst verschoben und in `ARBEITSSTAND.md` dokumentiert** (Station, Grund, Idee); `check-pack` zeigt geplante, aber fehlende Dateien als Warnung.
 
 **Exponat-Schnittstelle (Kurzfassung).** Ein Exponat ist eine Datei `exhibits/<id>.js`, die sich in `MUSEUM.exhibits` anmeldet. Der Kern zeigt eine Tafel mit Titel und Beschreibung und ruft `mount` erst beim Klick auf „starten“:
 ```js
@@ -132,9 +200,9 @@ Wenn der Auftraggeber ein eigenes Register/Blog hat, respektiere dessen Rechte-A
 node tools/layout-map.mjs <id>        # Netzplan-Layout berechnen (schreibt packs/<id>/layout.js)
 node tools/check-pack.mjs <id>        # alle Prüfungen
 node tools/build.mjs <id> --skins=all # erzeugt dist/<id>/
-node tools/smoke.mjs <id>             # Browser-Rauchtest: Ansichten, Größen, Skins, hell/dunkel, jedes Exponat (braucht Playwright, siehe README)
+node tools/smoke.mjs <id>             # Browser-Rauchtest: Ansichten, Größen, Skins, hell/dunkel, jedes Exponat und jede Abbildung (braucht Playwright, siehe README)
 ```
-Die Screenshots liegen standardmäßig in `dist/<id>/_shots/`. Sieh dir Netzplan, Zeitstrahl, drei Stationen und Handy selbst an. Ein grüner Test ersetzt das Hinsehen nicht.
+Die Screenshots liegen standardmäßig in `dist/<id>/_shots/`. Sieh dir Netzplan, Zeitstrahl, drei Stationen, **die Abbildungen (`_shots/*abbildung*`)** und Handy selbst an. Ein grüner Test ersetzt das Hinsehen nicht.
 Kannst du keine Bilder ansehen oder Playwright nicht installieren, halte das in `ARBEITSSTAND.md` fest („Sichtprüfung offen“).
 
 ### 8. Übergabe
@@ -172,6 +240,7 @@ ein Hinweis auf Hilfsangebote in `pack.json.footer`, wenn Besucher betroffen sei
 
 ## Fertig ist ein Paket, wenn …
 - [ ] `node tools/check-pack.mjs <id>` ohne Fehler (Warnungen begründet).
+- [ ] **Anschauung:** jede Station hat `visual`; der Anteil erreicht `limits.visualShare`; die geplanten Abbildungen und Exponate sind **gebaut oder bewusst verschoben** (dokumentiert in `ARBEITSSTAND.md`); „Anschauung: X geplant, Y gebaut“ in der Prüfausgabe passt zum Bericht.
 - [ ] Faktencheck ist in `FAKTENCHECK.md` dokumentiert, mit Prüfstufe je Station; bei Stufe 2 oder 3 steht der Hinweis in der Übergabe.
 - [ ] `node tools/build.mjs <id> --skins=all` und `node tools/smoke.mjs <id>` ohne Fehler.
 - [ ] Du hast Netzplan, Zeitstrahl (falls vorhanden), drei Stationen und die Handyansicht als Bild angesehen (oder die fehlende Sichtprüfung vermerkt).
@@ -181,7 +250,7 @@ ein Hinweis auf Hilfsangebote in `pack.json.footer`, wenn Besucher betroffen sei
 ## Anhang: Briefings zum Kopieren
 
 **Stationsautor** (je Reise ein Agent): „Du schreibst die Stationen der Reise `<reise>` im Paket `<id>`. Lies docs/INHALT-SCHREIBEN.md und packs/_vorlage/stationen/*.js.
-Schreibe `packs/<id>/stationen/<reise>.js` für alle Stationen, deren erste Reise `<reise>` ist (Liste in plan.json; bei `new-pack` stehen dort schon Rümpfe). Halte Schema und Wortgrenzen ein, erfinde nichts,
+Schreibe `packs/<id>/stationen/<reise>.js` (und die zugehörigen Abbildungen und Exponate laut `visual` im Plan) für alle Stationen, deren erste Reise `<reise>` ist (Liste in plan.json; bei `new-pack` stehen dort schon Rümpfe). Halte Schema und Wortgrenzen ein, erfinde nichts,
 schreibe für jede weitere Reise einer Station einen konkreten `cross`-Satz. Prüfe mit `node tools/check-data.mjs <id> packs/<id>/stationen/<reise>.js`. Committe.“
 
 **Faktenprüfer**: „Prüfe die dir zugewiesenen Stationen (IDs: …) in `packs/<id>/stationen/<reise>.js` Satz für Satz mit Websuche gegen verlässliche Quellen (Primärquellen, Fachliteratur, Fachgesellschaften).

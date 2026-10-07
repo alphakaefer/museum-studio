@@ -55,7 +55,7 @@ cd <dieses Repository>
 PLAYWRIGHT_MODULE_DIR=~/pw node tools/smoke.mjs beispiel-gehirn --quick   # Paket vorher bauen
 ```
 `PLAYWRIGHT_MODULE_DIR` (Ordner, in dem Playwright installiert ist; sonst werden das Repository, `NODE_PATH` und der globale npm-Ordner durchsucht), `CHROMIUM_PATH` (eigene Chromium-Programmdatei, sonst der von Playwright installierte Browser).
-Screenshots landen standardmäßig in `dist/<paket>/_shots/` (`--shots=<ordner>` ändert das). Der Test öffnet auch jedes Exponat. `npm run doctor` zeigt, was davon bei dir schon da ist.
+Screenshots landen standardmäßig in `dist/<paket>/_shots/` (`--shots=<ordner>` ändert das). Der Test öffnet auch jedes Exponat und hängt jede Abbildung einmal ein. `node tools/viz-test.mjs` prüft den Abbildungs-Baukasten `MUSEUM.viz` (`engine/js/viz.js`) in allen Skins. `npm run doctor` zeigt, was davon bei dir schon da ist.
 
 ## Dokumentation
 | Datei | Für wen |

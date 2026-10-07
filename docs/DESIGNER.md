@@ -449,6 +449,8 @@ Abbildungen (`packs/<id>/visuals/*.js`) und Exponate (`packs/<id>/exhibits/*.js`
 
 **Illustrationen, Abbildungen, Exponate**
 
+- **Abbildungen müssen in allen Skins lesbar sein.** Seit dem Baukasten `MUSEUM.viz` (`engine/css/exhibits.css`, Präfix `gx-`) tragen Stationen oft Kurven, Tabellen, Balken und Netze; sie nutzen nur die Tokens `--bg-2`, `--bg-3`, `--ink`, `--ink-2`, `--ink-3`, `--line`, `--accent`, `--on-accent`, `--ok`, `--warn`, `--bad`, `--warm`, `--radius-sm`, `--font-ui`. Ein Skin, der diese Tokens sauber setzt, färbt sie mit. Prüfe in jedem Skin hell und dunkel: Achsenbeschriftung, Gitterlinien (`--line`) und Zielbänder (`--ok`) müssen sichtbar bleiben, Serienfarben (`--accent`, `--warn`, `--ok`, `--bad`) unterscheidbar sein. `node tools/viz-test.mjs` zeigt alle Bausteine in allen Skins (Bilder in einem temporären Ordner oder `--shots=`). Bricht ein Skin einen Baustein (z. B. unlesbare Ränder, weil `--bg-2` zu nah an `--bg-3` liegt), ist das ein Skin-Fehler.
+
 - Nur **Tokens** für Farben: `var(--ink)`, `var(--ink-2)`, `var(--line)`, `var(--bg-2)`, `var(--accent)`, `var(--warm)`, Reisefarbe `var(--jc)`; als Rückfall den Engine-Wert, z. B. `var(--ink, #1B2230)`. So wirkt jeder Skin und jeder Modus, ohne dass die Abbildung ihn kennt.
   Ausnahme: Farben, die Teil des Inhalts sind (die Reizfarben im Stroop-Test sind fest und stehen auf einer immer dunklen „Vitrine“).
 - Linienzeichnung mit `currentColor` bzw. Token-Strichen; Flächen flach; kein Text in Pixelgrafiken (Beschriftungen als SVG-`<text>` oder DOM, mit `alt` und `caption`).

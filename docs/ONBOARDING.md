@@ -16,7 +16,7 @@ Geschrieben wird erst nach der Bestätigung und in einem Zug: Strg+C oder ein Ab
 
 | Datei in `packs/<id>/` | Inhalt |
 |---|---|
-| `pack.json` | ausgefüllt: `title`, `eyebrow`, `tagline`, `lang`, `defaultSkin`, `limits`, `footer`, `license`, `credits` (und `author`, falls angegeben) |
+| `pack.json` | ausgefüllt: `title`, `eyebrow`, `tagline`, `lang`, `defaultSkin`, `limits` (mit `visualShare`), `requireVisualPlan`, `footer`, `license`, `credits` (und `author`, falls angegeben) |
 | `plan.json`, `journeys.js`, `stationen/*.js` | Gerüst von `tools/new-pack.mjs` mit der gewählten Reisezahl, den historischen Reisen und Stationsrümpfen (alles Weitere ist `TODO`) |
 | `BRIEFING.md` | lesbarer Auftrag: Thema, Zielgruppe, Ton, Umfang, Reisevorschläge, Sorgfaltsregeln, Quellen, Look, Lizenz, Checkliste „Was der Agent liefern soll“ |
 | `BRIEFING.json` | derselbe Auftrag maschinenlesbar (alle Antworten, dazu abgeleitete Werte) |
@@ -39,7 +39,7 @@ Die Prüfung (`node tools/check-pack.mjs <id>`) meldet danach nur die gewollten 
 | 8 | **Historische Reisen** (0 bis 3, weniger als Reisen) | `historisch` | die letzten Reisen werden `typ:'historisch'` und erscheinen im **Zeitstrahl** (Stationen mit `year`/`yearLabel`, chronologisch) |
 | 9 | **Reisenamen oder Themenideen** (optional, mit Komma, bei Kommas im Namen mit Semikolon) | `reisenamen` | Arbeitsnamen in `plan.json` und `journeys.js`; im Briefing als Vorschläge; leer heißt: der Agent macht Vorschläge |
 | 10 | **Standard-Look** (Liste der Skins aus `themes/` mit je einem Satz aus `theme.json`) und **Umschaltung für Besucher** | `skin`, `skinWahl` | `pack.json` `defaultSkin`; Baubefehl `--skins=all` (Umschaltung) oder `--skins=<skin>` |
-| 11 | **Exponate und Abbildungen** (ja, später, nein) | `exponate` | Briefing und Checkliste; „später“ wird in `ARBEITSSTAND.md` unter „Offen“ vermerkt |
+| 11 | **Wie wichtig ist Anschauung?** zentral (≈ 50 % der Stationen mit Abbildung oder Exponat), viel (≈ 35 %, Standard), etwas (≈ 20 %), wenig (≈ 10 %). Abstrakte Themen (Mathematik, Physik, Ökonomie) vertragen mehr | `anschauung` | `pack.json` `limits.visualShare` (0,5 / 0,35 / 0,2 / 0,1) und `requireVisualPlan: true`; im Briefing und in der Prüfliste steht die **konkrete Mindestzahl** (Anteil mal geschätzte eindeutige Stationen), ebenso in der Zusammenfassung; jede Station braucht in `plan.json` ein Feld `visual` |
 | 12 | **Heikle Themen** (Gesundheit, Politik/Weltanschauung, Religion, Gewalt/Trauma; Mehrfachauswahl oder keine) | `heikel` | erzeugt den Text in `pack.json` `footer` (bei Gesundheit/Gewalt zusätzlich eine Hilfe-Spalte mit Telefonseelsorge, Deutschland) und **Sorgfaltsregeln** im Briefing |
 | 13 | **Quellenregeln** (offene Quellen, eigene Texte des Auftraggebers, eigene Domain für Weiterlesen-Links; Mehrfachauswahl) | `quellen`, `materialHost` | Quellenabschnitt im Briefing; bei „Domain“ die Nachfrage nach der Adresse, die als `MATERIAL_HOST` in den Prüfbefehl kommt |
 | 14 | **Urheber/Credits**, **Lizenz** (CC BY 4.0, CC BY-SA 4.0, alle Rechte vorbehalten, andere) und optional **Impressum/Datenschutz-URL** | `urheber`, `lizenz`, `lizenzText`, `impressumUrl` | `pack.json` `credits`, `author`, `license`; der Link steht als Fußspalte „Rechtliches“ |
@@ -83,7 +83,7 @@ die Abschlussfrage braucht ein ausdrückliches „ja“ (oder `--yes`), sonst wi
   "reisenamen": ["Grundmodelle", "Wann kooperieren Egoisten?", "Eine kurze Geschichte der Spieltheorie"],
   "skin": "halle",
   "skinWahl": true,
-  "exponate": "ja",
+  "anschauung": "zentral",
   "heikel": ["politik"],
   "quellen": ["offen"],
   "urheber": "Karl Hosang",
@@ -92,7 +92,7 @@ die Abschlussfrage braucht ein ausdrückliches „ja“ (oder `--yes`), sonst wi
 }
 ```
 
-Zulässige Werte: `zielgruppe` laien | studierende | fachleute | gemischt; `anrede` du | Sie; `exponate` ja | spaeter | nein; `heikel` Liste aus gesundheit, politik, religion, gewalt (leer = keine);
+Zulässige Werte: `zielgruppe` laien | studierende | fachleute | gemischt; `anrede` du | Sie; `anschauung` zentral | viel | etwas | wenig (das frühere Feld `exponate` ja | spaeter | nein wird weiter gelesen und als viel | etwas | wenig umgesetzt, mit Hinweis); `heikel` Liste aus gesundheit, politik, religion, gewalt (leer = keine);
 `quellen` Liste aus offen, eigene, domain (bei domain zusätzlich `materialHost`, https-Adresse); `lizenz` cc-by-4.0 | cc-by-sa-4.0 | alle-rechte | andere (bei andere zusätzlich `lizenzText`); `skin` ein Ordner unter `themes/`.
 
 ## Wie Agenten den Auftrag lesen
@@ -108,4 +108,4 @@ Der Prompt, den das Onboarding ausgibt, lautet sinngemäß: „Lies `docs/AGENTE
 - Nicht-deutsche Inhalte: Die festen Oberflächentexte der Engine bleiben deutsch.
 - Die Hilfenummern im Fuß (Telefonseelsorge) gelten für Deutschland; für andere Länder steht ein allgemeiner Hinweis, den man anpassen muss.
 - Die Schätzung eindeutiger Stationen (Mitgliedschaften mal 0,8) ist ein Faustwert; echte Kreuzungen entscheiden.
-- Das Gerüst ist ein Muster, keine inhaltliche Planung.
+- Das Gerüst ist ein Muster, keine inhaltliche Planung. Die Stationsrümpfe in `plan.json` tragen ein `visual`-Platzhalterfeld mit `TODO`; die Prüfung meldet es, bis der Agent es durch eine Entscheidung ersetzt hat.

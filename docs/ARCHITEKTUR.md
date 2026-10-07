@@ -59,11 +59,12 @@ museum-studio/
 ├─ engine/                       Alles, was für jedes Wissensgebiet gilt
 │  ├─ index.template.html        Seitengerüst mit {{PLATZHALTERN}}
 │  ├─ css/engine.css             Tokens (hell/dunkel), Grundlagen, gemeinsame Komponenten
-│  ├─ css/exhibits.css           nur eine Regel; Exponate bringen ihre Styles selbst mit (Präfix gx-)
+│  ├─ css/exhibits.css           Styles des Abbildungs-Baukastens (Präfix gx-, nur Tokens); Exponate dürfen weiter eigene Styles mitbringen
 │  └─ js/
 │     ├─ core.js                 Namespace, Wortschatz, Store, Theme, Skins, Graph (finalize), Rundreise, Suchindex,
 │     │                          Station-Renderer, Overlays, Router, Stationspanel, Ersatz-Reisemodus
 │     ├─ icons.js                MUSEUM.icons (SVG-Iconset)
+│     ├─ viz.js                  MUSEUM.viz: Baukasten für Abbildungen und Exponate (freiwillig), lädt vor den Paket-Abbildungen
 │     ├─ hero.js                 Canvas im Eingang
 │     ├─ map.js                  Ansicht „Karte“ (Netzplan); injiziert eigene Styles (#gm-karte-style)
 │     ├─ journey.js              Reise-Modus (Vollbild #reise); injiziert eigene Styles
@@ -130,7 +131,8 @@ Quelle der Standardwerte: `core.js` (`VOCAB`, `KIND`, `typeLabel`, `renderFooter
 | `grandTour` | Objekt | nein | automatisch | Steuerung der Großen Rundreise, siehe 5.3 |
 | `exhibits` | Liste von IDs | nein | `[]` | IDs der Exponate; `check-plan` verlangt, dass jede ID genau einer Station zugewiesen ist. Bestimmt außerdem die Ladereihenfolge der Dateien in `exhibits/` |
 | `stationFiles` | Liste von Dateinamen ohne `.js` | nein (nicht nötig; `new-pack` setzt es nicht) | alphabetisch | Ladereihenfolge der Dateien in `stationen/` (nur wichtig, wenn eine Datei vor einer anderen laden muss; Stationen sind unabhängig voneinander); Dateien, die nicht aufgeführt sind, werden trotzdem eingebunden (hinten) |
-| `limits` | `{ min, max, minCrossJourneys }` | nein | `min` 11, `max` 28, `minCrossJourneys` abgeleitet | Grenzen für `check-plan`: Stationen je Reise und Mindestzahl anderer Reisen, die jede Reise kreuzt |
+| `limits` | `{ min, max, minCrossJourneys, visualShare }` | nein | `min` 11, `max` 28, `minCrossJourneys` abgeleitet, `visualShare` 0,3 | Grenzen für `check-plan`: Stationen je Reise und Mindestzahl anderer Reisen, die jede Reise kreuzt; `visualShare` (0 bis 1): Mindestanteil der Stationen mit Abbildung oder Exponat, den `check-pack` als Warnung prüft |
+| `requireVisualPlan` | `true` / `false` | nein | `false` | `true`: jede Station in `plan.json` braucht das Feld `visual` (Fehler, wenn es fehlt). `new-pack` und das Onboarding setzen `true`; Pakete ohne `visual`-Felder melden nur eine Gesamtwarnung „Anschauung nicht geplant“ |
 
 Beispiel (gekürzt, nach `packs/_vorlage/pack.json` und `packs/beispiel-gehirn/pack.json`):
 
@@ -171,6 +173,7 @@ Regeln (alle von `check-plan.mjs` erzwungen):
 - Station: `id` (gleiche Regel, keine Umlaute), `title`, `kind` (eine der sieben Arten), `why` (Pflicht), `journeys` (nichtleer; **die erste ist die Heimat-Reise**).
   `journeys` einer Station muss mit den Reisen übereinstimmen, in deren `orders` sie steht (`orders` ist die Wahrheit).
 - `year` (Zahl, nicht 0, vor Christus negativ) und `yearLabel` sind Pflicht, sobald die Station auf einer historischen Reise liegt. `exhibit` ist optional.
+- `visual` (Anschauungsplan, von `check-pack` geprüft): `{ "kind": "abbildung" | "exponat" | "keine", "idea": "ein Satz: was sieht oder tut man?", "reason": "bei keine: warum nicht" }`. `abbildung` erwartet `visuals/<station-id>.js`, `exponat` das Feld `exhibit` samt `exhibits/<id>.js`. Bei `requireVisualPlan: true` ist die Entscheidung für jede Station Pflicht; Warnungen für zu geringen Anteil (`limits.visualShare`) und für Geplantes, das noch nicht gebaut ist; Zusammenfassung „Anschauung: X geplant, Y gebaut“.
 - `orders`: je Reise eine Liste von Stations-IDs ohne Dubletten; Länge zwischen `limits.min` und `limits.max`; historische Reisen strikt chronologisch nach `year`.
 - Jedes Exponat aus `pack.json` gehört genau einer Station, und jede Station mit `exhibit` nennt ein Exponat aus `pack.json`.
 - Netz: Jede Reise kreuzt mindestens `need` andere Reisen, mit `need = limits.minCrossJourneys`, sonst 4 bei ab 6 Reisen, sonst 1. Der Reise-Graph muss zusammenhängend sein.
@@ -291,7 +294,7 @@ MUSEUM.exhibits.stroop = {
   Tastaturbedienung, nichts wird gesendet, Eingaben bleiben lokal.
 - Die Dateien in `exhibits/` werden alle eingebunden (Reihenfolge: zuerst `pack.exhibits`, dann der Rest). `check-pack` warnt, wenn eine Datei nicht in `pack.json` steht.
 
-**Abbildung** (`visuals/<station-id>.js`):
+**Abbildung** (`visuals/<station-id>.js`; geplant im Plan-Feld `visual`, siehe 3.2):
 
 ```js
 MUSEUM.visuals['beck'] = { alt: 'Beschreibung für Screenreader', caption: 'Bildunterschrift (optional)',
@@ -301,6 +304,11 @@ MUSEUM.visuals['beck'] = { alt: 'Beschreibung für Screenreader', caption: 'Bild
 Der Kern rendert nach dem ersten Absatz einer Station ein `<figure class="gm-st-figure" data-visual="<id>">` mit der Bühne `.gm-fig-stage` (`role="group"`, `aria-label` = `alt`) und ruft `mount` sofort.
 Maßgeblich für die Zuordnung ist der Schlüssel `MUSEUM.visuals[<station-id>]`; `check-pack` verlangt zusätzlich, dass der Dateiname eine Stations-ID aus `plan.json` ist (Warnung).
 Abbildungen erscheinen nicht in der kompakten Stationsdarstellung (`compact:true`). Farben nur über Tokens, damit sie in jedem Skin und in beiden Modi lesbar bleiben.
+
+**Baukasten `MUSEUM.viz`** (`engine/js/viz.js`, Styles `engine/css/exhibits.css`, Präfix `gx-`). Freiwillig: Registrierung und Mountvertrag bleiben `MUSEUM.visuals[<id>]` bzw. `MUSEUM.exhibits[<id>]`. Der Baukasten lädt vor den Paketdateien und liefert fertige, tastaturbedienbare, token-gefärbte Bausteine,
+damit Abbildungen zusammengesteckt statt von Null programmiert werden: `el`/`s`/`svg` (Grundlagen), `slider`, `toggle`, `choice`, `button`, `readout`, `legend`, `scale`/`axis`/`ticks`, `matrix` (n×m-Tabelle mit Hervorhebung und Auswahl),
+`plot` (Kurven mit Reglern, Marken, Bändern), `bars` (Balken, vergleichend, animiert), `graph` (Knoten und Kanten), `stepper` (Schrittfolge), `figure`, `animate` (respektiert reduzierte Bewegung), `rng`, `visual`/`exhibit` (Registrierung mit automatischem Aufräumen).
+Jeder Baustein ist am Kopf der Datei mit Optionen beschrieben; Muster: `packs/_vorlage/visuals/`. Zeichnungen messen ihre Pixelbreite und rechnen neu (Text bleibt am Handy lesbar). Test: `tools/viz-test.mjs` (alle Bausteine in allen Skins bedienen); `tools/smoke.mjs` hängt außerdem jede Abbildung eines Pakets einmal ein.
 
 ---
 
@@ -549,8 +557,9 @@ Alle Befehle: `node tools/<name>.mjs <paket>`; `<paket>` ist der Ordnername unte
 | `check-plan.mjs <paket>` | `plan.json`: Struktur, ID-Format, doppelte IDs, `kind`, `why`, `journeys`; Reisen gegen `orders`; Stationszahl je Reise gegen `limits`; Waisen; Übereinstimmung `journeys` ↔ `orders`; `year` und `yearLabel` bei historischen Reisen; chronologische Reihenfolge; Exponate (in `pack.json`, genau einer Station, keine verwaisten); Kreuzungs-Mindestzahl und Zusammenhang des Reise-Graphen |
 | `check-data.mjs <paket> [datei …]` | `stationen/*.js` gegen `plan.json`: Ladefehler, Dubletten, `TODO`-Platzhalter, `journeys`/`kind`/`year` wie im Plan, `exhibit` zwischen Plan, Station und `pack.json` (mit Hinweis, wo zu ergänzen ist), Icon-Schlüssel, `teaser` (Länge), Absatzzahl, **Wortzahl 90–200** (Fehler außerhalb, mit Wörtern je Absatz), `facts` (Eintrag und Länge je Fakt), `quote`, `myth` bei Mythen, `cross` je Nebenreise (≥ 20 Zeichen), `blog` (https, höchstens 3, gegen `quellen.txt`), `further`; Warnungen für gerade Anführungszeichen und doppelte Leerzeichen |
 | `check-material.mjs <paket> [--register=datei]` | `material.js` (optional): Station im Plan, höchstens 3 Links, https-URLs, Dubletten, nicht im `blog`-Feld, `quellen.txt`; mit Register zusätzlich Titel, Rechte, Stand, Typ |
-| `check-pack.mjs <paket>` | **alles**: `pack.json` (Pflichtfelder, `id` = Ordnername, `lang`, `footer`-Form, `stationFiles` gegen vorhandene Dateien, `vocab`, `journeyTypes`, `exhibits`, `limits`, `kinds`, `grandTour` gegen den Plan, `TODO`), ruft `check-plan`, `check-data`, `check-material` auf, prüft `journeys.js` (Felder, Typen, Tagline-Länge, Icon, `color`, Kontrast der Reisefarben gegen `#F6F2EA`/`#0E1420` mit Schwelle 3:1, doppelte Farben, Abgleich mit dem Plan), Exponat- und Abbildungsdateien (Syntax, Registrierung), `layout.js` (vorhanden, `SEED`, aktuell) |
+| `check-pack.mjs <paket>` | **alles**: `pack.json` (Pflichtfelder, `id` = Ordnername, `lang`, `footer`-Form, `stationFiles` gegen vorhandene Dateien, `vocab`, `journeyTypes`, `exhibits`, `limits`, `kinds`, `grandTour` gegen den Plan, `TODO`), ruft `check-plan`, `check-data`, `check-material` auf, prüft `journeys.js` (Felder, Typen, Tagline-Länge, Icon, `color`, Kontrast der Reisefarben gegen `#F6F2EA`/`#0E1420` mit Schwelle 3:1, doppelte Farben, Abgleich mit dem Plan), Exponat- und Abbildungsdateien (Syntax, Registrierung), den Anschauungsplan (`visual` je Station, `limits.visualShare`, geplant gegen gebaut, Hinweise auf Zahlenlast ohne Abbildung), `layout.js` (vorhanden, `SEED`, aktuell) |
 | `check-skin.mjs <skin>` / `--all` | `themes/<id>/`: `theme.json` gültig (`id` = Ordnername, `mode`, `map`, `fonts` als Liste), `theme.css` mit `html[data-skin="<id>"]` vor **jedem** Selektor, keine `@import`, keine externen URLs, Warnung bei festen Reise-IDs (`var(--j-<id>)`) |
+| `viz-test.mjs [paket]` | Browser-Test des Baukastens `MUSEUM.viz`: baut das Paket in einen temporären Ordner, hängt alle Bausteine ein, bedient sie (Klick, Tasten), meldet Konsolenfehler, Überbreite und fehlende Reaktion; je Skin hell/Desktop, dunkel/Handy und einmal mit reduzierter Bewegung (braucht Playwright, gemeinsame Suche in `tools/pw-lib.mjs`) |
 | `smoke.mjs <paket> [--skins=a,b\|all] [--quick] [--shots=ordner] [--viewports=desktop,tablet,phone] [--themes=light,dark] [--dist=ordner]` | Browser-Rauchtest, siehe unten |
 | `list-icons.mjs [suchwort]` | listet die Icon-Schlüssel aus `engine/js/icons.js` nach Gruppen (gültige Werte für `icon`) |
 

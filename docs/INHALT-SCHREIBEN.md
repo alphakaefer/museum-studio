@@ -65,12 +65,15 @@ Ungefähres Datum: `yearLabel:'um 1250'`.
 - Reise: 11–28 Stationen je Reise, gezählt als Mitgliedschaften (in `pack.json` `limits` anpassbar, begründet). Insgesamt höchstens rund 200 *eindeutige* Stationen (Zählweise: `docs/AGENTEN.md`).
 - Teaser ≤ 140 Zeichen, Fakt ≤ 160 Zeichen, `cross`-Satz ≥ 20 Zeichen und ein vollständiger Satz.
 
-## Abbildungen und Exponate (optional)
+## Abbildungen und Exponate (geplant für jede Station)
+Jede Station bekommt in `plan.json` ein Feld `visual`: Was kann man hier sehen oder ausprobieren? (`abbildung`, `exponat` oder `keine` mit Begründung; Anleitung: `docs/AGENTEN.md`, Schritt 2b „Anschauung planen“, mit Katalog der Muster und Faustregeln: mindestens 30 % der Stationen, bei abstrakten Themen mehr.)
+Der Text darf auf die Anschauung bauen („Zieh unten am Regler“), muss aber ohne sie verständlich bleiben.
+
 Eine Abbildung (`packs/<id>/visuals/<station-id>.js`) erscheint nach dem ersten Absatz der Station und zeigt, was Text schlecht zeigt:
 eine optische Täuschung, eine Kurve, eine Anatomie, ein Schema. **Wenn im ersten Absatz ein Phänomen steht, das man sehen muss, braucht die Station eine Abbildung.**
 Ein Exponat (`packs/<id>/exhibits/<id>.js`) lässt Besucher etwas selbst ausprobieren. Beide sind reines DOM/SVG/Canvas, ohne externe Abrufe, mit Tastaturbedienung,
 Farben nur über Tokens (`var(--ink)`, `var(--accent)`, …), damit sie in jedem Skin und in hell und dunkel lesbar bleiben.
-Muster: `packs/beispiel-gehirn/visuals/` und `.../exhibits/`.
+Muster: `packs/_vorlage/visuals/` (gebaut mit dem Baukasten `MUSEUM.viz`: Kurve mit Reglern, Balkenvergleich, Schrittfolge, Tabelle) und `packs/beispiel-gehirn/visuals/` sowie `.../exhibits/` (von Hand gebaut). Der Baukasten ist freiwillig, spart aber viel Arbeit; Übersicht am Kopf von `engine/js/viz.js`.
 
 **Exponat-Schnittstelle in Kürze** (ausführlich: `docs/ARCHITEKTUR.md` 3.7, minimales Beispiel: `docs/AGENTEN.md`, Schritt 4): Datei `exhibits/<id>.js` mit
 `MUSEUM.exhibits['<id>'] = { title, blurb, mount(container, ctx) }`; `mount` gibt eine `destroy`-Funktion zurück. Drei Stellen nennen dieselbe ID: `pack.json` `exhibits`, `plan.json` (`"exhibit"` bei der Station) und die Stationsdatei (`exhibit:'<id>'`). `check-pack` meldet Abweichungen.
@@ -81,4 +84,5 @@ Muster: `packs/beispiel-gehirn/visuals/` und `.../exhibits/`.
 - [ ] Kritische Einordnung, wo das Thema umstritten ist.
 - [ ] Für jede andere Reise ein konkreter `cross`-Satz.
 - [ ] Keine Textblöcke aus Quellen übernommen.
+- [ ] Die Station hat ihre geplante Abbildung oder ihr Exponat (oder die Verschiebung steht in `ARBEITSSTAND.md`).
 - [ ] `node tools/check-data.mjs <paket> <datei>` grün.
