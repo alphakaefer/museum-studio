@@ -19,7 +19,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Der Einstieg: Kaffee wächst als Frucht an einem Strauch, die „Bohne“ ist ein Samen."
+   "why": "Der Einstieg: Kaffee wächst als Frucht an einem Strauch, die „Bohne“ ist ein Samen.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Eine Zeichnung der Kaffeekirsche würde helfen, aber ohne eigenes, frei lizenziertes Bildmaterial wäre es nur Dekoration; der erste Absatz trägt das Bild (Frucht mit zwei Samen) schon."
+   }
   },
   {
    "id": "kaldi-legende",
@@ -31,7 +35,11 @@
    ],
    "why": "Die berühmteste Herkunftsgeschichte des Kaffees ist eine Legende; hier trifft die Pflanze (Äthiopien) auf die Frage, wie Geschichte erzählt wird.",
    "year": 1671,
-   "yearLabel": "1671"
+   "yearLabel": "1671",
+   "visual": {
+    "kind": "keine",
+    "reason": "Eine Legende mit Mythos-Karte: Es gibt nichts zu messen oder zu verstellen, die Gegenüberstellung „Was man glaubte / Was wir heute wissen“ leistet die Anschauung."
+   }
   },
   {
    "id": "arabica-robusta",
@@ -40,7 +48,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Fast aller Kaffee stammt von zwei Arten mit verschiedenem Geschmack, Koffeingehalt und Anbau."
+   "why": "Fast aller Kaffee stammt von zwei Arten mit verschiedenem Geschmack, Koffeingehalt und Anbau.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Vergleichstabelle Arabica gegen Robusta (Koffein, Lage, Geschmack); eine Zeile lässt sich hervorheben."
+   }
   },
   {
    "id": "palheta-brasilien",
@@ -52,7 +64,11 @@
    ],
    "why": "Ein Ereignis des 18. Jahrhunderts macht Brasilien zum größten Anbauland; es verbindet Anbaugeschichte und Weltgeschichte.",
    "year": 1727,
-   "yearLabel": "1727"
+   "yearLabel": "1727",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ein Einzelereignis ohne Zahlenlage; eine Karte des Samenwegs wäre nur mit lizenziertem Kartenmaterial sinnvoll."
+   }
   },
   {
    "id": "anbaugebiete",
@@ -61,7 +77,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Klima und Höhenlage bestimmen, wo Kaffee wächst und wie er schmeckt."
+   "why": "Klima und Höhenlage bestimmen, wo Kaffee wächst und wie er schmeckt.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Breitengrad-Skala mit den Wendekreisen als Band („Kaffeegürtel“) und den genannten Anbauländern darauf."
+   }
   },
   {
    "id": "ernte-aufbereitung",
@@ -70,7 +90,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Wie aus der Frucht ein lagerfähiger Rohkaffee wird, auf nassem oder trockenem Weg."
+   "why": "Wie aus der Frucht ein lagerfähiger Rohkaffee wird, auf nassem oder trockenem Weg.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Zwei Wege in wenigen Schritten, gut als Text lesbar; eine Abbildung bliebe Dekoration. Wäre später als Ablauf in Schritten denkbar."
+   }
   },
   {
    "id": "fairtrade-siegel",
@@ -82,7 +106,11 @@
    ],
    "why": "Das Siegel von 1988 verbindet die Anbauseite mit der Frage nach fairen Preisen für die Menschen dahinter.",
    "year": 1988,
-   "yearLabel": "1988"
+   "yearLabel": "1988",
+   "visual": {
+    "kind": "keine",
+    "reason": "Die Station erzählt Gründung und Idee; Preiszahlen würden eine geprüfte Quelle brauchen, die das Muster nicht mitbringt."
+   }
   },
   {
    "id": "roestung",
@@ -91,7 +119,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Beim Rösten entsteht aus geruchlosem Rohkaffee das Aroma; Maillard-Reaktion und Karamellisierung."
+   "why": "Beim Rösten entsteht aus geruchlosem Rohkaffee das Aroma; Maillard-Reaktion und Karamellisierung.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Ablauf der Röstung in fünf Schritten; die Bohne wechselt Farbe und Gewicht, der Text sagt, was gerade passiert."
+   }
   },
   {
    "id": "mahlgrad",
@@ -100,7 +132,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Der Mahlgrad steuert, wie viel Wasser aus dem Kaffee herauslöst, und damit bitter oder sauer."
+   "why": "Der Mahlgrad steuert, wie viel Wasser aus dem Kaffee herauslöst, und damit bitter oder sauer.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Kurve des Auszugs über die Brühzeit; Regler für Mahlgrad und Zeit, Zielbereich 18 bis 22 Prozent, Urteil „dünn, ausgewogen, bitter“."
+   }
   },
   {
    "id": "bezzera-espresso",
@@ -112,7 +148,11 @@
    ],
    "why": "Die Espressotechnik von 1901 verbindet Erfindungsgeschichte und die heutige Zubereitung mit Druck, Mahlgrad und Zeit.",
    "year": 1901,
-   "yearLabel": "1901"
+   "yearLabel": "1901",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Balkenvergleich Espresso gegen Filterkaffee (Zeit, Druck, Menge), umschaltbar."
+   }
   },
   {
    "id": "koffein",
@@ -121,7 +161,11 @@
    "journeys": [
     "tasse"
    ],
-   "why": "Das Ende der Reise: Was in der Tasse im Körper passiert, und wie viel davon unbedenklich ist."
+   "why": "Das Ende der Reise: Was in der Tasse im Körper passiert, und wie viel davon unbedenklich ist.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Abbaukurve des Koffeins mit Reglern für Tassen und Halbwertszeit; Marke „22 Uhr: noch so viel im Körper“."
+   }
   },
   {
    "id": "jemen-sufi",
@@ -132,7 +176,11 @@
    ],
    "why": "Die ersten belegten Kaffeetrinker, Beginn der Geschichte des Getränks.",
    "year": 1450,
-   "yearLabel": "um 1450"
+   "yearLabel": "um 1450",
+   "visual": {
+    "kind": "keine",
+    "reason": "Erzählung ohne Daten; die Zeitleiste der historischen Reise zeigt die Einordnung schon."
+   }
   },
   {
    "id": "mekka-verbot",
@@ -143,7 +191,11 @@
    ],
    "why": "Neue Genussmittel wecken Misstrauen: das erste bekannte Verbot.",
    "year": 1511,
-   "yearLabel": "1511"
+   "yearLabel": "1511",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ein Ereignis ohne Zahlenlage; es gibt nichts, was man verstellen oder vergleichen könnte."
+   }
   },
   {
    "id": "kaffeehaus-oxford",
@@ -154,7 +206,11 @@
    ],
    "why": "Das Kaffeehaus als neuer Ort der Öffentlichkeit in Europa.",
    "year": 1650,
-   "yearLabel": "1650"
+   "yearLabel": "1650",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ortsgeschichte; echte Bilder wären nur mit Lizenz möglich, ein erfundenes Bild wäre unredlich."
+   }
   },
   {
    "id": "lloyds-coffee-house",
@@ -165,7 +221,11 @@
    ],
    "why": "Wie aus einem Treffpunkt für Schiffsnachrichten ein Versicherungsmarkt wurde.",
    "year": 1688,
-   "yearLabel": "1688"
+   "yearLabel": "1688",
+   "visual": {
+    "kind": "keine",
+    "reason": "Der Gedanke (Treffpunkt wird Markt) steht klar im Text; ein Netz-Schema wäre hier Dekoration."
+   }
   },
   {
    "id": "bach-kaffeekantate",
@@ -176,7 +236,11 @@
    ],
    "why": "Kaffee als Alltagsthema im 18. Jahrhundert, aufgegriffen in einer Kantate.",
    "year": 1734,
-   "yearLabel": "um 1734"
+   "yearLabel": "um 1734",
+   "visual": {
+    "kind": "keine",
+    "reason": "Eine Kantate lebt vom Hören; ohne lizenzierte Aufnahme ist keine Abbildung sinnvoll."
+   }
   },
   {
    "id": "roselius-koffeinfrei",
@@ -187,7 +251,11 @@
    ],
    "why": "Das Verfahren zur Entkoffeinierung, eine Antwort auf den Wunsch nach Kaffee ohne Wirkung.",
    "year": 1905,
-   "yearLabel": "1905"
+   "yearLabel": "1905",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ein Verfahren in einem Satz; kein Zusammenhang, der sich verstellen ließe."
+   }
   },
   {
    "id": "melitta-filter",
@@ -198,7 +266,11 @@
    ],
    "why": "Eine Erfindung aus dem Alltag, die die Zubereitung für Millionen Haushalte veränderte.",
    "year": 1908,
-   "yearLabel": "1908"
+   "yearLabel": "1908",
+   "visual": {
+    "kind": "keine",
+    "reason": "Erfindung mit einfacher Idee; eine Skizze wäre denkbar, bringt gegenüber dem Text aber wenig."
+   }
   }
  ],
  "orders": {

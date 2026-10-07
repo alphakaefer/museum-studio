@@ -4,6 +4,7 @@
 //   --journeys=<n>    Zahl der Reisen, 2 bis 16 (Standard 3)
 //   --stations=<n>    Stationen je Reise (Mitgliedschaften), 11 bis 28 (Standard 11)
 //   --historical=<n>  die letzten n Reisen sind historisch (typ:'historisch', mit year/yearLabel, chronologisch), 0 bis 3 und kleiner als --journeys
+// Jede Station bekommt einen Platzhalter für das Plan-Feld "visual" (Anschauung); pack.json setzt requireVisualPlan:true.
 // Alle noch auszufüllenden Stellen sind mit „TODO“ markiert; `node tools/check-pack.mjs <id>` meldet sie als Fehler,
 // bis sie durch echten Inhalt ersetzt sind. Ein fertiges Muster zum Abschauen: packs/_vorlage/.
 // Programmatisch nutzbar: import { createPack } from './new-pack.mjs'; createPack({ id, title, journeys, historical, stations, journeyNames, pack, extraFiles, dryRun }).
@@ -56,7 +57,8 @@ const J = JSON.stringify;
 // plan.json: je Reise geordnet nach Reihenfolge im Ring
 const histStation = i => journeysOf(i).some(j => isHist(JID.indexOf(j)));
 const stations = Array.from({ length: NS }, (_, i) => {
-  const o = { id: sid(i), title: `TODO: Titel der Station ${i + 1}`, kind: 'konzept', journeys: journeysOf(i), why: 'TODO: Ein Satz, warum diese Station hier steht und was man lernt.' };
+  const o = { id: sid(i), title: `TODO: Titel der Station ${i + 1}`, kind: 'konzept', journeys: journeysOf(i), why: 'TODO: Ein Satz, warum diese Station hier steht und was man lernt.',
+    visual: { kind: 'TODO', idea: 'TODO: Was sieht oder tut man hier? kind: abbildung | exponat | keine (bei keine: reason mit ehrlicher Begründung statt idea)' } };
   if (histStation(i)) { o.year = yearOf(i); o.yearLabel = 'TODO: Jahr'; }
   return o;
 });
@@ -137,7 +139,8 @@ const pack = {
   vocab: { journey: 'Reise', journeys: 'Reisen', station: 'Station', stations: 'Stationen', interchange: 'Kreuzung', interchanges: 'Kreuzungen', transfer: 'Umsteigen', passport: 'Reisepass', grandTour: 'Große Rundreise', networkMap: 'Netzplan', timeline: 'Zeitstrahl' },
   journeyTypes: { funktional: 'Funktionale Reisen', historisch: 'Historische Reisen' },
   exhibits: [],
-  limits: { min: 11, max: Math.min(28, PER + 6) },
+  limits: { min: 11, max: Math.min(28, PER + 6), visualShare: 0.3 },
+  requireVisualPlan: true,
   footer: 'TODO: Hinweis am Seitenende (Text ohne HTML; Leerzeile = neuer Absatz), z. B. Bildung statt Beratung, bei heiklen Themen Hilfsangebote',
   license: 'TODO: Lizenz der Inhalte',
   credits: 'TODO: Autorinnen, Autoren, Quellen'
@@ -172,7 +175,8 @@ function nextSteps(r) {
 Nächste Schritte:
   0. Rahmen und Annahmen in ARBEITSSTAND.md festhalten.
   1. Reisen und Stationen planen (plan.json), Reisen beschreiben (journeys.js), pack.json ausfüllen. Rümpfe, die du nicht brauchst, löschst du in plan.json UND in den Stationsdateien; jede Reise braucht ${r.pack.limits.min}–${r.pack.limits.max} Stationen.
-  2. Stationstexte schreiben (stationen/*.js), Vorbild: packs/_vorlage/.
+  1b. Anschauung planen: für JEDE Station in plan.json das Feld "visual" entscheiden (abbildung | exponat | keine mit Begründung); mindestens 30 % der Stationen, bei abstrakten Themen mehr (docs/AGENTEN.md, „Anschauung planen“; Baukasten MUSEUM.viz, Muster: packs/_vorlage/visuals/).
+  2. Stationstexte schreiben (stationen/*.js), Vorbild: packs/_vorlage/; danach die geplanten Abbildungen und Exponate bauen.
   3. Prüfen: node tools/check-pack.mjs ${r.id}   (meldet jedes verbliebene TODO als Fehler)
   4. Layout: node tools/layout-map.mjs ${r.id}`;
 }

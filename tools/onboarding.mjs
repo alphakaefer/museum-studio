@@ -103,11 +103,16 @@ const LICENSES = [
   { id: 'alle-rechte', label: 'Alle Rechte vorbehalten', text: 'Alle Rechte vorbehalten', aliases: ['rechte', 'vorbehalten'] },
   { id: 'andere', label: 'Andere (du gibst den Text an)', text: '', aliases: ['anders', 'sonstige'] }
 ];
-const EXHIBITS = [
-  { id: 'ja', label: 'Ja, bitte einplanen (interaktive Stücke, Abbildungen)', aliases: ['j'] },
-  { id: 'spaeter', label: 'Später (erst die Texte, Exponate bei Bedarf nachrüsten)', aliases: ['später', 'sp'] },
-  { id: 'nein', label: 'Nein', aliases: ['n'] }
+const ANSCHAUUNG = [
+  { id: 'zentral', share: 0.5, label: 'Zentral (etwa 50 % der Stationen mit Abbildung oder Exponat)', aliases: ['z'] },
+  { id: 'viel', share: 0.35, label: 'Viel (etwa 35 %)', aliases: ['v'] },
+  { id: 'etwas', share: 0.2, label: 'Etwas (etwa 20 %)', aliases: ['e'] },
+  { id: 'wenig', share: 0.1, label: 'Wenig (etwa 10 %)', aliases: ['w'] }
 ];
+const shareOf = a => (ANSCHAUUNG.find(o => o.id === a.anschauung) || ANSCHAUUNG[1]).share;
+const minVisual = (a, e) => Math.max(1, Math.ceil(shareOf(a) * e.unique));
+// Altes Feld „exponate“ (ja | spaeter | nein) aus früheren Konfigurationsdateien und BRIEFING.json
+const LEGACY_EXHIBITS = { ja: 'viel', spaeter: 'etwas', nein: 'wenig' };
 const MAX_UNIQUE = 220;
 
 /** Jede Frage: key, nr, titel, hilfe (ein Satz), art (optionen), standard(a, prev), parse(raw, a), anzeige(v). */
@@ -176,9 +181,9 @@ function buildQuestions(skins) {
     { key: 'skinWahl', nr: '10b', titel: 'Umschaltung für Besucher', jaNein: true,
       hilfe: 'Ja: alle Looks sind eingebaut und Besucher wählen selbst (--skins=all). Nein: nur der gewählte, schlankere Build.',
       standard: () => true, parse: raw => parseYesNo(raw), anzeige: v => v ? 'ja, alle Looks (--skins=all)' : 'nein, nur der gewählte' },
-    { key: 'exponate', nr: '11', titel: 'Exponate und Abbildungen', optionen: EXHIBITS,
-      hilfe: 'Interaktive Stücke (zum Beispiel ein Simulator) und Zeichnungen machen Stationen lebendig, kosten aber Arbeit und Prüfung.',
-      standard: () => 'spaeter', parse: raw => pickOptions(raw, EXHIBITS) },
+    { key: 'anschauung', nr: '11', titel: 'Wie wichtig ist Anschauung?', optionen: ANSCHAUUNG,
+      hilfe: 'Abbildungen (Kurven, Tabellen, Schemata) und Exponate (zum Ausprobieren). Je abstrakter das Thema, desto mehr verträgt es davon (Mathematik, Physik, Ökonomie eher „zentral“ oder „viel“). Das setzt die Mindestzahl, die die Prüfung verlangt.',
+      standard: () => 'viel', parse: raw => pickOptions(raw, ANSCHAUUNG) },
     { key: 'heikel', nr: '12', titel: 'Heikle Themen', optionen: SENSITIVE, multi: true,
       hilfe: 'Mehrfachauswahl möglich (zum Beispiel 1,4); „keine“ oder Enter, wenn nichts davon zutrifft. Daraus entstehen der Hinweistext im Fuß und Sorgfaltsregeln für den Agenten.',
       standard: () => [],
@@ -292,6 +297,11 @@ async function interview(io, questions, prevState) {
 const IGNORED_KEYS = new Set(['schema', 'erstellt', 'werkzeug', 'abgeleitet', 'standardUebernommen']);
 function fromConfig(questions, cfg, { useDefaults }) {
   const a = {}, d = new Set(), problems = [];
+  if ('exponate' in cfg) {   // altes Feld aus früheren Konfigurationen
+    cfg = Object.assign({}, cfg);
+    const old = String(cfg.exponate); delete cfg.exponate;
+    if (!('anschauung' in cfg)) { if (LEGACY_EXHIBITS[old]) { cfg.anschauung = LEGACY_EXHIBITS[old]; console.log(`Hinweis: altes Feld "exponate": "${old}" gilt jetzt als "anschauung": "${cfg.anschauung}".`); } else problems.push(`Altes Feld „exponate“: „${old}“ unbekannt (ja, spaeter, nein).`); }
+  }
   const known = new Set(questions.map(q => q.key));
   for (const k of Object.keys(cfg)) if (!known.has(k) && !IGNORED_KEYS.has(k) && !k.startsWith('_')) problems.push(`Unbekanntes Feld „${k}“ (bekannt: ${[...known].join(', ')}).`);
   for (const q of questions) {
@@ -347,7 +357,8 @@ function eyebrowFor(a) {
 function packFields(a) {
   const f = {
     title: a.name, eyebrow: eyebrowFor(a), tagline: a.untertitel, lang: a.sprache, defaultSkin: a.skin,
-    limits: { min: 11, max: Math.min(28, a.stationenJeReise + 6) },
+    limits: { min: 11, max: Math.min(28, a.stationenJeReise + 6), visualShare: shareOf(a) },
+    requireVisualPlan: true,
     footer: footerFor(a),
     license: a.lizenz === 'alle-rechte' ? `Inhalte: ${lizenzText(a)}${a.urheber ? ' (© ' + a.urheber + ')' : ''}` : `Inhalte: ${lizenzText(a)}. Code: MIT (Museum Studio).`,
     credits: a.urheber ? `${a.urheber}. Erstellt mit Museum Studio.` : 'Erstellt mit Museum Studio.'
@@ -379,9 +390,9 @@ function briefingJson(a, d, r, e) {
     schema: 1, erstellt: today(), werkzeug: 'tools/onboarding.mjs',
     name: a.name, id: a.id, untertitel: a.untertitel, thema: a.thema, zielgruppe: a.zielgruppe, sprache: a.sprache, anrede: a.anrede,
     reisen: a.reisen, stationenJeReise: a.stationenJeReise, historisch: a.historisch, reisenamen: a.reisenamen,
-    skin: a.skin, skinWahl: a.skinWahl, exponate: a.exponate, heikel: a.heikel, quellen: a.quellen, materialHost: a.materialHost || '',
+    skin: a.skin, skinWahl: a.skinWahl, anschauung: a.anschauung, heikel: a.heikel, quellen: a.quellen, materialHost: a.materialHost || '',
     urheber: a.urheber, lizenz: a.lizenz, lizenzText: a.lizenz === 'andere' ? a.lizenzText : '', impressumUrl: a.impressumUrl,
-    abgeleitet: { mitgliedschaften: e.memberships, eindeutigeStationenGeschaetzt: e.unique, woerterGeschaetzt: e.words, geruestStationen: r.stubs, geruestKreuzungen: r.crossings, baubefehl: buildCmd(a), pruefbefehl: checkCmd(a) },
+    abgeleitet: { anschauungMindestanteil: shareOf(a), anschauungMindestzahl: minVisual(a, e), mitgliedschaften: e.memberships, eindeutigeStationenGeschaetzt: e.unique, woerterGeschaetzt: e.words, geruestStationen: r.stubs, geruestKreuzungen: r.crossings, baubefehl: buildCmd(a), pruefbefehl: checkCmd(a) },
     standardUebernommen: [...d]
   }, null, 2) + '\n';
 }
@@ -435,7 +446,7 @@ function briefingMd(a, d, r, e, skins) {
   L.push('## Look und Bau', '');
   L.push(`- **Standard-Look:** ${SKIN_NOTE(a, skins)}${ja('skin')}.`);
   L.push(`- **Umschaltung für Besucher:** ${a.skinWahl ? 'ja, alle Looks einbinden' : 'nein, nur der gewählte'}. Bau: \`${buildCmd(a)}\`.`);
-  L.push(`- **Exponate und Abbildungen:** ${a.exponate === 'ja' ? 'gewünscht. Plane 2 bis 4 Exponate/Abbildungen an Stationen, wo ein Mitmachen mehr erklärt als ein Absatz (AGENTEN.md, Exponat-Schnittstelle); IDs in `pack.json` `exhibits`, `plan.json` und Stationsdatei müssen übereinstimmen.' : a.exponate === 'spaeter' ? 'später. Jetzt keine Exponate bauen; als Idee in `ARBEITSSTAND.md` unter „Offen“ vermerken, wo eines sinnvoll wäre.' : 'nicht gewünscht.'}${ja('exponate')}`, '');
+  L.push(`- **Anschauung: ${a.anschauung}** (etwa ${Math.round(shareOf(a) * 100)} % der Stationen)${ja('anschauung')}. Bei etwa ${e.unique} eindeutigen Stationen sind das **mindestens ${minVisual(a, e)} Stationen mit Abbildung oder Exponat** (\`pack.json\` \`limits.visualShare\` = ${shareOf(a)}, \`requireVisualPlan\`: true). Jede Station bekommt in \`plan.json\` ein Feld \`visual\` (abbildung | exponat | keine mit Begründung); \`docs/AGENTEN.md\`, Schritt 2b „Anschauung planen“, und der Baukasten \`MUSEUM.viz\` (Muster: \`packs/_vorlage/visuals/\`). Je abstrakter eine Station, desto eher gehört eine Abbildung dazu.`, '');
 
   L.push('## Lizenz, Credits, Rechtliches', '');
   L.push(`- **Lizenz der Inhalte:** ${lizenzText(a)}${ja('lizenz')} (in \`pack.json\` \`license\` eingetragen; der Code von Museum Studio bleibt MIT).`);
@@ -448,7 +459,7 @@ function briefingMd(a, d, r, e, skins) {
     `Reiseplan: ${a.reisen} Reisen (${a.historisch} historisch) mit Namen, Tagline, Intro, Outro, Icon, Farben in \`journeys.js\`; Plan in \`plan.json\` mit etwa ${e.unique} eindeutigen Stationen, echten Kreuzungen und dem Netz zusammenhängend (\`node tools/check-plan.mjs ${a.id}\` grün)`,
     'Plan dem Auftraggeber zeigen oder, wenn niemand antwortet, als Annahme in `ARBEITSSTAND.md` festhalten',
     `Stationstexte in \`stationen/*.js\` (90 bis 200 Wörter, Teaser, Fakten, \`cross\` je andere Reise; \`node tools/check-data.mjs ${a.id} <datei>\` je Datei grün)`,
-    ...(a.exponate === 'ja' ? ['Exponate/Abbildungen an passenden Stationen (und in `pack.json` `exhibits` eingetragen)'] : []),
+    `Anschauung geplant (\`visual\` bei JEDER Station in \`plan.json\`) und gebaut: mindestens ${minVisual(a, e)} Stationen mit Abbildung oder Exponat (Exponate auch in \`pack.json\` \`exhibits\`), sonst bewusst verschoben und in \`ARBEITSSTAND.md\` dokumentiert; \`check-pack\` zeigt „Anschauung: X geplant, Y gebaut“`,
     '`pack.json` geprüft: alle Platzhalter weg, Fußhinweise passen zum Inhalt' + (a.sprache === 'de' ? '' : ', Wortschatz `vocab` übersetzt'),
     ...(a.heikel.length ? ['Sorgfaltsregeln zu den heiklen Themen eingehalten und im Abschlussbericht ausdrücklich bestätigt (welche Positionen/Aspekte fehlen bewusst?)'] : []),
     'Faktencheck durchgeführt und in `FAKTENCHECK.md` festgehalten (Stufe je Reise ehrlich angeben: unabhängig, Selbstprüfung, Gedächtnis)',
@@ -466,7 +477,7 @@ function arbeitsstandMd(a, d, r, e, skins) {
   const rows = [];
   const add = (x, why) => rows.push(`| ${today()} | **Annahme:** ${x} | ${why} | offen |`);
   const DEF_WHY = 'Im Onboarding mit Enter übernommen, nicht ausdrücklich gewählt.';
-  const labels = { untertitel: 'Untertitel', zielgruppe: 'Zielgruppe', sprache: 'Sprache', anrede: 'Anrede', reisen: 'Zahl der Reisen', stationenJeReise: 'Stationen je Reise', historisch: 'Zahl historischer Reisen', skin: 'Standard-Look', skinWahl: 'Skin-Umschaltung', exponate: 'Exponate', heikel: 'heikle Themen', quellen: 'Quellenregeln', lizenz: 'Lizenz', name: 'Name', id: 'ID', thema: 'Thema', reisenamen: 'Reisenamen', urheber: 'Urheber', impressumUrl: 'Impressum-Link', materialHost: 'Domain für Links', lizenzText: 'Lizenztext' };
+  const labels = { untertitel: 'Untertitel', zielgruppe: 'Zielgruppe', sprache: 'Sprache', anrede: 'Anrede', reisen: 'Zahl der Reisen', stationenJeReise: 'Stationen je Reise', historisch: 'Zahl historischer Reisen', skin: 'Standard-Look', skinWahl: 'Skin-Umschaltung', anschauung: 'Anschauung', heikel: 'heikle Themen', quellen: 'Quellenregeln', lizenz: 'Lizenz', name: 'Name', id: 'ID', thema: 'Thema', reisenamen: 'Reisenamen', urheber: 'Urheber', impressumUrl: 'Impressum-Link', materialHost: 'Domain für Links', lizenzText: 'Lizenztext' };
   const val = k => { const v = a[k]; return v === true ? 'ja' : v === false ? 'nein' : Array.isArray(v) ? (v.length ? v.join(', ') : 'keine') : v === '' || v === undefined ? '(leer)' : String(v); };
   for (const k of d) if (!['name', 'id'].includes(k)) add(`${labels[k] || k} = ${val(k)}`, DEF_WHY);
   add(`Eindeutige Stationen ≈ ${e.unique} (Mitgliedschaften ${e.memberships} × 0,8)`, 'Faustwert aus dem Onboarding; echte Kreuzungen entscheiden.');
@@ -493,7 +504,7 @@ function arbeitsstandMd(a, d, r, e, skins) {
   L.push('## Entscheidungen', 'Kurz, mit Grund (Warum diese Reisen? Warum keine historische Reise? Warum diese Heimat-Reise für Station X?).', '', '-', '');
   L.push('## Fortschritt je Reise', '| Reise | Plan | Texte | Faktencheck (Stufe) | Bemerkung |', '|---|---|---|---|---|', '| | | | | |', '');
   L.push('Faktencheck-Stufen: **unabhängig geprüft** (anderer Agent oder Mensch, mit Quellen), **Selbstprüfung** (derselbe Agent im getrennten Durchgang mit Quellen), **Gedächtnis** (nicht belegt). Details: `docs/AGENTEN.md`, Schritt 5.', '');
-  L.push('## Offen', '- [ ] Reisen und Plan (Schritt 1 und 2)', ...(a.exponate === 'spaeter' ? ['- [ ] Später: Exponate und Abbildungen erwägen (im Onboarding auf „später“ gestellt)'] : []), ...(a.impressumUrl ? [] : ['- [ ] Impressum/Datenschutz-Link klären (im Onboarding keiner angegeben)']), '');
+  L.push('## Offen', '- [ ] Reisen und Plan (Schritt 1 und 2)', '- [ ] Anschauung planen (Schritt 2b) und bauen, Mindestzahl siehe BRIEFING.md', ...(a.impressumUrl ? [] : ['- [ ] Impressum/Datenschutz-Link klären (im Onboarding keiner angegeben)']), '');
   L.push('## Bekannte Schwächen', '-', '');
   L.push('## Wünsche an die Engine', 'Nur Verweise; Wünsche selbst stehen in `docs/ENGINE-WUENSCHE.md`.', '');
   L.push('## Nächste Schritte', `1. \`BRIEFING.md\` lesen, dann \`docs/AGENTEN.md\` ab Schritt 1.`, `2. Plan zeigen oder als Annahme festhalten, dann Stationen schreiben.`, '');
@@ -516,7 +527,7 @@ function summary(a, d, skins, e) {
     ['Umfang', `${a.reisen} Reisen × ${a.stationenJeReise} Stationen, davon ${a.historisch} historisch; etwa ${e.unique} eindeutige Stationen`],
     ['Reisenamen', disp('reisenamen')],
     ['Look', `${a.skin}${a.skinWahl ? ', Umschaltung für Besucher' : ', ohne Umschaltung'}`],
-    ['Exponate', opt(EXHIBITS, 'exponate')],
+    ['Anschauung', `${opt(ANSCHAUUNG, 'anschauung')}: mindestens ${minVisual(a, e)} Stationen mit Abbildung/Exponat`],
     ['Heikle Themen', a.heikel.length ? opt(SENSITIVE, 'heikel') : 'keine'],
     ['Quellen', opt(SOURCES, 'quellen') + (a.materialHost ? ` (${a.materialHost})` : '')],
     ['Lizenz, Credits', `${lizenzText(a)}; ${a.urheber || 'keine Urheberangabe'}`],

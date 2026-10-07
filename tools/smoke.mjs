@@ -14,13 +14,14 @@
 // eine Reise, eine Station, Reisepass, Suche. Desktop 1280, Tablet 820, Handy 390; hell und dunkel; jeder eingebundene Skin
 // (und, wenn mehrere eingebunden sind, die Umschaltung selbst).
 // Gemeldet werden Konsolenfehler, Seitenfehler (Ausnahmen), fehlgeschlagene Anfragen und horizontales Scrollen.
+// Jede Station mit Abbildung wird einmal geöffnet (Abbildung eingehängt, Alt-Text, Überbreite, ein Regler bedient, Bild je Abbildung).
 // Jede Station mit Exponat wird einmal geöffnet, das Exponat gestartet (mount), kurz laufen gelassen und beendet (destroy); Konsolenfehler,
 // Ausnahmen und eine Fehlermeldung im Exponat-Bereich werden gemeldet.
 // Screenshots: Standard dist/<paket>/_shots/ (dist/ ist nicht im Git; ein Neubau löscht den Ordner).
 // --quick: nur Desktop, hell.  Rückgabewert 1, sobald etwas gemeldet wurde.
 import fs from 'fs';
 import path from 'path';
-import { createRequire } from 'module';
+import { loadPlaywright, INSTALL_HINT } from './pw-lib.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const argv = process.argv.slice(2);
@@ -35,25 +36,7 @@ if (!fs.existsSync(INDEX)) { console.error(`✗ ${INDEX} fehlt. Erst bauen: node
 const SHOTS = path.resolve(typeof args.shots === 'string' ? args.shots : path.join(DIST, '_shots'));
 fs.mkdirSync(SHOTS, { recursive: true });
 
-const INSTALL_HINT = `Playwright installieren:  mkdir -p ~/pw && cd ~/pw && npm init -y && npm i playwright && npx playwright install chromium
-Dann:  PLAYWRIGHT_MODULE_DIR=~/pw node tools/smoke.mjs ${PACK}
-Eigenes Chromium:  CHROMIUM_PATH=/pfad/zu/chrome`;
-function loadPlaywright() {
-  const dirs = [];
-  if (process.env.PLAYWRIGHT_MODULE_DIR) dirs.push(path.resolve(process.env.PLAYWRIGHT_MODULE_DIR));
-  dirs.push(ROOT);
-  for (const d of String(process.env.NODE_PATH || '').split(path.delimiter).filter(Boolean)) dirs.push(path.resolve(d));
-  for (const d of dirs) {
-    // Ordner mit node_modules/ oder direkt ein node_modules-Ordner
-    for (const base of [path.join(d, 'noop.js'), path.join(d, '..', 'noop.js')]) {
-      try { return createRequire(base)('playwright'); } catch (e) { /* nächster Versuch */ }
-    }
-  }
-  try { return createRequire(path.join(ROOT, 'noop.js'))(path.join(String(process.env.npm_config_prefix || ''), 'lib', 'node_modules', 'playwright')); } catch (e) { /* kein globales Playwright */ }
-  console.error('✗ Playwright nicht gefunden (gesucht in PLAYWRIGHT_MODULE_DIR, Repository, NODE_PATH).\n' + INSTALL_HINT);
-  process.exit(2);
-}
-const { chromium } = loadPlaywright();
+const { chromium } = loadPlaywright(`Dann:  PLAYWRIGHT_MODULE_DIR=~/pw node tools/smoke.mjs ${PACK}`);
 
 const VIEWPORTS = { desktop: { width: 1280, height: 800 }, tablet: { width: 820, height: 1100 }, phone: { width: 390, height: 844 } };
 const vpNames = args.quick ? ['desktop'] : (typeof args.viewports === 'string' ? args.viewports.split(',') : Object.keys(VIEWPORTS));
@@ -200,6 +183,36 @@ async function run() {
           const endBtn = await page.$('.gm-st-exhibit .gm-stage-end button');
           if (endBtn) { await endBtn.click(); await sleep(300); }
           else report('Exponat', 'keine Schaltfläche „beenden“ gefunden');
+        }
+        await page.evaluate(() => { location.hash = '#/'; });
+        await sleep(300);
+      }
+
+      // Abbildungen: jede Station mit Abbildung einmal öffnen (Abbildung wird dabei eingehängt), Fehler und Überbreite melden, Bild der Abbildung ablegen.
+      // Desktop hell und Handy dunkel genügen (Breite und Farbschema sind die Risiken).
+      if ((vpName === 'desktop' && theme === 'light') || (vpName === 'phone' && theme === 'dark') || args.quick) {
+        const viSt = await page.evaluate(() => Object.values(MUSEUM.data.stations).filter(s => MUSEUM.visuals && MUSEUM.visuals[s.id]).map(s => s.id));
+        for (const id of viSt) {
+          where = `Abbildung „${id}“`;
+          await page.evaluate(h => { location.hash = h; }, `#/station/${id}`);
+          await sleep(700);
+          const fig = await page.$(`.gm-st-figure[data-visual="${id}"]`);
+          if (!fig) { report('Abbildung', 'wurde nicht eingehängt (mount warf eine Ausnahme oder gab nichts zurück; siehe Warnung davor)'); continue; }
+          const st = await page.evaluate(i => {
+            const f = document.querySelector(`.gm-st-figure[data-visual="${i}"]`), stage = f && f.querySelector('.gm-fig-stage');
+            const r = stage ? stage.getBoundingClientRect() : { width: 0, height: 0 };
+            const over = stage ? Array.from(stage.querySelectorAll('*')).filter(n => { const b = n.getBoundingClientRect(); return b.width > 0 && (b.right > r.right + 2 || b.left < r.left - 2); }).length : 0;
+            return { kids: stage ? stage.childElementCount : 0, w: r.width, h: r.height, over, alt: !!(stage && stage.getAttribute('aria-label')), alert: !!(stage && stage.querySelector('[role="alert"]')) };
+          }, id);
+          if (!st.kids) report('Abbildung', 'Bühne ist leer');
+          if (st.h < 40) report('Abbildung', `Bühne ist nur ${Math.round(st.h)} px hoch (nichts gezeichnet?)`);
+          if (!st.alt) report('Abbildung', 'kein Alt-Text (alt fehlt in MUSEUM.visuals)');
+          if (st.over > 0) report('Abbildung', `${st.over} Element(e) ragen über den Rand der Abbildung hinaus`);
+          await hscroll();
+          try { await fig.scrollIntoViewIfNeeded(); await sleep(300); await fig.screenshot({ path: path.join(SHOTS, `${tag}-abbildung-${id}.png`) }); shotN++; } catch (e) { report('Screenshot', e.message); }
+          // einmal bedienen: ersten Regler bewegen, damit Neuzeichnen und Konsolenfehler sichtbar werden
+          const rng = await page.$(`.gm-st-figure[data-visual="${id}"] input[type=range]`);
+          if (rng) { try { await rng.focus(); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await sleep(250); } catch (e) { report('Abbildung', 'Regler nicht bedienbar: ' + e.message); } }
         }
         await page.evaluate(() => { location.hash = '#/'; });
         await sleep(300);

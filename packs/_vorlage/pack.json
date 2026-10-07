@@ -35,9 +35,12 @@
   "_hinweis_exhibits": "IDs der interaktiven Exponate (Dateien exhibits/<id>.js; jede ID gehört genau einer Station). Dieses Muster hat keine.",
   "limits": {
     "min": 11,
-    "max": 28
+    "max": 28,
+    "visualShare": 0.3
   },
-  "_hinweis_limits": "Optional. Erlaubte Stationszahl je Reise für check-pack. Standard 11–28; nur mit Begründung ändern.",
+  "_hinweis_limits": "Optional. Erlaubte Stationszahl je Reise für check-pack. Standard 11–28; nur mit Begründung ändern. visualShare (0 bis 1, Standard 0,3): Mindestanteil der Stationen mit Abbildung oder Exponat; je abstrakter das Thema, desto höher.",
+  "requireVisualPlan": true,
+  "_hinweis_requireVisualPlan": "true: jede Station in plan.json braucht ein Feld visual (kind abbildung, exponat oder keine mit Begründung). Neue Pakete setzen es automatisch; ältere ohne Plan melden nur eine Gesamtwarnung.",
   "footer": "Muster-Inhalt zum Lernen: Bildung, keine Beratung. Gesundheitsfragen zu Koffein bespricht man mit einer Ärztin oder einem Arzt.",
   "_hinweis_footer": "Hinweistext am Seitenende, ohne HTML. Bei Themen mit Gesundheits- oder Krisenbezug unbedingt Hilfsangebote nennen.",
   "license": "CC BY 4.0",

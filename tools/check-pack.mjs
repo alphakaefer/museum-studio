@@ -214,7 +214,7 @@ export function checkPack(P, opts = {}) {
         planned++;
         if (v.kind === 'abbildung') {
           if (hasV(s.id)) builtOfPlanned++;
-          else R.warn(`${planRel}, Station „${s.id}“: Abbildung geplant („${String(v.idea || '').slice(0, 60)}“), aber ${P.rel('visuals/' + s.id + '.js')} fehlt noch.`);
+          else R.warn(`${planRel}, Station „${s.id}“: Abbildung geplant (Idee: ${String(v.idea || '').length > 70 ? String(v.idea).slice(0, 70).replace(/\s+\S*$/, '') + ' …' : v.idea}), aber ${P.rel('visuals/' + s.id + '.js')} fehlt noch.`);
           if (s.exhibit) R.warn(`${planRel}, Station „${s.id}“: visual.kind ist „abbildung“, die Station hat aber auch ein Exponat („${s.exhibit}“). Zähle es als kind „exponat“ oder lass beides bewusst.`);
         } else {
           if (hasE(s)) builtOfPlanned++;

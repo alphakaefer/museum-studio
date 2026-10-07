@@ -12,7 +12,7 @@
 //   css/engine.css, css/exhibits.css, css/journey-colors.css   (Reisefarben --j-<id> und --jp-<n> aus journeys.js)
 //   skins/<id>/…         ausgewählte Skins (theme.css, theme.json, weitere Dateien des Skins). Aus theme.json liest der Build name, description, map, mode;
 //                        id = Ordnername (Abweichung: Warnung), fonts nur Information (nicht gelesen). Prüfung: node tools/check-skin.mjs <skin>
-//   js/*.js              Engine
+//   js/*.js              Engine (inkl. js/viz.js, der Abbildungs-Baukasten MUSEUM.viz; lädt vor den Paket-Abbildungen und -Exponaten)
 //   data/pack.js         MUSEUM.pack  (aus pack.json)
 //   data/skins.js        MUSEUM.skins (aus den theme.json)
 //   data/orders.js       MUSEUM.data.orders (aus plan.json)
@@ -165,7 +165,7 @@ fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 // Engine
-const ENGINE_JS = ['core', 'icons', 'hero', 'map', 'journey', 'timeline', 'passport', 'search', 'app'];
+const ENGINE_JS = ['core', 'icons', 'viz', 'hero', 'map', 'journey', 'timeline', 'passport', 'search', 'app'];
 for (const n of ENGINE_JS) { const f = path.join(ENGINE, 'js', n + '.js'); if (!exists(f)) die(`engine/js/${n}.js fehlt`); copyFile(f, path.join(OUT, 'js', n + '.js')); }
 copyFile(path.join(ENGINE, 'css', 'engine.css'), path.join(OUT, 'css', 'engine.css'));
 copyFile(path.join(ENGINE, 'css', 'exhibits.css'), path.join(OUT, 'css', 'exhibits.css'));
@@ -198,7 +198,7 @@ const tpl = path.join(ENGINE, 'index.template.html');
 if (!exists(tpl)) die('engine/index.template.html fehlt');
 const styles = ['css/engine.css', 'css/exhibits.css', 'css/journey-colors.css', ...skins.map(s => `skins/${s.id}/theme.css`)]
   .map(h => `<link rel="stylesheet" href="${h}">`).join('\n');
-const scripts = ['data/pack.js', 'data/skins.js', 'js/core.js', 'js/icons.js', ...dataScripts, 'js/hero.js', 'js/map.js', 'js/journey.js', 'js/timeline.js', 'js/passport.js', 'js/search.js', 'js/app.js']
+const scripts = ['data/pack.js', 'data/skins.js', 'js/core.js', 'js/icons.js', 'js/viz.js', ...dataScripts, 'js/hero.js', 'js/map.js', 'js/journey.js', 'js/timeline.js', 'js/passport.js', 'js/search.js', 'js/app.js']
   .map(s => `<script src="${s}"></script>`).join('\n');
 const favColors = [0, 2, 4].map(i => journeys[i % journeys.length]._c.dark.replace('#', '%23'));
 const favicon = `data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%230E1420'/%3E%3Cg%20fill='none'%20stroke-width='2.2'%20stroke-linecap='round'%3E%3Cpath%20d='M4%209C13%209%2012%2016%2016%2016S21%2023%2028%2023'%20stroke='${favColors[0]}'/%3E%3Cpath%20d='M4%2023C13%2023%2012%2016%2016%2016S21%209%2028%209'%20stroke='${favColors[1]}'/%3E%3Cpath%20d='M4%2016H28'%20stroke='${favColors[2]}'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='4.6'%20fill='%230E1420'%20stroke='%23FCB300'%20stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E`;
