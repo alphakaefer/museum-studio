@@ -4,7 +4,7 @@
 import fs from 'fs';
 import vm from 'vm';
 import path from 'path';
-import { newReport, loadPackJson, loadPlan, loadJourneysJs, loadStations, exhibitsOf, limitsOf, iconKeys, findTodos, contrast, SLUG, KINDS, packFromArgv, isMain, ROOT } from './check-lib.mjs';
+import { VISUAL_KINDS, newReport, loadPackJson, loadPlan, loadJourneysJs, loadStations, exhibitsOf, limitsOf, iconKeys, findTodos, contrast, SLUG, KINDS, packFromArgv, isMain, ROOT } from './check-lib.mjs';
 import { checkPlan } from './check-plan.mjs';
 import { checkData } from './check-data.mjs';
 import { checkMaterial } from './check-material.mjs';
@@ -65,6 +65,8 @@ export function checkPack(P, opts = {}) {
         if (!l || typeof l !== 'object' || (l.min !== undefined && !Number.isInteger(l.min)) || (l.max !== undefined && !Number.isInteger(l.max))) R.err(`${packRel}: "limits" muss {"min":Zahl,"max":Zahl} sein.`);
         else { const { min, max } = limitsOf(pack); if (min > max) R.err(`${packRel}: limits.min (${min}) ist größer als limits.max (${max}).`); if (min < 2) R.err(`${packRel}: limits.min muss mindestens 2 sein.`); }
       }
+      if (pack.limits && pack.limits.visualShare !== undefined && !(typeof pack.limits.visualShare === 'number' && pack.limits.visualShare >= 0 && pack.limits.visualShare <= 1)) R.err(`${packRel}: limits.visualShare muss eine Zahl von 0 bis 1 sein (Standard 0,3 = 30 % der Stationen mit Abbildung oder Exponat).`);
+      if (pack.requireVisualPlan !== undefined && typeof pack.requireVisualPlan !== 'boolean') R.err(`${packRel}: "requireVisualPlan" muss true oder false sein.`);
       if (pack.kinds !== undefined) {
         if (!pack.kinds || typeof pack.kinds !== 'object') R.err(`${packRel}: "kinds" muss ein Objekt {art: Beschriftung} sein.`);
         else for (const k of Object.keys(pack.kinds)) if (!KINDS.includes(k)) R.err(`${packRel}: kinds.${k} ist keine Stationsart (erlaubt: ${KINDS.join(', ')}).`);
@@ -171,6 +173,77 @@ export function checkPack(P, opts = {}) {
     if (fs.existsSync(ff)) syntaxOnly(ff, P.rel(f), R, f);
   }
 
+
+  // ---- Anschauung: Plan-Feld "visual" je Station, Anteil, geplant gegen gebaut
+  const anschauung = { geplant: 0, gebaut: 0, anteilGeplant: null, anteilGebaut: null, hinweise: [] };
+  if (plan && Array.isArray(plan.stations) && plan.stations.length) {
+    const PS = plan.stations.filter(s => s && typeof s.id === 'string');
+    const need = !!(pack && pack.requireVisualPlan === true);
+    const share = limitsOf(pack).visualShare;
+    const hasV = id => fs.existsSync(path.join(viDir, id + '.js'));
+    const hasE = s => !!(s.exhibit && exhibitsOf(pack).includes(s.exhibit) && fs.existsSync(path.join(exDir, s.exhibit + '.js')));
+    const builtAny = s => hasV(s.id) || hasE(s);
+    const cap = (list, n = 12) => list.slice(0, n).join(', ') + (list.length > n ? ` … (${list.length} insgesamt)` : '');
+    const withField = PS.filter(s => s.visual !== undefined);
+    const missing = PS.filter(s => s.visual === undefined).map(s => s.id);
+    const todoKind = PS.filter(s => s.visual && s.visual.kind === 'TODO').map(s => s.id);
+    const builtCount = PS.filter(builtAny).length;
+    anschauung.gebaut = builtCount;
+    const pct = x => Math.round(x * 100) + ' %';
+    if (!withField.length) {
+      anschauung.anteilGebaut = builtCount / PS.length;
+      if (need) R.err(`${planRel}: pack.json verlangt einen Anschauungsplan ("requireVisualPlan": true), aber keine Station hat das Feld "visual". Entscheide für JEDE Station: {"kind":"abbildung"|"exponat"|"keine","idea":"was sieht oder tut man?","reason":"bei keine: warum nicht"} (siehe docs/AGENTEN.md, Schritt „Anschauung planen“).`);
+      else R.warn(`Anschauung nicht geplant: ${planRel} hat bei keiner Station das Feld "visual". Gebaut sind ${builtCount} von ${PS.length} Stationen mit Abbildung oder Exponat (${pct(builtCount / PS.length)}; Richtwert mindestens ${pct(share)}). Plane für jede Station "visual" (docs/AGENTEN.md, Schritt „Anschauung planen“); mit pack.json "requireVisualPlan": true wird das Pflicht.`);
+    } else {
+      if (missing.length) {
+        const m = `${planRel}: ${missing.length} Station(en) ohne Feld "visual": ${cap(missing)}. Die Entscheidung ist Pflicht, auch „keine“ mit Begründung (reason).`;
+        if (need) R.err(m); else R.warn(m);
+      }
+      let planned = 0, builtOfPlanned = 0;
+      for (const s of withField) {
+        const v = s.visual, E = m => R.err(`${planRel}, Station „${s.id}“: visual ${m}`);
+        if (!v || typeof v !== 'object' || Array.isArray(v)) { E('muss ein Objekt sein: {"kind":"abbildung|exponat|keine","idea":"…","reason":"…"}.'); continue; }
+        if (v.kind === 'TODO') continue;
+        if (!VISUAL_KINDS.includes(v.kind)) { E(`kind „${v.kind}“ ungültig (erlaubt: ${VISUAL_KINDS.join(', ')}).`); continue; }
+        if (v.kind === 'keine') {
+          if (typeof v.reason !== 'string' || v.reason.trim().length < 10) E('kind „keine“ braucht "reason": ein ehrlicher Satz, warum es hier nichts zu zeigen gibt.');
+          if (hasV(s.id) || hasE(s)) R.warn(`${planRel}, Station „${s.id}“: visual.kind ist „keine“, aber es gibt ${hasV(s.id) ? 'eine Abbildung' : 'ein Exponat'}. Plan anpassen.`);
+          continue;
+        }
+        if (typeof v.idea !== 'string' || v.idea.trim().length < 15) E(`kind „${v.kind}“ braucht "idea": ein Satz, was man sieht oder tut (mindestens 15 Zeichen).`);
+        planned++;
+        if (v.kind === 'abbildung') {
+          if (hasV(s.id)) builtOfPlanned++;
+          else R.warn(`${planRel}, Station „${s.id}“: Abbildung geplant („${String(v.idea || '').slice(0, 60)}“), aber ${P.rel('visuals/' + s.id + '.js')} fehlt noch.`);
+          if (s.exhibit) R.warn(`${planRel}, Station „${s.id}“: visual.kind ist „abbildung“, die Station hat aber auch ein Exponat („${s.exhibit}“). Zähle es als kind „exponat“ oder lass beides bewusst.`);
+        } else {
+          if (hasE(s)) builtOfPlanned++;
+          else if (!s.exhibit) R.warn(`${planRel}, Station „${s.id}“: Exponat geplant, aber die Station hat kein Feld "exhibit". Ergänze die ID in plan.json, pack.json "exhibits" und der Stationsdatei und lege exhibits/<id>.js an.`);
+          else R.warn(`${planRel}, Station „${s.id}“: Exponat „${s.exhibit}“ geplant, aber ${P.rel('exhibits/' + s.exhibit + '.js')} fehlt noch (oder die ID fehlt in pack.json "exhibits").`);
+        }
+      }
+      anschauung.geplant = planned;
+      anschauung.anteilGeplant = planned / PS.length;
+      if (planned / PS.length < share && !todoKind.length) R.warn(`Anschauung: nur ${planned} von ${PS.length} Stationen (${pct(planned / PS.length)}) planen eine Abbildung oder ein Exponat; Richtwert mindestens ${pct(share)} (limits.visualShare in pack.json), also etwa ${Math.ceil(share * PS.length)}. Je abstrakter das Thema, desto mehr; Katalog der Muster: docs/AGENTEN.md.`);
+      anschauung.gebaut = builtCount;
+      anschauung.anteilGebaut = builtCount / PS.length;
+    }
+    // Hinweis (nur Info): Zahlen- oder Strukturlast im Text, aber nichts zu sehen
+    const LOAD = /Prozent|\d\s?%|Matrix|Auszahlung|Kurve|Diagramm|Wahrscheinlichkeit|Verteilung|Gleichung|Formel|Größenordnung|Tabelle/i;
+    const hints = [];
+    for (const s of PS) {
+      const v = s.visual, vis = (v && (v.kind === 'abbildung' || v.kind === 'exponat')) || builtAny(s);
+      if (vis) continue;
+      const st = stations[s.id]; if (!st) continue;
+      const txt = [].concat(st.text || [], st.teaser || '').join(' ');
+      const nums = (txt.match(/\d+[.,]?\d*/g) || []).length;
+      const kw = LOAD.exec(txt);
+      if (kw || nums >= 7) hints.push({ id: s.id, why: kw ? `„${kw[0]}“ im Text` : `${nums} Zahlen im Text`, decided: !!(v && v.kind === 'keine') });
+    }
+    anschauung.hinweise = hints.filter(h => !h.decided).slice(0, 5).map(h => `Station „${h.id}“ (${h.why}) hat keine Abbildung; vielleicht lässt sich das zeigen statt erzählen.`);
+    anschauung.hinweiseMehr = Math.max(0, hints.filter(h => !h.decided).length - anschauung.hinweise.length);
+  }
+
   // ---- layout.js
   const layoutFile = path.join(P.dir, 'layout.js');
   if (!fs.existsSync(layoutFile)) R.warn(`${P.rel('layout.js')} fehlt: die Engine rechnet das Netzplan-Layout selbst (schlechter). Erzeugen mit: node tools/layout-map.mjs ${P.name}`);
@@ -192,7 +265,7 @@ export function checkPack(P, opts = {}) {
   const pi = rp.info;
   R.info = {
     reisen: pi.reisen, stationen: pi.stationen, kreuzungen: pi.kreuzungen, exponate: exhibitsOf(pack).length,
-    materialLinks: rm.info.links || 0
+    materialLinks: rm.info.links || 0, anschauung
   };
   return R;
 }
@@ -202,7 +275,10 @@ if (isMain(import.meta.url)) {
   const R = checkPack(P, { register: flags.register === true ? undefined : flags.register });
   const i = R.info;
   console.log(`Paket „${P.name}“: ${i.reisen ?? '?'} Reisen, ${i.stationen ?? '?'} Stationen, ${i.kreuzungen ?? '?'} Kreuzungen, ${i.exponate} Exponate, ${i.materialLinks} Material-Links`);
+  const A = i.anschauung;
+  if (A && A.anteilGebaut !== null) console.log(`Anschauung: ${A.geplant} geplant, ${A.gebaut} gebaut (${A.anteilGeplant === null ? 'kein Plan' : Math.round(A.anteilGeplant * 100) + ' % geplant'}, ${Math.round(A.anteilGebaut * 100)} % der Stationen mit Abbildung oder Exponat)`);
   for (const w of R.warnings) console.log('! Warnung: ' + w);
+  if (A && A.hinweise.length) { for (const h of A.hinweise) console.log('i Hinweis: ' + h); if (A.hinweiseMehr) console.log(`i Hinweis: … und ${A.hinweiseMehr} weitere Stationen mit Zahlen- oder Strukturlast ohne Abbildung.`); }
   for (const e of R.errors) console.log('✗ ' + e);
   console.log(R.errors.length ? `\nErgebnis: ${R.errors.length} Fehler, ${R.warnings.length} Warnungen. Bitte die Fehler beheben und erneut prüfen.` : `\n✓ Paket „${P.name}“ ist in Ordnung (${R.warnings.length} Warnungen).`);
   process.exit(R.errors.length ? 1 : 0);

@@ -9,6 +9,8 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 export const KINDS = ['konzept', 'person', 'ereignis', 'methode', 'mythos', 'instrument', 'ort'];
 export const DEFAULT_LIMITS = { min: 11, max: 28 };
+export const DEFAULT_VISUAL_SHARE = 0.3;   // Mindestanteil der Stationen mit Abbildung oder Exponat (pack.json limits.visualShare)
+export const VISUAL_KINDS = ['abbildung', 'exponat', 'keine'];
 export const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 /** Ergebnisbehälter einer Prüfung. */
@@ -79,7 +81,8 @@ export function limitsOf(pack) {
   const l = (pack && pack.limits) || {};
   const min = Number.isInteger(l.min) ? l.min : DEFAULT_LIMITS.min;
   const max = Number.isInteger(l.max) ? l.max : DEFAULT_LIMITS.max;
-  return { min, max, minCrossJourneys: Number.isInteger(l.minCrossJourneys) ? l.minCrossJourneys : null };
+  const vs = typeof l.visualShare === 'number' && l.visualShare >= 0 && l.visualShare <= 1 ? l.visualShare : DEFAULT_VISUAL_SHARE;
+  return { min, max, minCrossJourneys: Number.isInteger(l.minCrossJourneys) ? l.minCrossJourneys : null, visualShare: vs };
 }
 
 /** Exponat-IDs aus pack.json exhibits (Liste von Strings). */
