@@ -1,0 +1,45 @@
+{
+  "_hinweis": "Muster-Paket „Kaffee“: klein, aber vollständig gültig. Felder, die mit _ beginnen, sind Kommentare und werden von Engine und Prüfung ignoriert. Neues Paket anlegen: node tools/new-pack.mjs <id> --title=\"…\". Prüfen: node tools/check-pack.mjs <id>.",
+  "id": "_vorlage",
+  "_hinweis_id": "Pflicht. Muss dem Ordnernamen entsprechen (Kleinbuchstaben, Ziffern, Bindestriche).",
+  "title": "Kaffee-Museum (Vorlage)",
+  "_hinweis_title": "Pflicht. Name des Museums, erscheint als Titel der Eingangshalle und im Browser-Tab.",
+  "eyebrow": "Ein kleines Muster-Museum",
+  "_hinweis_eyebrow": "Empfohlen. Zeile über dem Titel.",
+  "tagline": "Zwei Reisen durch Anbau, Handwerk und Geschichte des Kaffees",
+  "_hinweis_tagline": "Pflicht. Untertitel der Eingangshalle, ein Satz.",
+  "lang": "de",
+  "_hinweis_lang": "Pflicht. Sprachcode.",
+  "defaultSkin": "halle",
+  "_hinweis_defaultSkin": "Empfohlen. Aussehen beim ersten Besuch (Ordnername unter themes/).",
+  "vocab": {
+    "_hinweis": "Wortschatz: überschreibt die deutschen Standardwörter der Engine. Alle Werte sind Text. Für ein anderes Gebiet z. B. Reise → Pfad, Station → Halt.",
+    "journey": "Reise",
+    "journeys": "Reisen",
+    "station": "Station",
+    "stations": "Stationen",
+    "interchange": "Kreuzung",
+    "interchanges": "Kreuzungen",
+    "transfer": "Umsteigen",
+    "passport": "Reisepass",
+    "grandTour": "Große Rundreise",
+    "networkMap": "Netzplan",
+    "timeline": "Zeitstrahl"
+  },
+  "journeyTypes": {
+    "funktional": "Funktionale Reisen",
+    "historisch": "Historische Reisen",
+    "_hinweis": "Beschriftung der beiden Reisetypen. Reisen mit typ:'historisch' erscheinen im Zeitstrahl."
+  },
+  "exhibits": [],
+  "_hinweis_exhibits": "IDs der interaktiven Exponate (Dateien exhibits/<id>.js; jede ID gehört genau einer Station). Dieses Muster hat keine.",
+  "limits": {
+    "min": 11,
+    "max": 28
+  },
+  "_hinweis_limits": "Optional. Erlaubte Stationszahl je Reise für check-pack. Standard 11–28; nur mit Begründung ändern.",
+  "footer": "Muster-Inhalt zum Lernen: Bildung, keine Beratung. Gesundheitsfragen zu Koffein bespricht man mit einer Ärztin oder einem Arzt.",
+  "_hinweis_footer": "Hinweistext am Seitenende, ohne HTML. Bei Themen mit Gesundheits- oder Krisenbezug unbedingt Hilfsangebote nennen.",
+  "license": "CC BY 4.0",
+  "credits": "Karl Hosang, Museum Studio"
+}

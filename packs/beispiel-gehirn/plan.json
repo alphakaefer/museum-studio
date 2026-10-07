@@ -1,0 +1,745 @@
+{
+ "journeys": [
+  {
+   "id": "verzerrung",
+   "typ": "funktional",
+   "name": "Kognitive Verzerrungen"
+  },
+  {
+   "id": "trauma",
+   "typ": "funktional",
+   "name": "Psychotraumatologie"
+  },
+  {
+   "id": "kvt",
+   "typ": "funktional",
+   "name": "Kognitive Verhaltenstherapie"
+  }
+ ],
+ "stations": [
+  {
+   "id": "muller-lyer",
+   "title": "Müller-Lyer-Illusion: Wissen schützt nicht",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Zwei gleich lange Linien wirken ungleich, selbst wenn man nachgemessen hat – der Einstieg in die Einsicht, dass Wissen nicht vor systematischer Täuschung schützt."
+  },
+  {
+   "id": "vorhersagendes-gehirn",
+   "title": "Das vorhersagende Gehirn",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Das Gehirn rät mit Vorwissen, statt nur abzubilden – aus derselben Logik entstehen Illusionen und Denkfehler, daher steigen hier Verzerrungs- und Gehirn-Reisende um."
+  },
+  {
+   "id": "kahneman-tversky",
+   "title": "Kahneman und Tversky: Zwei Freunde vermessen den Irrtum",
+   "kind": "person",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Die Freundschaft zweier Psychologen, deren Heuristiken-Forschung (1974) und Unterscheidung von schnellem und langsamem Denken ein ganzes Feld begründete."
+  },
+  {
+   "id": "stroop",
+   "title": "Der Stroop-Effekt: Die Tinte benennen, nicht das Wort",
+   "kind": "instrument",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Automatisches Lesen schlägt die Absicht, wenn die Wortfarbe nicht zum Wort passt – hier treffen Aufmerksamkeitsforschung (Stroop, 1935) und Denkfehler aufeinander.",
+   "exhibit": "stroop"
+  },
+  {
+   "id": "ankereffekt",
+   "title": "Ankereffekt: Zahlen, die festhalten",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Schon eine zufällige Zahl verschiebt Schätzungen, und im klinischen Alltag kleben erste Diagnosen und Etiketten ebenso – daher der Umstieg in die Diagnostik.",
+   "exhibit": "anker"
+  },
+  {
+   "id": "verfuegbarkeit",
+   "title": "Haie und Flugzeuge: Die Verfügbarkeitsheuristik",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Was uns leicht einfällt, halten wir für häufig – deshalb fürchten wir Haie und Flugzeuge mehr als die Autofahrt dorthin."
+  },
+  {
+   "id": "verlustaversion",
+   "title": "Verlustaversion: Verlieren tut doppelt weh",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Verluste wiegen psychologisch schwerer als gleich große Gewinne (Prospect Theory, 1979), wobei die genaue Stärke des Effekts bis heute diskutiert wird."
+  },
+  {
+   "id": "bestaetigungsfehler",
+   "title": "Bestätigungsfehler und die Wason-Aufgabe",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung",
+    "kvt"
+   ],
+   "why": "Wir suchen Belege für das, was wir glauben – in der Depression hält derselbe Mechanismus negative Überzeugungen am Leben, daher die Kreuzung mit der Verhaltenstherapie.",
+   "exhibit": "wason"
+  },
+  {
+   "id": "mesmer-franklin",
+   "title": "Mesmer und Franklins Kommission: Das erste Blindexperiment",
+   "kind": "ereignis",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "1784 entlarvt eine Kommission um Franklin und Lavoisier den „tierischen Magnetismus“ als Erwartungseffekt und erfindet dabei das verblindete Experiment – Erwartung als Denkfehler und Therapiefaktor.",
+   "year": 1784,
+   "yearLabel": "1784"
+  },
+  {
+   "id": "phrenologie",
+   "title": "Phrenologie: Wenn Wissenschaft sich selbst bestätigt",
+   "kind": "mythos",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Galls Schädelkunde wurde durch Bestätigungsfehler und wegerklärte Gegenbeispiele zum Massenphänomen – ein Lehrstück für Hirnforschung und Denkfehler zugleich.",
+   "year": 1810,
+   "yearLabel": "um 1810"
+  },
+  {
+   "id": "kognitive-dissonanz",
+   "title": "Wenn die Prophezeiung scheitert: Festingers Weltuntergangssekte",
+   "kind": "ereignis",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Als die für 1954 angekündigte Flut ausblieb, glaubte die Gruppe fester als zuvor – Leon Festinger machte daraus die Theorie der kognitiven Dissonanz."
+  },
+  {
+   "id": "gerechte-welt",
+   "title": "Gerechte-Welt-Glaube: Wenn Opfer schuld sein müssen",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Wir schreiben Opfern Schuld zu, um an eine gerechte Welt zu glauben (Lerner) – ein Mechanismus hinter der Beschuldigung von Traumaopfern und ein Wegweiser zur Traumareise."
+  },
+  {
+   "id": "optimismus-bias",
+   "title": "Optimismus-Bias und positive Illusionen",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Sind leicht geschönte Selbstbilder gesund (Taylor und Brown, 1988)? Hier begegnen sich Denkfehler-Forschung und Positive Psychologie."
+  },
+  {
+   "id": "beck",
+   "title": "Aaron T. Beck: Automatische Gedanken und kognitive Fehler",
+   "kind": "person",
+   "journeys": [
+    "kvt",
+    "verzerrung"
+   ],
+   "why": "Beck wollte Freuds Depressionstheorie prüfen und fand stattdessen systematische Denkfehler seiner Patienten – Knotenpunkt von Verzerrungsforschung, Therapiegeschichte und Verhaltenstherapie.",
+   "year": 1963,
+   "yearLabel": "1963"
+  },
+  {
+   "id": "premortem",
+   "title": "Pre-Mortem: Das Scheitern vorab erfinden",
+   "kind": "methode",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Teams stellen sich vor, ihr Plan sei gescheitert, und erklären warum – ein praktisches Gegenmittel gegen Übermut und Gruppendenken (Gary Klein)."
+  },
+  {
+   "id": "gigerenzer",
+   "title": "Gigerenzer contra Kahneman: Fehler oder kluge Abkürzung?",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Offene Frage zum Schluss: Sind Heuristiken Denkfehler oder kluge Faustregeln, wie Gerd Gigerenzer gegen Kahneman argumentiert?"
+  },
+  {
+   "id": "trauma-begriff",
+   "title": "Trauma: Ein Wort für Wunde wandert in die Seele",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Vom griechischen „Wunde“ über die Eisenbahnunfälle des 19. Jahrhunderts zur seelischen Verletzung – die Einladung, zu fragen, was ein Trauma eigentlich ist."
+  },
+  {
+   "id": "anna-o",
+   "title": "Anna O.: Die Redekur und ihre Legende",
+   "kind": "person",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Bertha Pappenheims Behandlung durch Breuer gilt als Geburt der Psychoanalyse und der Idee, dass unverarbeitete Erinnerungen krank machen – die angebliche Heilung ist historisch allerdings umstritten.",
+   "year": 1882,
+   "yearLabel": "1880–1882, veröffentlicht 1895"
+  },
+  {
+   "id": "janet",
+   "title": "Pierre Janet: Dissoziation, lange vor Freud",
+   "kind": "person",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Janet beschrieb 1889, wie überwältigende Erlebnisse das Bewusstsein spalten, und entwarf ein Phasenmodell der Behandlung, das Traumatherapie bis heute prägt."
+  },
+  {
+   "id": "kriegszitterer",
+   "title": "Kriegszitterer und Craiglockhart: Rivers, Sassoon, Owen",
+   "kind": "ereignis",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Im Ersten Weltkrieg zittern, erblinden oder verstummen Soldaten ohne Verletzung – im schottischen Craiglockhart behandelt W. H. R. Rivers die Dichter Siegfried Sassoon und Wilfred Owen."
+  },
+  {
+   "id": "ptbs-kptbs",
+   "title": "Vom Vietnam-Trauma zur Diagnose: PTBS und komplexe PTBS",
+   "kind": "ereignis",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Nach dem Drängen von Veteranen nimmt das DSM-III 1980 die PTBS auf, die ICD-11 kennt seit 2022 zusätzlich die komplexe PTBS – Kreuzung von Traumaforschung und Klassifikation."
+  },
+  {
+   "id": "amygdala-furcht",
+   "title": "Furchtkonditionierung: LeDoux und der schnelle Weg der Angst",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Joseph LeDoux zeigte den schnellen Weg zur Amygdala, der erklärt, warum Trauma-Auslöser wirken, bevor wir denken – Umstieg zwischen Trauma- und Gehirnreise."
+  },
+  {
+   "id": "toleranzfenster",
+   "title": "Das Toleranzfenster: Zwischen Übererregung und Erstarrung",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Daniel Siegels Modell zeigt, in welchem Erregungsbereich Menschen lernen und verarbeiten können und was sie bei Über- oder Untererregung aus dem Fenster wirft.",
+   "exhibit": "toleranzfenster"
+  },
+  {
+   "id": "polyvagal",
+   "title": "Polyvagal-Theorie: Faszinierend und umstritten",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Stephen Porges’ Theorie prägt die Traumatherapie stark, doch ihre Annahmen über Vagus und Evolution sind in der Physiologie umstritten – Platz für kritische Einordnung."
+  },
+  {
+   "id": "bindungstrauma",
+   "title": "Bindung und Bindungstrauma: Bowlby, Ainsworth, Main",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Aus Bowlbys Bindungstheorie und Ainsworths Fremder Situation wurde mit Main und Solomon die desorganisierte Bindung – wenn die Bezugsperson zugleich Schutz und Angst bedeutet."
+  },
+  {
+   "id": "ace",
+   "title": "ACE-Studie: Die Kindheit im Körper",
+   "kind": "ereignis",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Felitti und Anda entdeckten in einer Adipositas-Klinik, wie stark belastende Kindheitserfahrungen spätere Krankheiten vorhersagen (1998)."
+  },
+  {
+   "id": "stabilisierung",
+   "title": "Stabilisierung: Erst Sicherheit, dann Erinnerung",
+   "kind": "methode",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Die Phasenidee von Janet über Judith Herman bis Luise Reddemann: Bevor man sich dem Schrecklichen zuwendet, braucht es innere Sicherheit und Ressourcen."
+  },
+  {
+   "id": "verdraengte-erinnerungen",
+   "title": "Verdrängte Erinnerungen? Die Memory Wars",
+   "kind": "mythos",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "In den 1990ern stritten Therapeuten und Gedächtnisforscher wie Elizabeth Loftus, ob Traumaerinnerungen verdrängt und später unversehrt wiedergefunden werden können."
+  },
+  {
+   "id": "exposition",
+   "title": "Exposition: Der Angst in die Augen sehen",
+   "kind": "methode",
+   "journeys": [
+    "kvt",
+    "trauma"
+   ],
+   "why": "Von Wolpes Desensibilisierung zu Foas Prolonged Exposure und Resicks Cognitive Processing Therapy: derselbe Kern wirkt bei Ängsten wie bei PTBS und verbindet beide Reisen."
+  },
+  {
+   "id": "emdr",
+   "title": "EMDR: Ein Spaziergang wird zur Methode",
+   "kind": "methode",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Francine Shapiro bemerkte 1987 auf einem Spaziergang, dass belastende Gedanken schwächer wurden, und entwickelte daraus EMDR – der Streit, was daran wirkt, bleibt offen."
+  },
+  {
+   "id": "resilienz-ptw",
+   "title": "Resilienz und posttraumatisches Wachstum",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Von Emmy Werners Kauai-Studie über Bonanno bis Tedeschi und Calhoun: Die meisten Menschen bleiben stabil, Wachstum nach Krisen ist möglich, aber kein Muss – Kreuzung mit der Positiven Psychologie."
+  },
+  {
+   "id": "rekonsolidierung",
+   "title": "Kann man Erinnerungen umschreiben?",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Offene Frage: Nader, Schafe und LeDoux zeigten 2000, dass abgerufene Erinnerungen kurz wieder veränderbar werden – was eröffnet das für Therapie und Medikamente?"
+  },
+  {
+   "id": "epiktet",
+   "title": "Epiktet: Nicht die Dinge, sondern unsere Urteile",
+   "kind": "person",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Der Stoiker lehrte, dass uns Meinungen über die Dinge beunruhigen – ein Satz, den Ellis und Beck als Vorläufer ihrer Therapien zitierten.",
+   "year": 100,
+   "yearLabel": "um 100 n. Chr."
+  },
+  {
+   "id": "ellis-abc",
+   "title": "Albert Ellis: Das ABC der irrationalen Überzeugungen",
+   "kind": "person",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Der ehemalige Psychoanalytiker Ellis entwickelte ab 1955 die rational-emotive Therapie, deren ABC-Modell Ereignis, Bewertung und Gefühl trennt."
+  },
+  {
+   "id": "behaviorismus",
+   "title": "Behaviorismus: Der Geist wird aus dem Labor verbannt",
+   "kind": "konzept",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Watsons Manifest von 1913 erklärt Verhalten zum einzigen Gegenstand der Psychologie – Problem für die Philosophie des Geistes und Fundament der Verhaltenstherapie.",
+   "year": 1913,
+   "yearLabel": "1913"
+  },
+  {
+   "id": "little-albert",
+   "title": "Little Albert: Angst, die man lernt",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Watson und Rayner konditionierten 1920 einen Jungen auf Furcht, Mary Cover Jones löschte Angst bald danach wieder – Geburtsszene der Verhaltenstherapie, ethisch und historisch umstritten.",
+   "year": 1920,
+   "yearLabel": "1920"
+  },
+  {
+   "id": "eysenck",
+   "title": "Eysenck 1952: Wirkt Psychotherapie überhaupt?",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Hans Eysencks provokante Auswertung stellte die Wirkung klassischer Psychotherapie infrage und machte Wirksamkeitsforschung zum Maßstab – auch für die entstehende Verhaltenstherapie.",
+   "year": 1952,
+   "yearLabel": "1952"
+  },
+  {
+   "id": "kognitive-wende",
+   "title": "Die kognitive Wende: Der Geist kehrt zurück",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Bei einem MIT-Symposium 1956 rückten Miller, Chomsky, Newell und Simon mentale Prozesse wieder ins Zentrum und bereiteten die kognitive Therapie vor.",
+   "year": 1956,
+   "yearLabel": "1956"
+  },
+  {
+   "id": "sokratischer-dialog",
+   "title": "Sokratischer Dialog: Die Kunst, gute Fragen zu stellen",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Geleitetes Entdecken statt Belehren: Therapeutinnen fragen so, dass Klienten ihre eigenen Annahmen prüfen – eine Technik mit Wurzeln bei Sokrates."
+  },
+  {
+   "id": "gedankenprotokoll",
+   "title": "Das Gedankenprotokoll: Denken auf Papier",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Situation, Gedanke, Gefühl und Alternativgedanke werden aufgeschrieben, um automatische Gedanken zu prüfen und zu ersetzen.",
+   "exhibit": "gedankenprotokoll"
+  },
+  {
+   "id": "verhaltensaktivierung",
+   "title": "Verhaltensaktivierung: Muss man wirklich Gedanken ändern?",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Jacobson und Kollegen fanden 1996, dass reines Aktivieren gegen Depression ähnlich half wie die volle kognitive Therapie – ein Seitenblick auf die angenehmen Aktivitäten der Positiven Psychologie."
+  },
+  {
+   "id": "hebb",
+   "title": "Hebb: Was gemeinsam feuert, verdrahtet sich",
+   "kind": "konzept",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Donald Hebbs Lernregel von 1949 erklärt, wie Übung Verbindungen stärkt – das biologische Bild hinter Training in Therapie, Lernen und Gehirnforschung.",
+   "year": 1949,
+   "yearLabel": "1949",
+   "exhibit": "hebb"
+  },
+  {
+   "id": "kabat-zinn",
+   "title": "Jon Kabat-Zinn: Achtsamkeit betritt die Klinik",
+   "kind": "person",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Mit MBSR bringt Kabat-Zinn 1979 Meditation in die Medizin – Auftakt der dritten Welle der Verhaltenstherapie und Brücke zur Positiven Psychologie.",
+   "year": 1979,
+   "yearLabel": "1979"
+  },
+  {
+   "id": "dritte-welle",
+   "title": "ACT, DBT und Co.: Akzeptanz statt Kampf",
+   "kind": "konzept",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Hayes’ ACT, Linehans DBT und achtsamkeitsbasierte Kognitive Therapie fragen weniger „Ist der Gedanke wahr?“ als „Hilft er mir, nach meinen Werten zu leben?“."
+  },
+  {
+   "id": "ki-verstehen",
+   "title": "Von ELIZA zum KI-Therapeuten: Versteht die Maschine – und hilft sie?",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Weizenbaums ELIZA ahmte 1966 Gesprächstherapie nach, heute bieten Chatbots KVT-Übungen an – hier kreuzen sich Therapiegeschichte, Searles Chinesisches Zimmer und digitale Verhaltenstherapie.",
+   "year": 2020,
+   "yearLabel": "1966 bis heute"
+  },
+  {
+   "id": "anna-freud-abwehr",
+   "title": "Anna Freud: Das Ich und die Abwehrmechanismen",
+   "kind": "person",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Anna Freud ordnet 1936 die Abwehrmechanismen wie Verdrängung, Projektion und Rationalisierung – hier berühren sich Psychoanalyse und Verzerrungsforschung, weil Abwehr und Denkverzerrung dasselbe Phänomen aus zwei Richtungen beschreiben.",
+   "year": 1936,
+   "yearLabel": "1936"
+  },
+  {
+   "id": "winnicott",
+   "title": "Winnicott: Holding, die „ausreichend gute“ Mutter und das Übergangsobjekt",
+   "kind": "person",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Winnicott beschreibt 1953 das Übergangsobjekt und prägt „good enough mother“ und „Holding“ – Bilder dafür, was ein sicherer Rahmen leistet, daher Umstieg zur Traumareise.",
+   "year": 1953,
+   "yearLabel": "1953"
+  },
+  {
+   "id": "bion-containing",
+   "title": "Bion: Containing und die Alpha-Funktion",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Bion beschreibt, wie ein Gegenüber unerträgliche Gefühle aufnimmt und in verdaubare Erfahrung verwandelt – das psychoanalytische Bild hinter Co-Regulation, daher Kreuzung mit der Traumareise.",
+   "year": 1962,
+   "yearLabel": "1962"
+  },
+  {
+   "id": "popper",
+   "title": "Popper und Adlers Antwort: Ist die Psychoanalyse falsifizierbar?",
+   "kind": "ereignis",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Karl Popper erzählt, dass Freud-, Adler- und Marx-Theorien jeden Fall bestätigen konnten, und leitet daraus Falsifizierbarkeit ab – hier trifft Wissenschaftstheorie auf den Bestätigungsfehler.",
+   "year": 1963,
+   "yearLabel": "1963"
+  },
+  {
+   "id": "mentalisieren",
+   "title": "Fonagy: Mentalisieren – Gedanken und Gefühle in sich und anderen sehen",
+   "kind": "konzept",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Peter Fonagy verbindet Bindungstheorie und Psychoanalyse zur Fähigkeit, Verhalten durch Gefühle und Gedanken zu verstehen – zentral für Bindungstraumata und Borderline.",
+   "year": 1991,
+   "yearLabel": "1991 / 2002"
+  },
+  {
+   "id": "shedler",
+   "title": "Shedler 2010: Wie gut wirkt psychodynamische Therapie?",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Jonathan Shedler wertet 2010 Studien zur psychodynamischen Therapie aus und fordert gleichen Respekt wie für KVT – Ort der Wirksamkeitsdebatte beider Reisen.",
+   "year": 2010,
+   "yearLabel": "2010"
+  },
+  {
+   "id": "asch",
+   "title": "Asch 1951: Linien und der Druck der Gruppe",
+   "kind": "ereignis",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "In Aschs Konformitätsexperiment widersprechen viele Teilnehmende ihren Augen, um der Gruppe zu folgen – hier berühren sich Gruppenforschung und Wahrnehmungsverzerrung."
+  },
+  {
+   "id": "rl-vorhersagefehler",
+   "title": "Dopamin und Reinforcement Learning: Der Vorhersagefehler",
+   "kind": "ereignis",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Wolfram Schultz zeigt 1997, dass Dopaminzellen Vorhersagefehler codieren, wie sie Reinforcement-Learning-Algorithmen nutzen – Brücke zur Lerntheorie der Verhaltenstherapie."
+  },
+  {
+   "id": "seligman-mismatch",
+   "title": "Vorbereitetes Lernen: Warum Schlangen schneller Angst machen",
+   "kind": "konzept",
+   "journeys": [
+    "trauma",
+    "kvt"
+   ],
+   "why": "Seligman (1971) und Öhman zeigen, dass Furcht vor Schlangen leichter gelernt wird als vor Blumen – evolutionäre Wurzel von Angstlernen, Trauma und Verhaltenstherapie."
+  },
+  {
+   "id": "cosmides",
+   "title": "Cosmides und Tooby: Das Betrugserkennungsmodul",
+   "kind": "konzept",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Dieselbe Logikaufgabe wird leicht, wenn es um Betrug geht – Cosmides und Tooby deuten das als Anpassung und stehen damit in Debatte zur Wason-Aufgabe."
+  },
+  {
+   "id": "henrich",
+   "title": "Henrich: WEIRD, Kultur und Gene",
+   "kind": "person",
+   "journeys": [
+    "verzerrung"
+   ],
+   "why": "Joseph Henrich zeigt, dass viele psychologische „Universalien“ nur für westliche, gebildete Stichproben gelten – sogar die Müller-Lyer-Täuschung variiert."
+  },
+  {
+   "id": "mansuy",
+   "title": "Isabelle Mansuy: Trauma in den Spermien der Mäuse",
+   "kind": "person",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Mansuys Gruppe zeigt bei Mäusen, dass frühe Stressbelastung über Spermien-RNA auf Nachkommen wirkt – offene Frage der Übertragbarkeit auf den Menschen."
+  },
+  {
+   "id": "yehuda",
+   "title": "Rachel Yehuda: Nachkommen von Holocaust-Überlebenden",
+   "kind": "person",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Yehuda fand veränderte Cortisolwerte und FKBP5-Methylierung bei Kindern Überlebender, mit kleinen Stichproben und offener Replikation."
+  },
+  {
+   "id": "ueberlebende-niederland",
+   "title": "Das Überlebenden-Syndrom: Niederland und die Gutachten",
+   "kind": "ereignis",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "William Niederland prägt 1961 den Begriff in den Entschädigungsverfahren für NS-Verfolgte; ein Vorläufer der PTBS-Diagnose."
+  },
+  {
+   "id": "grounding",
+   "title": "Grounding und 5-4-3-2-1: Zurück im Raum",
+   "kind": "methode",
+   "journeys": [
+    "trauma"
+   ],
+   "why": "Übung, die Aufmerksamkeit über die Sinne ins Hier und Jetzt holt – aus der Stabilisierung bei Trauma."
+  },
+  {
+   "id": "wunderfrage-skalen",
+   "title": "Wunderfrage und Skalierung: Lösungsfokus von de Shazer und Berg",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Steve de Shazer und Insoo Kim Berg lenken den Blick auf Ziele und Ausnahmen – Brücke von Therapiegeschichte, KVT und Positiver Psychologie.",
+   "year": 1985,
+   "yearLabel": "1985"
+  },
+  {
+   "id": "werte-act",
+   "title": "Werte klären: Der ACT-Kompass",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Aus ACT stammt die Übung, Werte von Zielen zu unterscheiden und Handlungen daran auszurichten."
+  },
+  {
+   "id": "reframing",
+   "title": "Reframing: Dieselbe Szene, ein anderer Rahmen",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Deutungen ändern, ohne Fakten zu leugnen – verwandt mit Epiktets Satz und kognitiver Umstrukturierung."
+  },
+  {
+   "id": "verhaltensexperiment",
+   "title": "Verhaltensexperiment: Annahmen im Alltag testen",
+   "kind": "methode",
+   "journeys": [
+    "kvt"
+   ],
+   "why": "Hypothesen aus Gedankenprotokollen werden im Leben geprüft."
+  },
+  {
+   "id": "berkeley",
+   "title": "George Berkeley: Sein heißt Wahrgenommenwerden",
+   "kind": "person",
+   "journeys": [
+    "verzerrung"
+   ],
+   "year": 1710,
+   "yearLabel": "1710",
+   "why": "Idealistische Antwort auf Descartes und Locke („esse est percipi“, Treatise 1710): Dinge existieren als Wahrnehmungsinhalte in Geist und Gott; neutral als eine Position unter mehreren darstellen; Kreuzung verzerrung nur über Berkeleys Theorie des Sehens (1709): Entfernung und Größe werden aus Erfahrung erschlossen, nicht direkt gesehen – Wahrnehmung als Konstruktion, Brücke zu Müller-Lyer und vorhersagendem Gehirn, ohne Berkeleys Idealismus als bewiesen auszugeben."
+  },
+  {
+   "id": "marx",
+   "title": "Marx: Das Sein bestimmt das Bewusstsein",
+   "kind": "person",
+   "journeys": [
+    "verzerrung"
+   ],
+   "year": 1859,
+   "yearLabel": "1859",
+   "why": "Vorwort „Zur Kritik der politischen Ökonomie“ (1859): historischer Materialismus als Umkehrung Hegels, Ideologie; nüchtern erklären, weder verklären noch verdammen, und als materialistisches Gegenstück zu Hegel neben diesem stehen lassen; Kreuzungen: systeme (gesellschaftliche Verhältnisse prägen Gruppen und Denken), verzerrung (Ideologiebegriff als kollektive Verzerrung, mit Hinweis, dass der Begriff selbst umstritten ist)."
+  }
+ ],
+ "orders": {
+  "verzerrung": [
+   "muller-lyer",
+   "henrich",
+   "vorhersagendes-gehirn",
+   "berkeley",
+   "kahneman-tversky",
+   "stroop",
+   "ankereffekt",
+   "verfuegbarkeit",
+   "verlustaversion",
+   "bestaetigungsfehler",
+   "cosmides",
+   "popper",
+   "mesmer-franklin",
+   "phrenologie",
+   "kognitive-dissonanz",
+   "asch",
+   "anna-freud-abwehr",
+   "gerechte-welt",
+   "marx",
+   "optimismus-bias",
+   "beck",
+   "premortem",
+   "gigerenzer"
+  ],
+  "trauma": [
+   "trauma-begriff",
+   "anna-o",
+   "janet",
+   "kriegszitterer",
+   "ueberlebende-niederland",
+   "ptbs-kptbs",
+   "amygdala-furcht",
+   "seligman-mismatch",
+   "toleranzfenster",
+   "polyvagal",
+   "bindungstrauma",
+   "winnicott",
+   "bion-containing",
+   "mentalisieren",
+   "ace",
+   "mansuy",
+   "yehuda",
+   "stabilisierung",
+   "grounding",
+   "verdraengte-erinnerungen",
+   "exposition",
+   "emdr",
+   "resilienz-ptw",
+   "rekonsolidierung"
+  ],
+  "kvt": [
+   "epiktet",
+   "ellis-abc",
+   "behaviorismus",
+   "little-albert",
+   "exposition",
+   "seligman-mismatch",
+   "eysenck",
+   "shedler",
+   "kognitive-wende",
+   "beck",
+   "bestaetigungsfehler",
+   "sokratischer-dialog",
+   "reframing",
+   "gedankenprotokoll",
+   "verhaltensexperiment",
+   "verhaltensaktivierung",
+   "hebb",
+   "rl-vorhersagefehler",
+   "kabat-zinn",
+   "dritte-welle",
+   "werte-act",
+   "wunderfrage-skalen",
+   "ki-verstehen"
+  ]
+ }
+}

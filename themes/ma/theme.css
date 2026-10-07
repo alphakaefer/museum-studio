@@ -1,0 +1,254 @@
+/* Skin „ma“ – erzeugt aus themes-Quelle; alle Regeln hinter html[data-skin="ma"] */
+
+/* Tokens: Gemeinsames */
+html[data-skin="ma"] {
+  --font-display: Jost, Futura, "Century Gothic", "Avenir Next", "Trebuchet MS", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-ui: Jost, Futura, "Century Gothic", "Avenir Next", "Trebuchet MS", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 0;
+  --radius-sm: 0;
+  --radius-lg: 0;
+  --shadow: none;
+  --shadow-lg: none;
+  --grain: none;
+  --j-rundreise: var(--accent);
+}
+
+/* Tokens: hell */
+html[data-skin="ma"],
+html[data-skin="ma"] .gm-hero,
+html[data-skin="ma"] .gm-header[data-tone="dark"] {
+  --bg: #F1F0EC;
+  --bg-2: #FFFFFF;
+  --bg-3: #E6E5DF;
+  --ink: #111111;
+  --ink-2: #464646;
+  --ink-3: #5A5A5A;
+  --line: #BDBCB5;
+  --accent: #1D4EA8;
+  --link: #1D4EA8;
+  --warm: #EEB400;
+  --ok: #1F7A3F;
+  --warn: #8F5A00;
+  --bad: #D52B1E;
+  --on-accent: #FFFFFF;
+  --on-warm: #111111;
+  --accent-soft: rgba(29,78,168,.09);
+  --glass: rgba(241,240,236,.94);
+  --hero-bg: #F1F0EC;
+  --ma-red: #D52B1E;
+  --ma-blue: #1D4EA8;
+  --ma-yellow: #EEB400;
+  color-scheme: light;
+}
+
+/* Immer dunkle Flächen (z. B. Reisepass-Deckel) */
+html[data-skin="ma"] .gm-dark {
+  --bg: #101011;
+  --bg-2: #1A1A1C;
+  --bg-3: #232326;
+  --ink: #F1F0EC;
+  --ink-2: #BDBCB6;
+  --ink-3: #A2A19B;
+  --line: #3C3C40;
+  --accent: #7AA2FF;
+  --link: #8DB0FF;
+  --warm: #F2C230;
+  --ok: #5FD08A;
+  --warn: #F2B24A;
+  --bad: #FF6A5C;
+  --on-accent: #101011;
+  --on-warm: #111111;
+  --accent-soft: rgba(122,162,255,.14);
+  --glass: rgba(16,16,17,.94);
+  --hero-bg: #101011;
+  --ma-red: #FF5A4A;
+  --ma-blue: #7AA2FF;
+  --ma-yellow: #F2C230;
+  color-scheme: dark;
+}
+
+/* Tokens: dunkel (System) */
+@media (prefers-color-scheme: dark) {
+  html[data-skin="ma"]:not([data-theme="light"]),
+  html[data-skin="ma"]:not([data-theme="light"]) .gm-hero,
+  html[data-skin="ma"]:not([data-theme="light"]) .gm-header[data-tone="dark"] {
+    --bg: #101011;
+    --bg-2: #1A1A1C;
+    --bg-3: #232326;
+    --ink: #F1F0EC;
+    --ink-2: #BDBCB6;
+    --ink-3: #A2A19B;
+    --line: #3C3C40;
+    --accent: #7AA2FF;
+    --link: #8DB0FF;
+    --warm: #F2C230;
+    --ok: #5FD08A;
+    --warn: #F2B24A;
+    --bad: #FF6A5C;
+    --on-accent: #101011;
+    --on-warm: #111111;
+    --accent-soft: rgba(122,162,255,.14);
+    --glass: rgba(16,16,17,.94);
+    --hero-bg: #101011;
+    --ma-red: #FF5A4A;
+    --ma-blue: #7AA2FF;
+    --ma-yellow: #F2C230;
+    color-scheme: dark;
+  }
+}
+
+/* Tokens: dunkel (Umschalter) */
+html[data-skin="ma"][data-theme="dark"],
+html[data-skin="ma"][data-theme="dark"] .gm-hero,
+html[data-skin="ma"][data-theme="dark"] .gm-header[data-tone="dark"] {
+  --bg: #101011;
+  --bg-2: #1A1A1C;
+  --bg-3: #232326;
+  --ink: #F1F0EC;
+  --ink-2: #BDBCB6;
+  --ink-3: #A2A19B;
+  --line: #3C3C40;
+  --accent: #7AA2FF;
+  --link: #8DB0FF;
+  --warm: #F2C230;
+  --ok: #5FD08A;
+  --warn: #F2B24A;
+  --bad: #FF6A5C;
+  --on-accent: #101011;
+  --on-warm: #111111;
+  --accent-soft: rgba(122,162,255,.14);
+  --glass: rgba(16,16,17,.94);
+  --hero-bg: #101011;
+  --ma-red: #FF5A4A;
+  --ma-blue: #7AA2FF;
+  --ma-yellow: #F2C230;
+  color-scheme: dark;
+}
+
+
+/* ---- Grundlagen: flach, rechtwinklig, viel Weißraum ---- */
+html[data-skin="ma"] body { font-size: 1.0625rem; line-height: 1.6; }
+html[data-skin="ma"] h1, html[data-skin="ma"] h2, html[data-skin="ma"] h3, html[data-skin="ma"] h4 { font-weight: 700; letter-spacing: -.02em; }
+html[data-skin="ma"] .gm-eyebrow, html[data-skin="ma"] .gm-st-h, html[data-skin="ma"] .gm-foot-h { font-weight: 700; letter-spacing: .16em; font-size: .72rem; color: var(--ink); }
+html[data-skin="ma"] .gm-eyebrow::before, html[data-skin="ma"] .gm-st-h::before { content: ""; display: inline-block; width: .7em; height: .7em; background: var(--ma-red); margin-right: .6em; vertical-align: baseline; }
+html[data-skin="ma"] .gm-h2 { font-weight: 800; letter-spacing: -.035em; line-height: .98; }
+html[data-skin="ma"] .gm-section-lead, html[data-skin="ma"] .gm-view-lead { color: var(--ink-2); max-width: 34rem; }
+html[data-skin="ma"] [tabindex="-1"]:focus-visible { outline: none; }
+html[data-skin="ma"] :focus-visible { outline: 3px solid var(--ma-blue); outline-offset: 3px; border-radius: 0; }
+html[data-skin="ma"] ::selection { background: var(--ma-yellow); color: #111; }
+
+/* ---- Buttons und Chips ---- */
+html[data-skin="ma"] .gm-btn { border-radius: 0; border-width: 2px; border-color: var(--ink); font-weight: 700; letter-spacing: .02em; box-shadow: none; }
+html[data-skin="ma"] .gm-btn:hover { transform: none; box-shadow: none; }
+html[data-skin="ma"] .gm-btn-primary { background: var(--ma-blue); border-color: var(--ma-blue); color: #fff; }
+html[data-skin="ma"] .gm-btn-primary:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+html[data-skin="ma"] .gm-btn-warm { background: var(--ma-yellow); border-color: var(--ma-yellow); color: #111; }
+html[data-skin="ma"] .gm-btn-warm:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+html[data-skin="ma"] .gm-btn-ghost, html[data-skin="ma"] .gm-btn-glass { background: transparent; color: var(--ink); border-color: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-skin="ma"] .gm-btn-ghost:hover, html[data-skin="ma"] .gm-btn-glass:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+html[data-skin="ma"] .gm-btn-quiet { border-width: 0; }
+html[data-skin="ma"] .gm-iconbtn { border-radius: 0; }
+html[data-skin="ma"] .gm-chip { border-radius: 0; border-width: 2px; font-weight: 700; }
+html[data-skin="ma"] .gm-chip-dot { border-radius: 0; }
+
+/* ---- Kopfleiste ---- */
+html[data-skin="ma"] .gm-header { border-bottom: 3px solid var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-skin="ma"] .gm-header[data-tone="dark"] { border-bottom-color: var(--ink); }
+html[data-skin="ma"] .gm-brand-name { font-weight: 800; letter-spacing: -.03em; text-transform: lowercase; font-size: 1.35rem; }
+html[data-skin="ma"] .gm-brand-mark { filter: none; }
+html[data-skin="ma"] .gm-tab { border-radius: 0; font-weight: 600; letter-spacing: .01em; }
+html[data-skin="ma"] .gm-tab:hover { background: transparent; color: var(--ma-blue); }
+html[data-skin="ma"] .gm-tab::after { left: .95rem; right: .95rem; bottom: 4px; height: 4px; border-radius: 0; background: var(--ma-red); }
+html[data-skin="ma"] .gm-search-btn, html[data-skin="ma"] .gm-kbd { border-radius: 0; border-color: var(--ink); }
+
+/* ---- Eingang: asymmetrisch, große Type, Primärformen ---- */
+html[data-skin="ma"] .gm-hero { background: var(--bg); min-height: min(92svh, 52rem); }
+html[data-skin="ma"] .gm-hero-canvas, html[data-skin="ma"] .gm-hero-vignette { display: none; }
+html[data-skin="ma"] .gm-hero::before { content: ""; position: absolute; z-index: -1; right: clamp(-3rem, -2vw, 0rem); bottom: 18%; width: clamp(9rem, 26vw, 22rem); aspect-ratio: 1; border-radius: 50%; background: var(--ma-red); }
+html[data-skin="ma"] .gm-hero::after { height: 12px; opacity: 1; -webkit-mask-image: none; mask-image: none; background: var(--hero-bar-hard, var(--accent)); }
+@media (max-width: 640px) { html[data-skin="ma"] .gm-hero::before { width: 6rem; bottom: 3.2rem; right: -1.6rem; } }
+html[data-skin="ma"] .gm-hero-in { align-items: flex-start; text-align: left; width: min(100% - 2 * var(--gutter), var(--maxw)); }
+html[data-skin="ma"] .gm-emblem { width: 5.5rem; filter: none; margin-bottom: 2rem; }
+html[data-skin="ma"] .gm-hero-eyebrow { color: var(--ink); font-weight: 700; text-align: left; border-top: 3px solid var(--ink); padding-top: .7rem; letter-spacing: .16em; }
+html[data-skin="ma"] .gm-hero-title { color: var(--ink); text-transform: lowercase; font-weight: 800; letter-spacing: -.045em; line-height: .88; text-shadow: none; padding-left: 0; font-size: clamp(1.9rem, 10.4vw, 8.2rem); max-width: 100%; overflow-wrap: break-word; hyphens: auto; }
+html[data-skin="ma"] .gm-hero-title[data-len="long"] { font-size: clamp(1.8rem, 7.4vw, 5.6rem); }
+html[data-skin="ma"] .gm-hero-title[data-len="xlong"] { font-size: clamp(1.7rem, 5.6vw, 4.4rem); }
+html[data-skin="ma"] .gm-hero-claim { color: var(--ink); font-style: normal; font-weight: 500; text-align: left; max-width: 28rem; font-size: clamp(1.1rem, 1rem + .6vw, 1.4rem); }
+html[data-skin="ma"] .gm-hero-cta { justify-content: flex-start; }
+html[data-skin="ma"] .gm-scrollcue { color: var(--ink); font-weight: 700; padding-left: 0; }
+html[data-skin="ma"] .gm-scrollcue:hover { color: var(--ma-blue); }
+html[data-skin="ma"] .gm-scrollcue .gm-ico { color: var(--ma-red); }
+html[data-skin="ma"] .gm-hero :focus-visible { outline-color: var(--ma-blue); }
+
+/* ---- Orientierung, große Zahlen ---- */
+html[data-skin="ma"] .gm-step-ico { border-radius: 0; border-color: var(--ink); border-width: 2px; }
+html[data-skin="ma"] .gm-step h3 { font-weight: 800; }
+html[data-skin="ma"] .gm-stats { gap: 2rem 1.5rem; }
+html[data-skin="ma"] .gm-stat { border-top: 6px solid var(--ink); padding-top: .7rem; }
+html[data-skin="ma"] .gm-stat dd { font-weight: 800; letter-spacing: -.05em; font-size: clamp(3.2rem, 2rem + 5vw, 6.5rem); text-shadow: none; }
+html[data-skin="ma"] .gm-stat:nth-child(1) { border-top-color: var(--ma-red); }
+html[data-skin="ma"] .gm-stat:nth-child(2) { border-top-color: var(--ma-blue); }
+html[data-skin="ma"] .gm-stat:nth-child(3) { border-top-color: var(--ma-yellow); }
+html[data-skin="ma"] .gm-stat dt { font-weight: 700; color: var(--ink); }
+
+/* ---- Reise-Karten: flache Flächen, Farbbalken ---- */
+html[data-skin="ma"] .gm-trips { border-block: 0; background: var(--bg-3); }
+html[data-skin="ma"] .gm-card { border-radius: 0; border: 0; border-top: 8px solid var(--jc); box-shadow: none; background: var(--bg-2); padding-top: 1.3rem; }
+html[data-skin="ma"] .gm-card::before { display: none; }
+html[data-skin="ma"] .gm-card:hover, html[data-skin="ma"] .gm-card:focus-within { transform: none; box-shadow: inset 0 0 0 3px var(--ink); border-color: var(--jc); }
+html[data-skin="ma"] .gm-card:focus-within { outline: 3px solid var(--ma-blue); }
+html[data-skin="ma"] .gm-card-title { font-weight: 800; letter-spacing: -.025em; font-size: 1.3rem; }
+html[data-skin="ma"] .gm-card-ico { border-radius: 0; }
+html[data-skin="ma"] .gm-card-count { color: var(--ink-2); }
+html[data-skin="ma"] .gm-card-count strong { font-weight: 800; color: var(--ink); letter-spacing: 0; }
+html[data-skin="ma"] .gm-card-badge { border-radius: 0; background: var(--ma-yellow); color: #111; font-weight: 800; }
+html[data-skin="ma"] .gm-card.is-tool { border-color: var(--ma-yellow); border-width: 8px 0 0; background: var(--bg-2); }
+html[data-skin="ma"] .gm-card .gm-btn:focus-visible { box-shadow: none; outline: 3px solid var(--ma-blue); outline-offset: 2px; }
+html[data-skin="ma"] .gm-dot { border-radius: 0; }
+
+/* ---- Ansichts-Kopf ---- */
+html[data-skin="ma"] .gm-view-title { font-weight: 800; letter-spacing: -.04em; line-height: .95; font-size: clamp(2.2rem, 1.4rem + 4.2vw, 4.6rem); }
+html[data-skin="ma"] .gm-view-head { border-top: 3px solid var(--ink); margin-top: 1rem; }
+
+/* ---- Station: Plakat ---- */
+html[data-skin="ma"] .gm-st-head { border-bottom: 3px solid var(--ink); }
+html[data-skin="ma"] .gm-st-head::after { height: 8px; bottom: -3px; width: 5rem; border-radius: 0; background: var(--jc); }
+html[data-skin="ma"] .gm-st-medal { border-radius: 0; border: 3px solid var(--jc); box-shadow: none; }
+html[data-skin="ma"] .gm-st-eyebrow { font-weight: 700; color: var(--ink); }
+html[data-skin="ma"] .gm-st-year { border: 0; background: transparent; box-shadow: none; padding: 0; font: 800 clamp(2.4rem, 2rem + 3vw, 4.2rem)/.9 var(--font-display); letter-spacing: -.05em; color: var(--ma-red); border-radius: 0; }
+html[data-skin="ma"] .gm-st-title { font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+html[data-skin="ma"] .gm-st-sub { font-weight: 400; font-style: normal; }
+html[data-skin="ma"] .gm-st-lead { border-left: 8px solid var(--ma-yellow); font: 600 clamp(1.2rem, 1.05rem + .8vw, 1.5rem)/1.4 var(--font-display); font-style: normal; padding-left: 1.2rem; }
+html[data-skin="ma"] .gm-st-body p { font: 400 clamp(1.05rem, 1rem + .25vw, 1.15rem)/1.7 var(--font-display); max-width: 34rem; }
+html[data-skin="ma"] .gm-st-body.has-dc p:first-child::first-letter { float: none; font-size: inherit; line-height: inherit; padding: 0; color: inherit; font-weight: inherit; }
+html[data-skin="ma"] .gm-st-h { margin-bottom: 1.1rem; }
+html[data-skin="ma"] .gm-fact { border-radius: 0; border: 0; border-left: 6px solid var(--jc); box-shadow: none; background: var(--bg-2); }
+html[data-skin="ma"] .gm-fact-n { border-radius: 0; background: var(--ink); border: 0; color: var(--bg); font-family: var(--font-display); font-weight: 800; }
+html[data-skin="ma"] .gm-st-quote { border: 0; border-left: 14px solid var(--ma-blue); border-radius: 0; background: var(--bg-2); box-shadow: none; padding-left: 1.6rem; }
+html[data-skin="ma"] .gm-st-quote blockquote p { font-style: normal; font-weight: 700; letter-spacing: -.015em; font-family: var(--font-display); }
+html[data-skin="ma"] .gm-st-quote cite { font-style: normal; }
+html[data-skin="ma"] .gm-flip-face { border-radius: 0; box-shadow: none; }
+html[data-skin="ma"] .gm-flip-front { background: var(--ma-yellow); color: #111; border: 0; }
+html[data-skin="ma"] .gm-flip-front .gm-flip-label { color: #111; }
+html[data-skin="ma"] .gm-flip-front .gm-flip-text { font-style: normal; font-weight: 700; }
+html[data-skin="ma"] .gm-flip-stamp { color: #111; border-color: #111; border-radius: 0; }
+html[data-skin="ma"] .gm-flip-back { background: #111; color: #F1F0EC; border: 0; }
+html[data-skin="ma"] .gm-flip-back .gm-flip-label { color: var(--ma-yellow); }
+html[data-skin="ma"] .gm-flip-tick { border-radius: 0; background: var(--ma-yellow); }
+html[data-skin="ma"] .gm-st-transfer { border: 0; border-top: 6px solid var(--ink); border-radius: 0; background: var(--bg-3); }
+html[data-skin="ma"] .gm-tr-btn { border-radius: 0; }
+html[data-skin="ma"] .gm-st-more { border-top: 3px solid var(--ink); }
+html[data-skin="ma"] .gm-panel-sheet { border-left: 3px solid var(--ink); box-shadow: none; }
+html[data-skin="ma"] .gm-panel-bar { border-bottom: 3px solid var(--ink); }
+
+/* ---- Fuß ---- */
+html[data-skin="ma"] .gm-footer { background: var(--bg); border-top: 8px solid var(--ink); }
+html[data-skin="ma"] .gm-foot-help { border-left: 8px solid var(--ma-yellow); border-radius: 0; }
+
+/* ---- Karte, Zeitstrahl, Pass, Suche ---- */
+html[data-skin="ma"] .gm-pass-cover { background: #111; border: 0; border-top: 10px solid var(--ma-red); border-radius: 0; }
+html[data-skin="ma"] .gm-pass-cover::before { border-radius: 0; border-color: rgba(238,180,0,.4); }
+html[data-skin="ma"] .gm-pass-card, html[data-skin="ma"] .gm-suche-panel, html[data-skin="ma"] .gm-karte-card { border-radius: 0; box-shadow: none; }
+html[data-skin="ma"] .gm-pass-card::before { border-radius: 0; }
+
+@media (prefers-reduced-motion: reduce) { html[data-skin="ma"] .gm-btn:hover, html[data-skin="ma"] .gm-card:hover { transform: none; } }

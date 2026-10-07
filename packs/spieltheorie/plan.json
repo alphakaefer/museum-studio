@@ -1,0 +1,358 @@
+{
+ "journeys": [
+  {
+   "id": "grundmodelle",
+   "typ": "funktional",
+   "name": "Grundmodelle: Das Handwerkszeug der Spieltheorie"
+  },
+  {
+   "id": "kooperation",
+   "typ": "funktional",
+   "name": "Kooperation und Verhalten: Wann spielen Menschen fair?"
+  },
+  {
+   "id": "geschichte",
+   "typ": "historisch",
+   "name": "Von Neumann bis zu den Nobelpreisen"
+  }
+ ],
+ "stations": [
+  {
+   "id": "normalform",
+   "title": "Die Auszahlungsmatrix: Ein Spiel auf einem Blatt",
+   "kind": "methode",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Ohne diese Tabelle kommt kein späteres Modell aus: Spieler, Strategien, Auszahlungen."
+  },
+  {
+   "id": "dominanz",
+   "title": "Dominante Strategien: Wenn die Wahl leichtfällt",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Der einfachste Lösungsbegriff: Manchmal ist eine Strategie gegen alles besser, was der andere tun kann."
+  },
+  {
+   "id": "vickrey-auktion",
+   "title": "Vickrey-Auktion: Ehrlich bieten lohnt sich",
+   "kind": "konzept",
+   "journeys": [
+    "geschichte",
+    "grundmodelle"
+   ],
+   "why": "Ein Spiel, in dem Ehrlichkeit tatsächlich dominant ist, und zugleich der Beginn der Auktionstheorie.",
+   "year": 1961,
+   "yearLabel": "1961"
+  },
+  {
+   "id": "gefangenendilemma",
+   "title": "Das Gefangenendilemma: Warum zwei Vernünftige verlieren",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "kooperation",
+    "geschichte"
+   ],
+   "why": "Das berühmteste Spiel: Individuelle Vernunft führt zu einem Ergebnis, das beide schlechter stellt.",
+   "year": 1950,
+   "yearLabel": "1950"
+  },
+  {
+   "id": "nash-gleichgewicht",
+   "title": "Das Nash-Gleichgewicht: Niemand will allein abweichen",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "geschichte"
+   ],
+   "why": "Der zentrale Lösungsbegriff, der Dominanz verallgemeinert und fast jedes Spiel lösbar macht.",
+   "year": 1950,
+   "yearLabel": "1950"
+  },
+  {
+   "id": "mythos-gleichgewicht",
+   "title": "Mythos: Ein Gleichgewicht ist das Beste für alle",
+   "kind": "mythos",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Räumt mit dem häufigen Missverständnis auf, Gleichgewicht heiße Optimum oder Vorhersage."
+  },
+  {
+   "id": "fokalpunkte",
+   "title": "Fokalpunkte: Wo treffen wir uns in New York?",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "geschichte"
+   ],
+   "why": "Bei mehreren Gleichgewichten entscheidet oft das Auffällige; Schellings Idee öffnete die Spieltheorie für Alltag und Politik.",
+   "year": 1960,
+   "yearLabel": "1960"
+  },
+  {
+   "id": "minimax-nullsumme",
+   "title": "Nullsummenspiele und der Minimax-Satz",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "geschichte"
+   ],
+   "why": "Der erste echte Satz der Spieltheorie: Im reinen Gegeneinander gibt es eine beste vorsichtige Strategie.",
+   "year": 1928,
+   "yearLabel": "1928"
+  },
+  {
+   "id": "gemischte-strategien",
+   "title": "Gemischte Strategien: Warum Zufall klug sein kann",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Wo kein Gleichgewicht in reinen Strategien existiert, rettet gezieltes Zufallsmischen die Lösung (Elfmeter, Stein-Schere-Papier)."
+  },
+  {
+   "id": "rueckwaertsinduktion",
+   "title": "Spielbaum und Rückwärtsinduktion: Vom Ende her denken",
+   "kind": "methode",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Bei Zügen nacheinander löst man das Spiel vom letzten Zug her; Grundlage vieler Verhandlungs- und Schachüberlegungen."
+  },
+  {
+   "id": "glaubwuerdige-drohung",
+   "title": "Glaubwürdige Drohungen und das teilspielperfekte Gleichgewicht",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "geschichte"
+   ],
+   "why": "Reinhard Selten zeigt, dass manche Gleichgewichte auf leeren Drohungen beruhen, und verfeinert den Begriff.",
+   "year": 1965,
+   "yearLabel": "1965"
+  },
+  {
+   "id": "unvollstaendige-information",
+   "title": "Unvollständige Information: Spielen, ohne den Gegner zu kennen",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle"
+   ],
+   "why": "Harsanyis Idee, Unwissen über den Typ des anderen als Wahrscheinlichkeit ins Spiel zu bringen, macht Verhandlung und Auktion modellierbar."
+  },
+  {
+   "id": "wiederholte-spiele",
+   "title": "Wiederholte Spiele: Der Schatten der Zukunft",
+   "kind": "konzept",
+   "journeys": [
+    "grundmodelle",
+    "kooperation"
+   ],
+   "why": "Wer sich wieder begegnet, kann Kooperation belohnen und Betrug bestrafen; so löst sich das Dilemma teilweise auf."
+  },
+  {
+   "id": "oeffentliche-gueter",
+   "title": "Trittbrettfahrer: Das Dilemma mit vielen",
+   "kind": "konzept",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Das Gefangenendilemma für Gruppen: Alle profitieren vom Gemeingut, jeder spart gern seinen Beitrag."
+  },
+  {
+   "id": "allmende-tragoedie",
+   "title": "Die Tragödie der Allmende: Hardin 1968",
+   "kind": "ereignis",
+   "journeys": [
+    "kooperation",
+    "geschichte"
+   ],
+   "why": "Ein Aufsatz von 1968 machte die Überweidung zum Sinnbild für Gemeingüter und löste eine lange Debatte aus.",
+   "year": 1968,
+   "yearLabel": "1968"
+  },
+  {
+   "id": "ostrom-gemeingueter",
+   "title": "Elinor Ostrom: Gemeingüter ohne Tragödie",
+   "kind": "person",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Echte Gemeinschaften regeln Gemeingüter oft erfolgreich; Ostrom erhielt dafür 2009 den Wirtschaftsnobelpreis."
+  },
+  {
+   "id": "axelrod-turniere",
+   "title": "Axelrods Turniere: Wer gewinnt, wenn alle mehrfach spielen?",
+   "kind": "ereignis",
+   "journeys": [
+    "kooperation",
+    "geschichte"
+   ],
+   "why": "Ein Computerturnier zeigte, dass eine einfache, freundliche Strategie überraschend gut abschneidet.",
+   "year": 1980,
+   "yearLabel": "1980"
+  },
+  {
+   "id": "tit-for-tat",
+   "title": "Tit for Tat: Nett, vergeltend, nachsichtig, klar",
+   "kind": "konzept",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Die Siegerstrategie erklärt, warum Kooperation unter Egoisten entstehen kann, und wo ihre Grenzen liegen.",
+   "exhibit": "dilemma-turnier"
+  },
+  {
+   "id": "evolutionaer-stabile-strategie",
+   "title": "Evolutionär stabile Strategien: Falke und Taube",
+   "kind": "konzept",
+   "journeys": [
+    "kooperation",
+    "geschichte"
+   ],
+   "why": "Maynard Smith und Price verlegen die Spieltheorie in die Biologie: Strategien ohne Nachdenken, nur durch Selektion.",
+   "year": 1973,
+   "yearLabel": "1973"
+  },
+  {
+   "id": "ultimatum-spiel",
+   "title": "Das Ultimatum-Spiel: Wann lehnst du Geld ab?",
+   "kind": "instrument",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Der Laborversuch, in dem Menschen Gewinne ausschlagen, um Unfairness zu bestrafen."
+  },
+  {
+   "id": "homo-oeconomicus",
+   "title": "Mythos: Der Mensch ist der Homo oeconomicus",
+   "kind": "mythos",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Prüft, was das Modell des rein eigennützigen Rechners wirklich behauptet und was Experimente dazu sagen."
+  },
+  {
+   "id": "verlustaversion",
+   "title": "Verlustaversion: Warum Verlieren mehr wehtut",
+   "kind": "konzept",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Kahneman und Tversky zeigen, dass Menschen Gewinne und Verluste asymmetrisch bewerten."
+  },
+  {
+   "id": "nudging",
+   "title": "Nudging: Anstupsen mit Absicht",
+   "kind": "methode",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Wie Voreinstellungen Entscheidungen lenken und warum das Konzept umstritten ist."
+  },
+  {
+   "id": "replikation-kritik",
+   "title": "Verhaltensökonomik auf dem Prüfstand",
+   "kind": "konzept",
+   "journeys": [
+    "kooperation"
+   ],
+   "why": "Offene Frage der Reise: Welche Befunde halten, welche nicht, und wie viel Rationalität bleibt?"
+  },
+  {
+   "id": "waldegrave-brief",
+   "title": "Waldegraves Brief: Die erste gemischte Lösung",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Der früheste bekannte Lösungsvorschlag eines Zwei-Personen-Spiels mit Zufallsmischung, 1713.",
+   "year": 1713,
+   "yearLabel": "1713"
+  },
+  {
+   "id": "cournot-duopol",
+   "title": "Cournot: Zwei Unternehmen, ein Markt",
+   "kind": "person",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Ein Gleichgewicht, 112 Jahre vor Nash: Zwei Anbieter wählen Mengen.",
+   "year": 1838,
+   "yearLabel": "1838"
+  },
+  {
+   "id": "theory-of-games",
+   "title": "Von Neumann und Morgenstern: Das Buch von 1944",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Das Buch macht aus einer mathematischen Idee ein Forschungsprogramm für die Wirtschaft.",
+   "year": 1944,
+   "yearLabel": "1944"
+  },
+  {
+   "id": "nobelpreis-1994",
+   "title": "Nash, Harsanyi, Selten: Der Nobelpreis 1994",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Die erste Nobelpreisehrung der Spieltheorie.",
+   "year": 1994,
+   "yearLabel": "1994"
+  }
+ ],
+ "orders": {
+  "grundmodelle": [
+   "normalform",
+   "dominanz",
+   "vickrey-auktion",
+   "gefangenendilemma",
+   "nash-gleichgewicht",
+   "mythos-gleichgewicht",
+   "fokalpunkte",
+   "minimax-nullsumme",
+   "gemischte-strategien",
+   "rueckwaertsinduktion",
+   "glaubwuerdige-drohung",
+   "unvollstaendige-information",
+   "wiederholte-spiele"
+  ],
+  "kooperation": [
+   "gefangenendilemma",
+   "oeffentliche-gueter",
+   "allmende-tragoedie",
+   "ostrom-gemeingueter",
+   "wiederholte-spiele",
+   "axelrod-turniere",
+   "tit-for-tat",
+   "evolutionaer-stabile-strategie",
+   "ultimatum-spiel",
+   "homo-oeconomicus",
+   "verlustaversion",
+   "nudging",
+   "replikation-kritik"
+  ],
+  "geschichte": [
+   "waldegrave-brief",
+   "cournot-duopol",
+   "minimax-nullsumme",
+   "theory-of-games",
+   "gefangenendilemma",
+   "nash-gleichgewicht",
+   "fokalpunkte",
+   "vickrey-auktion",
+   "glaubwuerdige-drohung",
+   "allmende-tragoedie",
+   "evolutionaer-stabile-strategie",
+   "axelrod-turniere",
+   "nobelpreis-1994"
+  ]
+ }
+}

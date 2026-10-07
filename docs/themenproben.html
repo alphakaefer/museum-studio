@@ -1,0 +1,214 @@
+<title>Gehirnmuseum Themenproben</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: neutrale Rahmenseite mit Reitern; darin drei in sich geschlossene Themenproben (je eigene Welt) */
+:root{--bg:#f3f3f1;--fg:#1d1f21;--mute:#5d6166;--line:#cfd1d3;--tab:#e4e5e6;--tabon:#1d1f21;--tabfg:#f3f3f1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17191b;--fg:#e6e7e8;--mute:#9ba0a5;--line:#3a3d40;--tab:#26292b;--tabon:#e6e7e8;--tabfg:#17191b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17191b;--fg:#e6e7e8;--mute:#9ba0a5;--line:#3a3d40;--tab:#26292b;--tabon:#e6e7e8;--tabfg:#17191b;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:18px}
+h1{font:700 22px/1.2 system-ui,sans-serif;margin:0}
+.lead{margin:0;color:var(--mute);max-width:68ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{font:600 14px system-ui,sans-serif;border:1px solid var(--line);background:var(--tab);color:var(--fg);padding:9px 14px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--tabon);color:var(--tabfg);border-color:var(--tabon)}
+.tabs button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.note{font-size:13px;color:var(--mute);margin:0}
+.panel{display:none;min-width:0}.panel.on{display:block}
+.scroll{overflow-x:auto}
+.scroll svg{display:block;min-width:500px;width:100%;height:auto}
+.fw{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:6px}
+.fw h2{font-size:15px;margin:0}.fw p{margin:0;color:var(--mute);font-size:14px;max-width:72ch}
+
+/* ---------- A  Kabinett (organisch, historisch) ---------- */
+.t-a{--paper:#e6e1cf;--ink:#2b3a2e;--ink2:#5a6650;--rule:#8b8a6c;--v:#6b8f4e;--t:#a8452f;--k:#3f6f86;--gold:#a98a3a;
+ background:var(--paper);color:var(--ink);font:18px/1.6 "Crimson Pro",Georgia,serif;padding:clamp(16px,4vw,40px);border:1px solid var(--rule);
+ background-image:radial-gradient(ellipse at 20% 0%,#f0ecdc 0,transparent 60%),radial-gradient(ellipse at 100% 100%,#d6d0b8 0,transparent 55%);box-shadow:inset 0 0 0 6px var(--paper),inset 0 0 0 7px var(--rule)}
+.t-a h3{font:400 clamp(30px,5vw,46px)/1.05 "IM Fell English",Georgia,serif;margin:0;letter-spacing:.01em}
+.t-a .sub{font-style:italic;color:var(--ink2);margin:4px 0 18px}
+.t-a svg text{font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:15px;fill:var(--ink)}
+.t-a .plate{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:clamp(18px,4vw,40px);margin-top:26px;align-items:start}
+.t-a .label{border:1px solid var(--rule);padding:16px 18px;background:#efead9;box-shadow:2px 3px 0 #cfc8ad;transform:rotate(-1.2deg)}
+.t-a .label .no{font:400 13px "IM Fell English",serif;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.t-a .label b{display:block;font:400 26px/1.15 "IM Fell English",serif;margin:6px 0}
+.t-a .label i{color:var(--ink2);font-size:16px}
+.t-a .plate p{margin:0 0 .8em}
+.t-a .plate p:first-of-type::first-letter{font:400 3.1em/.8 "IM Fell English",serif;float:left;padding:.08em .1em 0 0;color:var(--t)}
+.t-a ul{margin:.4em 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:16px;color:var(--ink2)}
+.t-a li::before{content:"\2766\00a0";color:var(--v)}
+.t-a .umst{margin-top:14px;padding-top:10px;border-top:1px dashed var(--rule);font-style:italic;font-size:16px}
+@media(max-width:700px){.t-a .plate{grid-template-columns:1fr}}
+
+/* ---------- B  Ma (Zen, Bauhaus-funktional) ---------- */
+.t-b{--w:#f1f0ec;--k:#111;--r:#d52b1e;--bl:#1d4ea8;--y:#eeb400;--g:#c9c8c3;
+ background:var(--w);color:var(--k);font:400 16px/1.55 Jost,"Futura","Century Gothic",system-ui,sans-serif;padding:clamp(16px,5vw,56px)}
+.t-b h3{font:800 clamp(34px,7vw,72px)/.95 Jost,system-ui,sans-serif;letter-spacing:-.03em;margin:0;text-transform:lowercase}
+.t-b .sub{margin:14px 0 40px;max-width:44ch;color:#555}
+.t-b svg text{font-family:Jost,system-ui,sans-serif;font-size:13px;font-weight:500;fill:var(--k)}
+.t-b .plate{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(24px,6vw,72px);margin-top:56px;border-top:3px solid var(--k);padding-top:22px}
+.t-b .big{font:800 clamp(56px,10vw,120px)/.85 Jost,sans-serif;letter-spacing:-.04em;color:var(--r)}
+.t-b .meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-top:14px}
+.t-b h4{font:700 28px/1.15 Jost,sans-serif;margin:0 0 14px}
+.t-b p{margin:0 0 1em;max-width:58ch}
+.t-b ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px;max-width:58ch}
+.t-b li{display:grid;grid-template-columns:14px 1fr;gap:12px;align-items:start;font-size:15px}
+.t-b li::before{content:"";width:10px;height:10px;background:var(--bl);margin-top:7px}
+.t-b .umst{margin-top:26px;display:flex;gap:12px;align-items:center;font-size:15px}
+.t-b .umst i{flex:none;width:16px;height:16px;border-radius:50%;background:var(--k)}
+@media(max-width:700px){.t-b .plate{grid-template-columns:1fr}}
+
+/* ---------- C  Quelltext ---------- */
+.t-c{--bg:#0d1117;--tx:#c9d1d9;--dim:#6e7681;--g:#3fb950;--b:#58a6ff;--o:#e3b341;--p:#d2a8ff;--rd:#ff7b72;--ln:#30363d;
+ background:var(--bg);color:var(--tx);font:14px/1.65 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;border:1px solid var(--ln);border-radius:8px;overflow:hidden}
+.t-c .bar{display:flex;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--ln);color:var(--dim);font-size:12px}
+.t-c .bar i{width:10px;height:10px;border-radius:50%;background:var(--ln)}
+.t-c .body{padding:clamp(14px,3vw,28px)}
+.t-c .pr{color:var(--g)}.t-c .cm{color:var(--dim)}.t-c .k{color:var(--b)}.t-c .s{color:var(--o)}.t-c .n{color:var(--p)}
+.t-c svg text{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:13px;fill:var(--tx)}
+.t-c svg .h{fill:var(--dim)}
+.t-c pre{margin:14px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
+.t-c .cur{display:inline-block;width:.6em;height:1.1em;background:var(--g);vertical-align:text-bottom;animation:bl 1.1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.t-c .cur{animation:none}}
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>Gehirnmuseum – drei Themenproben</h1>
+    <p class="lead">Dieselben Daten (drei Reisen, zwei Umsteigestationen, eine Station), dreimal anders gedacht. Nicht nur die Farben ändern sich, sondern auch, wie das Netz gezeichnet wird und wie eine Station aufgebaut ist.</p>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Themenprobe">
+    <button role="tab" aria-selected="true" data-p="a" id="tab-a">A · Kabinett</button>
+    <button role="tab" aria-selected="false" data-p="b" id="tab-b">B · Ma</button>
+    <button role="tab" aria-selected="false" data-p="c" id="tab-c">C · Quelltext</button>
+  </div>
+  <p class="note">Ausschnitt: Verzerrungen, Psychotraumatologie und KVT. Die Lage der Kreuzungen ist für die Probe vereinfacht. Der Ankereffekt-Text stammt aus der echten Station.</p>
+
+  <section class="panel t-a on" id="p-a" aria-labelledby="tab-a">
+    <h3>Kabinett der Seelenkunde</h3>
+    <p class="sub">Reisen wachsen wie Ranken durch ein Herbarium. Wer umsteigt, wechselt den Zweig.</p>
+    <div class="scroll"><svg id="svg-a" viewBox="0 0 580 340" role="img" aria-label="Netz im Stil eines Herbariums"></svg></div>
+    <div class="plate">
+      <div class="label"><div class="no">Tafel XII · Konzept · 1974</div><b>Ankereffekt</b><i>Zahlen, die festhalten.</i></div>
+      <div>
+        <p>Tversky und Kahneman ließen Versuchspersonen an einem Glücksrad drehen, das heimlich nur bei 10 oder bei 65 stehen blieb. Danach sollten sie schätzen, wie hoch der Anteil afrikanischer Staaten in den Vereinten Nationen ist. Die Gruppe mit der 10 schätzte im Median 25 Prozent, die Gruppe mit der 65 schätzte 45.</p>
+        <ul><li>Englich, Mussweiler und Strack (2006) fanden den Effekt auch bei erfahrenen Juristen.</li><li>In den Many-Labs-Wiederholungen von 2014 gehörte er zu den stabilsten Befunden.</li></ul>
+        <div class="umst">Umsteigen zur Diagnostik: Erste Eindrücke und Etiketten können zum Anker für alles Weitere werden.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel t-b" id="p-b" aria-labelledby="tab-b">
+    <h3>gehirn<br>museum</h3>
+    <p class="sub">Eine Linie, eine Farbe, eine Form. Gerade Strecken, große Flächen, viel Luft.</p>
+    <div class="scroll"><svg id="svg-b" viewBox="0 0 580 340" role="img" aria-label="Netz als rechtwinkliger Plan"></svg></div>
+    <div class="plate">
+      <div><div class="big">1974</div><div class="meta">Konzept · Verzerrungen</div></div>
+      <div>
+        <h4>Ankereffekt</h4>
+        <p>Tversky und Kahneman ließen Versuchspersonen an einem Glücksrad drehen, das heimlich nur bei 10 oder bei 65 stehen blieb. Danach sollten sie schätzen, wie hoch der Anteil afrikanischer Staaten in den Vereinten Nationen ist. Die Gruppe mit der 10 schätzte im Median 25 Prozent, die Gruppe mit der 65 schätzte 45.</p>
+        <ul><li>Englich, Mussweiler und Strack (2006) fanden den Effekt auch bei erfahrenen Juristen.</li><li>In den Many-Labs-Wiederholungen von 2014 gehörte er zu den stabilsten Befunden.</li></ul>
+        <div class="umst"><i></i>Umsteigen zur Diagnostik: Erste Eindrücke und Etiketten können zum Anker werden.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel t-c" id="p-c" aria-labelledby="tab-c">
+    <div class="bar"><i></i><i></i><i></i><span>&nbsp;gehirnmuseum — git log --graph</span></div>
+    <div class="body">
+      <div><span class="pr">$</span> git log --graph --all --oneline</div>
+      <div class="scroll"><svg id="svg-c" viewBox="0 0 580 330" role="img" aria-label="Netz als Git-Graph"></svg></div>
+      <div><span class="pr">$</span> cat stationen/ankereffekt.md</div>
+<pre><span class="cm">---</span>
+<span class="k">id</span>: ankereffekt
+<span class="k">kind</span>: konzept
+<span class="k">year</span>: <span class="n">1974</span>
+<span class="k">journeys</span>: [<span class="s">verzerrung</span>, <span class="s">diagnostik</span>]
+<span class="cm">---</span>
+
+<span class="k"># Ankereffekt: Zahlen, die festhalten</span>
+
+Tversky und Kahneman ließen Versuchspersonen an einem Glücksrad drehen, das heimlich nur bei 10 oder bei 65 stehen blieb. Danach sollten sie schätzen, wie hoch der Anteil afrikanischer Staaten in den Vereinten Nationen ist. Die Gruppe mit der 10 schätzte im Median 25 Prozent, die Gruppe mit der 65 schätzte 45.
+
+<span class="cm">- [x]</span> Englich, Mussweiler, Strack (2006): Effekt auch bei erfahrenen Juristen
+<span class="cm">- [x]</span> Many Labs (2014): einer der stabilsten Befunde
+
+<span class="cm">&gt; merge:</span> <span class="s">diagnostik</span> – Erste Eindrücke und Etiketten können zum Anker werden.</pre>
+      <div style="margin-top:10px"><span class="pr">$</span> <span class="cur"></span></div>
+    </div>
+  </section>
+
+  <div class="fw">
+    <h2>Was daraus für ein Framework folgt</h2>
+    <p>Ein Thema besteht aus drei austauschbaren Teilen: Design-Tokens (Farben, Schrift), einem Netzzeichner (Ranken, Raster, Git-Graph) und einer Stationsvorlage (Tafel, Plakat, Markdown-Datei). Die Daten bleiben gleich. Das lässt sich in der Seite als Thema-Schalter umsetzen.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+var S={ml:['Müller-Lyer',60,70,0,-14,'middle'],vg:['Vorhersagendes Gehirn',200,70,0,-14,'middle'],kt:['Kahneman & Tversky',340,70,0,-14,'middle'],ak:['Ankereffekt',500,70,0,-14,'middle'],
+ ja:['Janet',200,170,-14,5,'end'],am:['Amygdala & Furcht',340,170,-10,-14,'end'],tb:['Trauma-Begriff',500,170,0,-14,'end'],
+ el:['Ellis ABC',340,260,-14,5,'end'],ep:['Epiktet',500,260,0,24,'end']};
+var J={V:{n:'Verzerrungen',p:['ml','vg','kt','ak']},T:{n:'Trauma',p:['vg','ja','am','tb']},K:{n:'KVT',p:['am','el','ep']}};
+var NS='http://www.w3.org/2000/svg';
+function el(t,a,txt){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(txt)e.textContent=txt;return e}
+function shared(id){var c=0;for(var j in J)if(J[j].p.indexOf(id)>-1)c++;return c>1}
+function label(svg,id,dx,dy){var s=S[id];svg.appendChild(el('text',{x:s[1]+(dx||0)+s[3],y:s[2]+s[4]+(dy||0),'text-anchor':s[5]},s[0]))}
+function hash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(16).slice(0,7).padStart(7,'0')}
+
+/* A: Ranken – Catmull-Rom mit leichtem Wackeln */
+(function(){var svg=document.getElementById('svg-a');
+ var defs=el('defs',{});var f=el('filter',{id:'wob',x:'-5%',y:'-5%',width:'110%',height:'110%'});
+ f.appendChild(el('feTurbulence',{type:'fractalNoise',baseFrequency:'0.035',numOctaves:'2',seed:'4'}));
+ f.appendChild(el('feDisplacementMap',{in:'SourceGraphic',scale:'5'}));defs.appendChild(f);svg.appendChild(defs);
+ var col={V:'#6b8f4e',T:'#a8452f',K:'#3f6f86'};var jit={ml:[0,6],vg:[-8,-10],kt:[0,12],ak:[0,-6],ja:[-14,0],am:[6,10],tb:[0,-8],el:[-6,0],ep:[0,8]};
+ function P(id){var s=S[id],j=jit[id]||[0,0];return[s[1]+j[0],s[2]+j[1]]}
+ var g=el('g',{filter:'url(#wob)'});svg.appendChild(g);
+ for(var k in J){var pts=J[k].p.map(P);var ex=[pts[0]].concat(pts,[pts[pts.length-1]]);
+  var d='M'+pts[0][0]+','+pts[0][1];
+  for(var i=1;i<ex.length-2;i++){var p0=ex[i-1],p1=ex[i],p2=ex[i+1],p3=ex[i+2];
+   d+=' C'+(p1[0]+(p2[0]-p0[0])/6)+','+(p1[1]+(p2[1]-p0[1])/6)+' '+(p2[0]-(p3[0]-p1[0])/6)+','+(p2[1]-(p3[1]-p1[1])/6)+' '+p2[0]+','+p2[1]}
+  g.appendChild(el('path',{d:d,fill:'none',stroke:col[k],'stroke-width':'5','stroke-linecap':'round',opacity:'.92'}));
+  g.appendChild(el('path',{d:d,fill:'none',stroke:'#2b3a2e','stroke-width':'1','stroke-dasharray':'1 7','stroke-linecap':'round',opacity:'.5',transform:'translate(0,6)'}))}
+ for(var id in S){var p=P(id),sh=shared(id);
+  g.appendChild(el('circle',{cx:p[0],cy:p[1],r:sh?11:6.5,fill:'#e6e1cf',stroke:'#2b3a2e','stroke-width':sh?2.5:1.8}));
+  if(sh)g.appendChild(el('circle',{cx:p[0],cy:p[1],r:4,fill:'#a98a3a'}));
+  var s=S[id];svg.appendChild(el('text',{x:p[0]+s[3],y:p[1]+s[4]+(sh&&s[4]<0?-4:0),'text-anchor':s[5]},s[0]))}
+})();
+
+/* B: rechtwinklig, Kreis/Quadrat/Dreieck */
+(function(){var svg=document.getElementById('svg-b');var col={V:'#d52b1e',T:'#1d4ea8',K:'#eeb400'};
+ for(var x=0;x<=580;x+=20)svg.appendChild(el('line',{x1:x,y1:0,x2:x,y2:340,stroke:'#c9c8c3','stroke-width':.5}));
+ for(var y=0;y<=340;y+=20)svg.appendChild(el('line',{x1:0,y1:y,x2:580,y2:y,stroke:'#c9c8c3','stroke-width':.5}));
+ for(var k in J){var d='';J[k].p.forEach(function(id,i){var s=S[id];d+=(i?'L':'M')+s[1]+','+s[2]});
+  svg.appendChild(el('path',{d:d,fill:'none',stroke:col[k],'stroke-width':10,'stroke-linejoin':'miter'}))}
+ for(var id in S){var s=S[id],x=s[1],y=s[2],sh=shared(id);
+  if(sh){svg.appendChild(el('circle',{cx:x,cy:y,r:14,fill:'#111'}));svg.appendChild(el('circle',{cx:x,cy:y,r:5,fill:'#f1f0ec'}))}
+  else{var k0=J.V.p.indexOf(id)>-1?'V':J.T.p.indexOf(id)>-1?'T':'K';
+   if(k0==='V')svg.appendChild(el('circle',{cx:x,cy:y,r:9,fill:'#f1f0ec',stroke:'#111','stroke-width':3}));
+   else if(k0==='T')svg.appendChild(el('rect',{x:x-9,y:y-9,width:18,height:18,fill:'#f1f0ec',stroke:'#111','stroke-width':3}));
+   else svg.appendChild(el('path',{d:'M'+x+','+(y-11)+'L'+(x+10)+','+(y+8)+'L'+(x-10)+','+(y+8)+'Z',fill:'#f1f0ec',stroke:'#111','stroke-width':3,'stroke-linejoin':'miter'}))}
+  label(svg,id,0,sh&&S[id][4]<0?-6:0)}
+})();
+
+/* C: Git-Graph, eine Spalte je Reise */
+(function(){var svg=document.getElementById('svg-c');
+ var rows=['ml','vg','kt','ja','am','ak','el','tb','ep'];var lane={V:30,T:62,K:94};var col={V:'#3fb950',T:'#ff7b72',K:'#58a6ff'};
+ var RH=34,Y0=22;function y(id){return Y0+rows.indexOf(id)*RH}
+ for(var k in J){var ys=J[k].p.map(y);svg.appendChild(el('line',{x1:lane[k],y1:Math.min.apply(0,ys),x2:lane[k],y2:Math.max.apply(0,ys),stroke:col[k],'stroke-width':2}))}
+ rows.forEach(function(id){var ks=[];for(var k in J)if(J[k].p.indexOf(id)>-1)ks.push(k);
+  if(ks.length>1){var a=lane[ks[0]],b=lane[ks[1]];svg.appendChild(el('path',{d:'M'+a+','+y(id)+'H'+b,stroke:'#d2a8ff','stroke-width':2,fill:'none'}))}
+  ks.forEach(function(k){svg.appendChild(el('circle',{cx:lane[k],cy:y(id),r:ks.length>1?6:5,fill:ks.length>1?'#d2a8ff':'#0d1117',stroke:col[k],'stroke-width':2.5}))});
+  var tag=ks.length>1?' (merge '+ks.map(function(k){return J[k].n.toLowerCase()}).join(' + ')+')':'';
+  svg.appendChild(el('text',{x:130,y:y(id)+4,class:'h'},hash(id)));
+  svg.appendChild(el('text',{x:205,y:y(id)+4},S[id][0]+tag))});
+ ['V','T','K'].forEach(function(k){svg.appendChild(el('text',{x:lane[k]-4,y:Y0+rows.length*RH-6,fill:col[k],style:'fill:'+col[k],'font-size':11},k))});
+})();
+
+/* Reiter */
+var tabs=document.querySelectorAll('.tabs button');
+function show(p){tabs.forEach(function(b){b.setAttribute('aria-selected',b.dataset.p===p)});
+ document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p)})}
+tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.p)})});
+})();
+</script>

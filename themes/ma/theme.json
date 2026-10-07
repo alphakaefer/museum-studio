@@ -1,0 +1,8 @@
+{
+  "id": "ma",
+  "name": "Ma",
+  "description": "Weißraum und Raster: Grotesk, Primärfarben, große Zahlen, flache Flächen ohne Schatten, asymmetrisch.",
+  "fonts": ["Jost", "Futura", "Century Gothic", "system-ui"],
+  "map": { "lines": "octilinear", "nodes": "shapes" },
+  "mode": "both"
+}

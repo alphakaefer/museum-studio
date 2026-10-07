@@ -1,0 +1,36 @@
+{
+  "_hinweis": "Metadaten und Wortschatz. Felder mit _ am Anfang sind Kommentare.",
+  "id": "spieltheorie",
+  "title": "Spieltheorie",
+  "eyebrow": "Wie Entscheidungen aufeinander treffen",
+  "tagline": "Drei Reisen durch Dilemmata, Gleichgewichte und die Frage, wann Menschen kooperieren",
+  "lang": "de",
+  "defaultSkin": "halle",
+  "vocab": {
+    "journey": "Reise",
+    "journeys": "Reisen",
+    "station": "Station",
+    "stations": "Stationen",
+    "interchange": "Kreuzung",
+    "interchanges": "Kreuzungen",
+    "transfer": "Umsteigen",
+    "passport": "Reisepass",
+    "grandTour": "Große Rundreise",
+    "networkMap": "Netzplan",
+    "timeline": "Zeitstrahl"
+  },
+  "journeyTypes": {
+    "funktional": "Funktionale Reisen",
+    "historisch": "Historische Reisen"
+  },
+  "exhibits": [
+    "dilemma-turnier"
+  ],
+  "limits": {
+    "min": 11,
+    "max": 28
+  },
+  "footer": "Bildung, keine Anlage- oder Rechtsberatung. Die Modelle der Spieltheorie vereinfachen stark; sie beschreiben Anreize, keine Handlungsempfehlung für den Einzelfall.",
+  "license": "CC BY 4.0",
+  "credits": "Karl Hosang, Museum Studio"
+}

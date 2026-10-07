@@ -1,0 +1,232 @@
+{
+ "journeys": [
+  {
+   "id": "tasse",
+   "typ": "funktional",
+   "name": "Von der Pflanze zur Tasse"
+  },
+  {
+   "id": "geschichte",
+   "typ": "historisch",
+   "name": "Kaffee in der Geschichte"
+  }
+ ],
+ "stations": [
+  {
+   "id": "kaffeepflanze",
+   "title": "Die Kaffeepflanze: Eine Frucht mit zwei Samen",
+   "kind": "konzept",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Der Einstieg: Kaffee wächst als Frucht an einem Strauch, die „Bohne“ ist ein Samen."
+  },
+  {
+   "id": "kaldi-legende",
+   "title": "Kaldi und die tanzenden Ziegen",
+   "kind": "mythos",
+   "journeys": [
+    "tasse",
+    "geschichte"
+   ],
+   "why": "Die berühmteste Herkunftsgeschichte des Kaffees ist eine Legende; hier trifft die Pflanze (Äthiopien) auf die Frage, wie Geschichte erzählt wird.",
+   "year": 1671,
+   "yearLabel": "1671"
+  },
+  {
+   "id": "arabica-robusta",
+   "title": "Arabica und Robusta: Zwei Arten, zwei Charaktere",
+   "kind": "konzept",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Fast aller Kaffee stammt von zwei Arten mit verschiedenem Geschmack, Koffeingehalt und Anbau."
+  },
+  {
+   "id": "palheta-brasilien",
+   "title": "Palheta und der Weg nach Brasilien",
+   "kind": "ereignis",
+   "journeys": [
+    "tasse",
+    "geschichte"
+   ],
+   "why": "Ein Ereignis des 18. Jahrhunderts macht Brasilien zum größten Anbauland; es verbindet Anbaugeschichte und Weltgeschichte.",
+   "year": 1727,
+   "yearLabel": "1727"
+  },
+  {
+   "id": "anbaugebiete",
+   "title": "Der Kaffeegürtel: Wo Kaffee wächst",
+   "kind": "ort",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Klima und Höhenlage bestimmen, wo Kaffee wächst und wie er schmeckt."
+  },
+  {
+   "id": "ernte-aufbereitung",
+   "title": "Ernte und Aufbereitung: Von der Kirsche zum Rohkaffee",
+   "kind": "methode",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Wie aus der Frucht ein lagerfähiger Rohkaffee wird, auf nassem oder trockenem Weg."
+  },
+  {
+   "id": "fairtrade-siegel",
+   "title": "Fairtrade: Ein Siegel für gerechtere Preise",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte",
+    "tasse"
+   ],
+   "why": "Das Siegel von 1988 verbindet die Anbauseite mit der Frage nach fairen Preisen für die Menschen dahinter.",
+   "year": 1988,
+   "yearLabel": "1988"
+  },
+  {
+   "id": "roestung",
+   "title": "Die Röstung: Wo das Aroma entsteht",
+   "kind": "methode",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Beim Rösten entsteht aus geruchlosem Rohkaffee das Aroma; Maillard-Reaktion und Karamellisierung."
+  },
+  {
+   "id": "mahlgrad",
+   "title": "Mahlgrad und Extraktion: Warum fein nicht gleich stark ist",
+   "kind": "konzept",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Der Mahlgrad steuert, wie viel Wasser aus dem Kaffee herauslöst, und damit bitter oder sauer."
+  },
+  {
+   "id": "bezzera-espresso",
+   "title": "Bezzera und die erste Espressomaschine",
+   "kind": "instrument",
+   "journeys": [
+    "geschichte",
+    "tasse"
+   ],
+   "why": "Die Espressotechnik von 1901 verbindet Erfindungsgeschichte und die heutige Zubereitung mit Druck, Mahlgrad und Zeit.",
+   "year": 1901,
+   "yearLabel": "1901"
+  },
+  {
+   "id": "koffein",
+   "title": "Koffein: Wie ein Molekül wach hält",
+   "kind": "konzept",
+   "journeys": [
+    "tasse"
+   ],
+   "why": "Das Ende der Reise: Was in der Tasse im Körper passiert, und wie viel davon unbedenklich ist."
+  },
+  {
+   "id": "jemen-sufi",
+   "title": "Jemen: Wachbleiben für die Nacht",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Die ersten belegten Kaffeetrinker, Beginn der Geschichte des Getränks.",
+   "year": 1450,
+   "yearLabel": "um 1450"
+  },
+  {
+   "id": "mekka-verbot",
+   "title": "Mekka 1511: Das erste Kaffeeverbot",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Neue Genussmittel wecken Misstrauen: das erste bekannte Verbot.",
+   "year": 1511,
+   "yearLabel": "1511"
+  },
+  {
+   "id": "kaffeehaus-oxford",
+   "title": "Oxford 1650: Das Kaffeehaus kommt nach England",
+   "kind": "ort",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Das Kaffeehaus als neuer Ort der Öffentlichkeit in Europa.",
+   "year": 1650,
+   "yearLabel": "1650"
+  },
+  {
+   "id": "lloyds-coffee-house",
+   "title": "Lloyd’s Coffee House: Wo Versicherung begann",
+   "kind": "ort",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Wie aus einem Treffpunkt für Schiffsnachrichten ein Versicherungsmarkt wurde.",
+   "year": 1688,
+   "yearLabel": "1688"
+  },
+  {
+   "id": "bach-kaffeekantate",
+   "title": "Bachs Kaffeekantate: Eine Tochter will ihren Kaffee",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Kaffee als Alltagsthema im 18. Jahrhundert, aufgegriffen in einer Kantate.",
+   "year": 1734,
+   "yearLabel": "um 1734"
+  },
+  {
+   "id": "roselius-koffeinfrei",
+   "title": "Roselius: Kaffee ohne Koffein",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Das Verfahren zur Entkoffeinierung, eine Antwort auf den Wunsch nach Kaffee ohne Wirkung.",
+   "year": 1905,
+   "yearLabel": "1905"
+  },
+  {
+   "id": "melitta-filter",
+   "title": "Melitta Bentz und der Papierfilter",
+   "kind": "instrument",
+   "journeys": [
+    "geschichte"
+   ],
+   "why": "Eine Erfindung aus dem Alltag, die die Zubereitung für Millionen Haushalte veränderte.",
+   "year": 1908,
+   "yearLabel": "1908"
+  }
+ ],
+ "orders": {
+  "tasse": [
+   "kaffeepflanze",
+   "kaldi-legende",
+   "arabica-robusta",
+   "palheta-brasilien",
+   "anbaugebiete",
+   "ernte-aufbereitung",
+   "fairtrade-siegel",
+   "roestung",
+   "mahlgrad",
+   "bezzera-espresso",
+   "koffein"
+  ],
+  "geschichte": [
+   "jemen-sufi",
+   "mekka-verbot",
+   "kaffeehaus-oxford",
+   "kaldi-legende",
+   "lloyds-coffee-house",
+   "palheta-brasilien",
+   "bach-kaffeekantate",
+   "bezzera-espresso",
+   "roselius-koffeinfrei",
+   "melitta-filter",
+   "fairtrade-siegel"
+  ]
+ }
+}

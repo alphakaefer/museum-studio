@@ -1,0 +1,8 @@
+{
+  "id": "kabinett",
+  "name": "Kabinett",
+  "description": "Herbarium und Naturforscher-Kabinett: Papier, Tinte, Antiqua, Initialen, Etikett-Kästen und feine Doppellinien.",
+  "fonts": ["IM Fell English", "Iowan Old Style", "Palatino Linotype", "Georgia"],
+  "map": { "lines": "smooth", "nodes": "icons" },
+  "mode": "both"
+}

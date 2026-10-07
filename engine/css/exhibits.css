@@ -1,0 +1,6 @@
+/* ==========================================================================
+   Museum Studio – css/exhibits.css
+   Die Exponate (js/exhibits/*.js) bringen ihre Styles selbst mit (<style data-gx="…">, Präfix gx-)
+   und nutzen nur die Tokens aus museum.css. Diese Datei bleibt absichtlich schlank.
+   ========================================================================== */
+.gm-stage-mount .gx-root { max-width: 100%; }

@@ -1,0 +1,8 @@
+{
+  "id": "quelltext",
+  "name": "Quelltext",
+  "description": "Computer-Code: Monospace, Terminalfenster, Prompt-Präfixe, Zeilennummern, Syntaxfarben. Dunkel zuerst, hell als Papier-Variante.",
+  "fonts": ["JetBrains Mono", "SF Mono", "Menlo", "Consolas", "monospace"],
+  "map": { "lines": "octilinear", "nodes": "shapes" },
+  "mode": "both"
+}

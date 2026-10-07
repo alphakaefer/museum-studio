@@ -1,0 +1,4 @@
+dist/
+node_modules/
+packs/gehirn/
+.DS_Store

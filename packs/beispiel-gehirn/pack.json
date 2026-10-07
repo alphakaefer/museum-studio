@@ -1,0 +1,116 @@
+{
+  "_hinweis": "Abgeleitet aus „gehirn“ mit node tools/derive-pack.mjs gehirn beispiel-gehirn --journeys=verzerrung,kvt,trauma. Felder mit _ sind Kommentare.",
+  "id": "beispiel-gehirn",
+  "title": "Gehirnmuseum – Beispielpaket",
+  "tagline": "{n} Reisen durch den menschlichen Geist – und die Orte, an denen sie sich kreuzen.",
+  "lang": "de",
+  "defaultSkin": "halle",
+  "journeyTypes": {
+    "funktional": {
+      "pl": "Funktionale Reisen",
+      "sg": "Funktionale Reise",
+      "sub": "Wege durch Themen"
+    },
+    "historisch": {
+      "pl": "Historische Reisen",
+      "sg": "Historische Reise",
+      "sub": "Wege durch die Zeit"
+    }
+  },
+  "footer": {
+    "columns": [
+      {
+        "title": "Bildung, keine Therapie",
+        "paragraphs": [
+          "Das Gehirnmuseum informiert und lädt zum Nachdenken ein. Es ersetzt weder eine Diagnose noch eine Behandlung. Die Exponate sind Anschauungsstücke, keine Tests.",
+          "Wenn es dir gerade nicht gut geht: Die Telefonseelsorge ist kostenfrei und rund um die Uhr da. [0800 111 0 111](tel:08001110111) · [0800 111 0 222](tel:08001110222) · [116 123](tel:116123). In akuter Gefahr wähle die 112."
+        ],
+        "classes": [
+          null,
+          "gm-foot-help"
+        ]
+      },
+      {
+        "title": "Privat, wie ein Museumsbesuch",
+        "paragraphs": [
+          "Kein Tracking, keine Cookies, keine externen Dienste. Besuchte Stationen, Stempel und alles, was du in Exponaten eingibst, bleiben in deinem Browser und verlassen ihn nie.",
+          "Alle Icons sind selbst gezeichnet."
+        ]
+      },
+      {
+        "title": "Über dieses Beispiel",
+        "paragraphs": [
+          "Beispielpaket des Frameworks Museum Studio: ein Auszug aus dem Gehirnmuseum. Eigene Pakete tragen hier ihr Impressum und ihre Datenschutzhinweise ein."
+        ]
+      }
+    ]
+  },
+  "eyebrow": "Auszug: 3 von 16 Reisen aus „Gehirnmuseum“",
+  "pageTitle": "Gehirnmuseum – Beispielpaket – 3 Reisen, 66 Stationen",
+  "description": "Beispielpaket des Museum-Studio-Frameworks: ein Auszug aus „Gehirnmuseum“ mit 3 Reisen (Kognitive Verzerrungen, Psychotraumatologie, Kognitive Verhaltenstherapie) und 66 Stationen, mit Exponaten, Netzplan und Reisepass.",
+  "vocab": {
+    "journey": "Reise",
+    "journeys": "Reisen",
+    "station": "Station",
+    "stations": "Stationen",
+    "interchange": "Kreuzung",
+    "interchanges": "Kreuzungen",
+    "transfer": "Umsteigen",
+    "passport": "Reisepass",
+    "grandTour": "Große Rundreise",
+    "grandTourShort": "Rundreise",
+    "networkMap": "Netzplan",
+    "timeline": "Zeitstrahl",
+    "exhibit": "Exponat",
+    "exhibits": "Exponate",
+    "museum": "Museum",
+    "toolBadge": "Werkzeug für alle Reisen",
+    "moreOnline": "Weiterlesen",
+    "histKurzSuffix": "-Geschichte",
+    "howEyebrow": "Orientierung",
+    "howTitle": "So funktioniert das Museum",
+    "howLead": "Stell dir das Gehirnmuseum wie ein U-Bahn-Netz vor. Jede Linie ist ein Thema, jede Haltestelle ein Gedanke, den du in Ruhe anschauen kannst.",
+    "step1Title": "1 · Reise wählen",
+    "step1Text": "{n} Linien führen durch Kognitive Verzerrungen, Psychotraumatologie, Kognitive Verhaltenstherapie. Such dir die aus, die dich neugierig macht.",
+    "step2Title": "2 · Stationen besuchen",
+    "step2Text": "Jede Station ist ein kleiner Raum: ein Text zum Lesen, ein paar verlässliche Fakten, manchmal ein Exponat zum Ausprobieren.",
+    "step3Title": "3 · An Kreuzungen umsteigen",
+    "step3Text": "Liegt eine Station auf mehreren Linien, kannst du dort wechseln. Dort zeigt sich, wie Themen zusammenhängen, die man sonst getrennt lernt.",
+    "statsLabel": "Das Museum in Zahlen",
+    "tripsEyebrow": "Reiseführer",
+    "tripsTitle": "{n} Reisen zur Auswahl",
+    "viewMapTitle": "Der Netzplan",
+    "viewMapLead": "Alle Reisen auf einen Blick. Wo sich Linien berühren, kannst du umsteigen.",
+    "viewTimelineTitle": "Der Zeitstrahl",
+    "viewPassportTitle": "Dein Reisepass",
+    "viewPassportLead": "Stempel, Fortschritt und Vorschläge für die nächste Fahrt. Alles bleibt in deinem Browser."
+  },
+  "grandTour": {
+    "start": "verzerrung",
+    "end": [
+      "ki-verstehen"
+    ],
+    "tagline": "Eine Fahrt durch alle Reisen, von Kreuzung zu Kreuzung",
+    "intro": "Statt einer Linie von Anfang bis Ende nimmst du die Abkürzungen: Du steigst bei einer Einsteiger-Station ein und wechselst an jeder Kreuzung die Reise, bis du alle einmal berührt hast. So siehst du in einer Stunde, wie Denkfehler, Therapie, Gehirn und Geistesgeschichte zusammenhängen.",
+    "outro": "Du hast alle Reisen berührt. Am Ende bleiben Fragen offen, und jede Reise lässt sich jetzt Station für Station vertiefen."
+  },
+  "stationFiles": [
+    "s-verzerrung",
+    "s-kvt",
+    "s-trauma"
+  ],
+  "exhibits": [
+    "stroop",
+    "anker",
+    "wason",
+    "toleranzfenster",
+    "gedankenprotokoll",
+    "hebb"
+  ],
+  "limits": {
+    "min": 11,
+    "max": 28
+  },
+  "license": "CC BY 4.0",
+  "credits": "Auszug aus dem Gehirnmuseum von Karl Hosang"
+}
