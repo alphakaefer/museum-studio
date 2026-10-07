@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spieltheorie</title>
+<meta name="description" content="Spieltheorie – Wie Entscheidungen aufeinander treffen – Drei Reisen durch Dilemmata, Gleichgewichte und die Frage, wann Menschen kooperieren">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F6F2EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1420" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Spieltheorie">
+<meta property="og:title" content="Spieltheorie">
+<meta property="og:description" content="Spieltheorie – Wie Entscheidungen aufeinander treffen – Drei Reisen durch Dilemmata, Gleichgewichte und die Frage, wann Menschen kooperieren">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spieltheorie">
+<meta name="twitter:description" content="Spieltheorie – Wie Entscheidungen aufeinander treffen – Drei Reisen durch Dilemmata, Gleichgewichte und die Frage, wann Menschen kooperieren">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%230E1420'/%3E%3Cg%20fill='none'%20stroke-width='2.2'%20stroke-linecap='round'%3E%3Cpath%20d='M4%209C13%209%2012%2016%2016%2016S21%2023%2028%2023'%20stroke='%2386B8F0'/%3E%3Cpath%20d='M4%2023C13%2023%2012%2016%2016%2016S21%209%2028%209'%20stroke='%23C4A6F2'/%3E%3Cpath%20d='M4%2016H28'%20stroke='%23F0A56E'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='4.6'%20fill='%230E1420'%20stroke='%23FCB300'%20stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E">
+<script>
+/* Gespeicherte Darstellung und gewählten Skin sofort anwenden (verhindert Aufblitzen). Ohne Speicher gilt die Systemeinstellung. */
+(function(){var d=document.documentElement;try{var m=JSON.parse(localStorage.getItem('gm:theme'));if(m==='light'||m==='dark')d.setAttribute('data-theme',m);}catch(e){}
+var L=["halle","kabinett","ma","quelltext"],s=null;try{s=JSON.parse(localStorage.getItem('gm:skin'));}catch(e){}
+if(L.length){if(L.indexOf(s)<0)s="halle";if(L.indexOf(s)<0)s=L[0];d.setAttribute('data-skin',s);}})();
+</script>
+<link rel="stylesheet" href="css/engine.css">
+<link rel="stylesheet" href="css/exhibits.css">
+<link rel="stylesheet" href="css/journey-colors.css">
+<link rel="stylesheet" href="skins/halle/theme.css">
+<link rel="stylesheet" href="skins/kabinett/theme.css">
+<link rel="stylesheet" href="skins/ma/theme.css">
+<link rel="stylesheet" href="skins/quelltext/theme.css">
+</head>
+<body>
+<a class="gm-skip" href="#main" data-t="skipLink">Zum Inhalt springen</a>
+
+<header class="gm-header" id="kopf" data-tone="dark">
+  <div class="gm-header-in">
+    <a class="gm-brand" href="#/" id="marke">
+      <svg class="gm-brand-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
+        <g fill="none" stroke-width="2.2" stroke-linecap="round">
+          <path d="M4 9C13 9 12 16 16 16S21 23 28 23" stroke="var(--jp-1)"/>
+          <path d="M4 23C13 23 12 16 16 16S21 9 28 9" stroke="var(--jp-3)"/>
+          <path d="M4 16H28" stroke="var(--jp-5)"/>
+          <circle cx="16" cy="16" r="4.6" class="gm-brand-ring" stroke="var(--warm)" stroke-width="2.4"/>
+        </g>
+      </svg>
+      <span class="gm-brand-name" data-pack="title"></span>
+    </a>
+    <nav class="gm-tabs" aria-label="Ansichten">
+      <a class="gm-tab" href="#/karte" data-view="karte"><span class="gm-ico" data-icon="map" data-size="18"></span><span data-t="tabMap">Karte</span></a>
+      <a class="gm-tab" href="#/zeitstrahl" data-view="zeitstrahl"><span class="gm-ico" data-icon="hourglass" data-size="18"></span><span data-t="timeline"></span></a>
+      <a class="gm-tab" href="#/reisepass" data-view="reisepass"><span class="gm-ico" data-icon="stamp" data-size="18"></span><span data-t="passport"></span></a>
+    </nav>
+    <div class="gm-actions">
+      <button type="button" class="gm-iconbtn gm-search-btn" id="such-knopf" aria-label="Suche öffnen" aria-keyshortcuts="/ Control+K" title="Suche ( / oder Strg+K )">
+        <span class="gm-ico" data-icon="search" data-size="20"></span>
+        <span class="gm-search-label">Suche</span>
+        <kbd class="gm-kbd" aria-hidden="true">/</kbd>
+      </button>
+      <div class="gm-skin" id="skin-wrap" hidden></div>
+      <button type="button" class="gm-iconbtn" id="theme-knopf" aria-label="Darstellung wechseln" title="Darstellung wechseln">
+        <span class="gm-ico" data-icon="sunmoon" data-size="20"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <section id="eingang" class="gm-hero" aria-labelledby="titel">
+    <canvas id="hero-canvas" class="gm-hero-canvas" aria-hidden="true"></canvas>
+    <div class="gm-hero-vignette" aria-hidden="true"></div>
+    <div class="gm-hero-in">
+      <svg class="gm-emblem" viewBox="0 0 240 64" aria-hidden="true" focusable="false">
+        <g fill="none" stroke-width="1.5" stroke-linecap="round" id="emblem-linien"></g>
+        <circle class="gm-emblem-ring" cx="120" cy="32" r="7.5" fill="none" stroke="var(--warm)" stroke-width="2.4"/>
+      </svg>
+      <p class="gm-hero-eyebrow" data-t="heroEyebrow"></p>
+      <h1 id="titel" class="gm-hero-title" data-pack="title"></h1>
+      <p class="gm-hero-claim" data-t="heroClaim"></p>
+      <div class="gm-hero-cta">
+        <a class="gm-btn gm-btn-warm" href="#/reise/rundreise" id="cta-tour"><span class="gm-ico" data-icon="compass" data-size="20"></span><span data-t="ctaTour"></span></a>
+        <a class="gm-btn gm-btn-glass" href="#/karte"><span class="gm-ico" data-icon="map" data-size="20"></span><span data-t="ctaMap"></span></a>
+        <a class="gm-btn gm-btn-glass" href="#/zeitstrahl" id="cta-zeit"><span class="gm-ico" data-icon="hourglass" data-size="20"></span><span data-t="ctaTimeline"></span></a>
+      </div>
+      <a class="gm-scrollcue" href="#so-funktioniert" id="scrollcue">
+        <span data-t="enter">Eintreten</span>
+        <span class="gm-ico" data-icon="arrow-right" data-size="18"></span>
+      </a>
+    </div>
+  </section>
+
+  <section id="so-funktioniert" class="gm-how gm-section" aria-labelledby="so-titel">
+    <div class="gm-container">
+      <p class="gm-eyebrow" data-t="howEyebrow"></p>
+      <h2 id="so-titel" class="gm-h2" data-t="howTitle"></h2>
+      <p class="gm-section-lead" data-t="howLead"></p>
+
+      <ol class="gm-steps">
+        <li class="gm-step">
+          <span class="gm-step-ico"><span class="gm-ico" data-icon="ticket" data-size="30"></span></span>
+          <h3 data-t="step1Title"></h3>
+          <p data-t="step1Text"></p>
+        </li>
+        <li class="gm-step">
+          <span class="gm-step-ico"><span class="gm-ico" data-icon="door" data-size="30"></span></span>
+          <h3 data-t="step2Title"></h3>
+          <p data-t="step2Text"></p>
+        </li>
+        <li class="gm-step">
+          <span class="gm-step-ico"><span class="gm-ico" data-icon="circle-arrows" data-size="30"></span></span>
+          <h3 data-t="step3Title"></h3>
+          <p data-t="step3Text"></p>
+        </li>
+      </ol>
+
+      <dl class="gm-stats" id="zahlen" data-t-aria="statsLabel">
+        <div class="gm-stat"><dt data-t="journeys"></dt><dd data-count="reisen">0</dd></div>
+        <div class="gm-stat"><dt data-t="stations"></dt><dd data-count="stationen">0</dd></div>
+        <div class="gm-stat"><dt data-t="interchanges"></dt><dd data-count="kreuzungen">0</dd></div>
+        <div class="gm-stat" id="stat-exponate"><dt data-t="exhibits"></dt><dd data-count="exponate">0</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="reisen" class="gm-trips gm-section" aria-labelledby="reisen-titel">
+    <div class="gm-container">
+      <p class="gm-eyebrow" data-t="tripsEyebrow"></p>
+      <h2 id="reisen-titel" class="gm-h2" data-t="tripsTitle"></h2>
+
+      <div id="reisen-funktional">
+        <h3 class="gm-h3 gm-trips-h" id="reisen-funktional-t"><span class="gm-ico" data-icon="map" data-size="22"></span><span data-typ-label="funktional"></span><span class="gm-trips-n" data-count-typ="funktional"></span></h3>
+        <div class="gm-cards" id="reise-karten-funktional" role="list" aria-labelledby="reisen-funktional-t"></div>
+      </div>
+
+      <div id="reisen-historisch">
+        <h3 class="gm-h3 gm-trips-h" id="reisen-historisch-t"><span class="gm-ico" data-icon="hourglass" data-size="22"></span><span data-typ-label="historisch"></span><span class="gm-trips-n" data-count-typ="historisch"></span></h3>
+        <div class="gm-cards" id="reise-karten-historisch" role="list" aria-labelledby="reisen-historisch-t"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="halle" class="gm-halle" aria-label="Halle: Netzplan, Zeitstrahl und Reisepass" hidden></section>
+
+  <noscript>
+    <p class="gm-noscript">Diese Seite lebt von interaktiven Ansichten und braucht deshalb JavaScript. Es werden keine Daten gesendet und keine Cookies gesetzt.</p>
+  </noscript>
+</main>
+
+<footer class="gm-footer" id="fuss">
+  <div class="gm-container gm-footer-grid" id="fuss-spalten"></div>
+</footer>
+
+<aside id="stationspanel" class="gm-panel" role="dialog" aria-modal="true" aria-label="Station" hidden></aside>
+<div id="reise" class="gm-reise" role="dialog" aria-modal="true" aria-label="Reise" tabindex="-1" hidden></div>
+<div id="suche-overlay" class="gm-overlay gm-suche" role="dialog" aria-modal="true" aria-label="Suche" hidden></div>
+<div id="gm-live" class="gm-sr" aria-live="polite" aria-atomic="true"></div>
+<div id="gm-toast" class="gm-toast" role="status" hidden></div>
+
+<script src="data/pack.js"></script>
+<script src="data/skins.js"></script>
+<script src="js/core.js"></script>
+<script src="js/icons.js"></script>
+<script src="data/journeys.js"></script>
+<script src="data/stationen/geschichte.js"></script>
+<script src="data/stationen/grundmodelle.js"></script>
+<script src="data/stationen/kooperation.js"></script>
+<script src="data/layout.js"></script>
+<script src="data/orders.js"></script>
+<script src="data/exhibits/dilemma-turnier.js"></script>
+<script src="js/hero.js"></script>
+<script src="js/map.js"></script>
+<script src="js/journey.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/passport.js"></script>
+<script src="js/search.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

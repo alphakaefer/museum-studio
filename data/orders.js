@@ -1,0 +1,51 @@
+(function(){'use strict';
+window.MUSEUM=window.MUSEUM||{};
+MUSEUM.data=MUSEUM.data||{};
+MUSEUM.data.orders={
+ "grundmodelle": [
+  "normalform",
+  "dominanz",
+  "vickrey-auktion",
+  "gefangenendilemma",
+  "nash-gleichgewicht",
+  "mythos-gleichgewicht",
+  "fokalpunkte",
+  "minimax-nullsumme",
+  "gemischte-strategien",
+  "rueckwaertsinduktion",
+  "glaubwuerdige-drohung",
+  "unvollstaendige-information",
+  "wiederholte-spiele"
+ ],
+ "kooperation": [
+  "gefangenendilemma",
+  "oeffentliche-gueter",
+  "allmende-tragoedie",
+  "ostrom-gemeingueter",
+  "wiederholte-spiele",
+  "axelrod-turniere",
+  "tit-for-tat",
+  "evolutionaer-stabile-strategie",
+  "ultimatum-spiel",
+  "homo-oeconomicus",
+  "verlustaversion",
+  "nudging",
+  "replikation-kritik"
+ ],
+ "geschichte": [
+  "waldegrave-brief",
+  "cournot-duopol",
+  "minimax-nullsumme",
+  "theory-of-games",
+  "gefangenendilemma",
+  "nash-gleichgewicht",
+  "fokalpunkte",
+  "vickrey-auktion",
+  "glaubwuerdige-drohung",
+  "allmende-tragoedie",
+  "evolutionaer-stabile-strategie",
+  "axelrod-turniere",
+  "nobelpreis-1994"
+ ]
+};
+})();

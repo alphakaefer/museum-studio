@@ -1,0 +1,57 @@
+/* erzeugt von tools/build.mjs aus journeys.js: Reisefarben --j-<id> und Positionsfarben --jp-<n> */
+:root {
+  --j-grundmodelle:#1F5F9E;
+  --j-kooperation:#A04A12;
+  --j-geschichte:#6B3FA3;
+  --jp-1:var(--j-grundmodelle);
+  --jp-2:var(--j-kooperation);
+  --jp-3:var(--j-geschichte);
+  --jp-4:var(--j-grundmodelle);
+  --jp-5:var(--j-kooperation);
+  --jp-6:var(--j-geschichte);
+  --jp-7:var(--j-grundmodelle);
+  --jp-8:var(--j-kooperation);
+  --jp-9:var(--j-geschichte);
+  --jp-10:var(--j-grundmodelle);
+  --jp-11:var(--j-kooperation);
+  --jp-12:var(--j-geschichte);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --j-grundmodelle:#86B8F0;
+  --j-kooperation:#F0A56E;
+  --j-geschichte:#C4A6F2;
+  --jp-1:var(--j-grundmodelle);
+  --jp-2:var(--j-kooperation);
+  --jp-3:var(--j-geschichte);
+  --jp-4:var(--j-grundmodelle);
+  --jp-5:var(--j-kooperation);
+  --jp-6:var(--j-geschichte);
+  --jp-7:var(--j-grundmodelle);
+  --jp-8:var(--j-kooperation);
+  --jp-9:var(--j-geschichte);
+  --jp-10:var(--j-grundmodelle);
+  --jp-11:var(--j-kooperation);
+  --jp-12:var(--j-geschichte);
+  }
+}
+:root[data-theme="dark"],
+.gm-hero,
+.gm-dark,
+.gm-header[data-tone="dark"] {
+  --j-grundmodelle:#86B8F0;
+  --j-kooperation:#F0A56E;
+  --j-geschichte:#C4A6F2;
+  --jp-1:var(--j-grundmodelle);
+  --jp-2:var(--j-kooperation);
+  --jp-3:var(--j-geschichte);
+  --jp-4:var(--j-grundmodelle);
+  --jp-5:var(--j-kooperation);
+  --jp-6:var(--j-geschichte);
+  --jp-7:var(--j-grundmodelle);
+  --jp-8:var(--j-kooperation);
+  --jp-9:var(--j-geschichte);
+  --jp-10:var(--j-grundmodelle);
+  --jp-11:var(--j-kooperation);
+  --jp-12:var(--j-geschichte);
+}

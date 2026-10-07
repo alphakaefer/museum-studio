@@ -1,0 +1,5 @@
+/* Skin „halle“: das heutige Aussehen. Alle Tokens und Komponenten kommen unverändert aus engine/css/engine.css.
+   Diese Datei ist absichtlich (fast) leer; sie existiert, damit „halle“ wie jeder andere Skin ein-/ausgebunden werden kann. */
+html[data-skin="halle"] { color-scheme: light dark; }
+html[data-skin="halle"][data-theme="light"] { color-scheme: light; }
+html[data-skin="halle"][data-theme="dark"] { color-scheme: dark; }

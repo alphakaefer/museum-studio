@@ -1,0 +1,8 @@
+{
+  "id": "halle",
+  "name": "Halle",
+  "description": "Das heutige Aussehen des Museums: Museum bei Nacht, tiefes Tintenblau, warmes Licht. Referenz-Skin.",
+  "fonts": ["Iowan Old Style", "Palatino Linotype", "Georgia", "system-ui"],
+  "map": { "lines": "octilinear", "nodes": "icons" },
+  "mode": "both"
+}

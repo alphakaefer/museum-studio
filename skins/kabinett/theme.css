@@ -1,0 +1,231 @@
+/* Skin „kabinett“ – erzeugt aus themes-Quelle; alle Regeln hinter html[data-skin="kabinett"] */
+
+/* Tokens: Gemeinsames */
+html[data-skin="kabinett"] {
+  --font-display: "IM Fell English", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-ui: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --radius: 6px;
+  --radius-sm: 3px;
+  --radius-lg: 10px;
+  --shadow: 2px 3px 0 var(--line);
+  --shadow-lg: 3px 5px 0 var(--line);
+  --j-rundreise: var(--accent);
+}
+
+/* Tokens: hell */
+html[data-skin="kabinett"],
+html[data-skin="kabinett"] .gm-hero,
+html[data-skin="kabinett"] .gm-header[data-tone="dark"] {
+  --bg: #E9E3CF;
+  --bg-2: #F3EEDD;
+  --bg-3: #DFD8BE;
+  --ink: #2B3A2E;
+  --ink-2: #4A5640;
+  --ink-3: #58634D;
+  --line: #A9A685;
+  --accent: #9C3F2A;
+  --link: #8A3523;
+  --warm: #C9A445;
+  --ok: #3F6F3A;
+  --warn: #8F5A00;
+  --bad: #A33224;
+  --on-accent: #FFF8E8;
+  --on-warm: #2B2417;
+  --accent-soft: rgba(156,63,42,.1);
+  --glass: rgba(233,227,207,.9);
+  --hero-bg: #E9E3CF;
+  color-scheme: light;
+}
+
+/* Immer dunkle Flächen (z. B. Reisepass-Deckel) */
+html[data-skin="kabinett"] .gm-dark {
+  --bg: #1A211B;
+  --ink: #E8E2CC;
+  --bg-2: #232B24;
+  --bg-3: #2B352C;
+  --ink-2: #BCC0A9;
+  --ink-3: #A0A68E;
+  --line: #4F5A47;
+  --accent: #E58E69;
+  --link: #EDA07C;
+  --warm: #C9A84C;
+  --ok: #8CC27F;
+  --warn: #E0A64A;
+  --bad: #F08A78;
+  --on-accent: #1A211B;
+  --on-warm: #1A211B;
+  --accent-soft: rgba(229,142,105,.14);
+  --glass: rgba(26,33,27,.88);
+  --hero-bg: #1A211B;
+  color-scheme: dark;
+}
+
+/* Tokens: dunkel (System) */
+@media (prefers-color-scheme: dark) {
+  html[data-skin="kabinett"]:not([data-theme="light"]),
+  html[data-skin="kabinett"]:not([data-theme="light"]) .gm-hero,
+  html[data-skin="kabinett"]:not([data-theme="light"]) .gm-header[data-tone="dark"] {
+    --bg: #1A211B;
+    --ink: #E8E2CC;
+    --bg-2: #232B24;
+    --bg-3: #2B352C;
+    --ink-2: #BCC0A9;
+    --ink-3: #A0A68E;
+    --line: #4F5A47;
+    --accent: #E58E69;
+    --link: #EDA07C;
+    --warm: #C9A84C;
+    --ok: #8CC27F;
+    --warn: #E0A64A;
+    --bad: #F08A78;
+    --on-accent: #1A211B;
+    --on-warm: #1A211B;
+    --accent-soft: rgba(229,142,105,.14);
+    --glass: rgba(26,33,27,.88);
+    --hero-bg: #1A211B;
+    color-scheme: dark;
+  }
+}
+
+/* Tokens: dunkel (Umschalter) */
+html[data-skin="kabinett"][data-theme="dark"],
+html[data-skin="kabinett"][data-theme="dark"] .gm-hero,
+html[data-skin="kabinett"][data-theme="dark"] .gm-header[data-tone="dark"] {
+  --bg: #1A211B;
+  --ink: #E8E2CC;
+  --bg-2: #232B24;
+  --bg-3: #2B352C;
+  --ink-2: #BCC0A9;
+  --ink-3: #A0A68E;
+  --line: #4F5A47;
+  --accent: #E58E69;
+  --link: #EDA07C;
+  --warm: #C9A84C;
+  --ok: #8CC27F;
+  --warn: #E0A64A;
+  --bad: #F08A78;
+  --on-accent: #1A211B;
+  --on-warm: #1A211B;
+  --accent-soft: rgba(229,142,105,.14);
+  --glass: rgba(26,33,27,.88);
+  --hero-bg: #1A211B;
+  color-scheme: dark;
+}
+
+
+/* ---- Grundlagen ---- */
+html[data-skin="kabinett"] body { font-size: 1.0625rem; line-height: 1.6; }
+html[data-skin="kabinett"] h1, html[data-skin="kabinett"] h2, html[data-skin="kabinett"] h3, html[data-skin="kabinett"] h4 { font-weight: 400; }
+html[data-skin="kabinett"] .gm-eyebrow, html[data-skin="kabinett"] .gm-st-h, html[data-skin="kabinett"] .gm-foot-h { font-style: italic; text-transform: none; letter-spacing: .06em; font-size: .95rem; font-weight: 400; }
+html[data-skin="kabinett"] .gm-eyebrow { color: var(--accent); }
+html[data-skin="kabinett"] .gm-st-h::before, html[data-skin="kabinett"] .gm-foot-h::before { content: "\2766"; color: var(--accent); font-style: normal; margin-right: .1em; }
+html[data-skin="kabinett"] .gm-h2 { letter-spacing: 0; font-weight: 400; }
+html[data-skin="kabinett"] .gm-h2::after, html[data-skin="kabinett"] .gm-view-title::after { content: ""; display: block; width: 7rem; height: 5px; margin-top: .55rem; border-block: 1px solid var(--ink-3); }
+html[data-skin="kabinett"] [tabindex="-1"]:focus-visible { outline: none; }
+html[data-skin="kabinett"] :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+/* ---- Buttons und Chips (Etikett-Stil) ---- */
+html[data-skin="kabinett"] .gm-btn { border-radius: 3px 12px 3px 12px; border: 1px solid var(--ink); font-weight: 400; font-size: 1.02rem; letter-spacing: .03em; box-shadow: 2px 3px 0 var(--line); }
+html[data-skin="kabinett"] .gm-btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 4px 0 var(--ink-3); }
+html[data-skin="kabinett"] .gm-btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+html[data-skin="kabinett"] .gm-btn-warm { background: var(--warm); border-color: var(--warm); color: var(--on-warm); }
+html[data-skin="kabinett"] .gm-btn-ghost, html[data-skin="kabinett"] .gm-btn-glass { background: transparent; color: var(--ink); border-color: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-skin="kabinett"] .gm-btn-ghost:hover, html[data-skin="kabinett"] .gm-btn-glass:hover { background: var(--accent-soft); border-color: var(--accent); }
+html[data-skin="kabinett"] .gm-btn-quiet { box-shadow: none; border-color: transparent; font-style: italic; }
+html[data-skin="kabinett"] .gm-chip { border-radius: 3px 10px 3px 10px; font-weight: 400; font-style: italic; font-size: .88rem; }
+html[data-skin="kabinett"] .gm-chip-dot { border-radius: 50%; }
+
+/* ---- Kopfleiste ---- */
+html[data-skin="kabinett"] .gm-header { border-bottom: 3px double var(--line); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-skin="kabinett"] .gm-header[data-tone="dark"] { border-bottom-color: var(--line); }
+html[data-skin="kabinett"] .gm-brand-name { font-weight: 400; font-size: 1.4rem; letter-spacing: .01em; }
+html[data-skin="kabinett"] .gm-brand-mark { filter: none; }
+html[data-skin="kabinett"] .gm-tab { font-weight: 400; font-size: 1.05rem; border-radius: 50% 45% 55% 40% / 60% 50% 50% 40%; }
+html[data-skin="kabinett"] .gm-tab::after { height: 1px; background: var(--accent); left: 18%; right: 18%; bottom: 6px; box-shadow: 0 3px 0 var(--accent); }
+html[data-skin="kabinett"] .gm-search-btn, html[data-skin="kabinett"] .gm-kbd { border-radius: 3px 10px 3px 10px; }
+html[data-skin="kabinett"] .gm-search-label { font-weight: 400; font-style: italic; }
+
+/* ---- Eingang ---- */
+html[data-skin="kabinett"] .gm-hero { background: radial-gradient(ellipse at 18% 0%, color-mix(in srgb, var(--bg-2) 80%, transparent) 0, transparent 60%), radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--bg-3) 90%, transparent) 0, transparent 55%), var(--bg); }
+html[data-skin="kabinett"] .gm-hero-canvas, html[data-skin="kabinett"] .gm-hero-vignette { display: none; }
+html[data-skin="kabinett"] .gm-hero::before { content: ""; position: absolute; inset: calc(var(--header-h) + 10px) 12px 12px; z-index: 0; pointer-events: none; border: 4px double var(--line); border-radius: 4px; }
+html[data-skin="kabinett"] .gm-hero::after { height: 6px; opacity: .85; bottom: 22px; left: 22px; right: 22px; -webkit-mask-image: none; mask-image: none; background: var(--hero-bar, var(--accent)); border-radius: 3px; }
+html[data-skin="kabinett"] .gm-emblem { filter: none; }
+html[data-skin="kabinett"] .gm-hero-eyebrow { color: var(--ink-2); font-style: italic; text-transform: none; letter-spacing: .08em; font-weight: 400; font-size: 1rem; }
+html[data-skin="kabinett"] .gm-hero-title { color: var(--ink); text-transform: none; letter-spacing: .01em; font-weight: 400; text-shadow: none; font-size: clamp(2.3rem, 9vw, 5.6rem); }
+html[data-skin="kabinett"] .gm-hero-claim { color: var(--ink-2); }
+html[data-skin="kabinett"] .gm-hero-claim::after { content: "\2766"; display: block; margin-top: .6rem; color: var(--accent); font-style: normal; font-size: 1.6rem; }
+html[data-skin="kabinett"] .gm-scrollcue { color: var(--ink-2); font-weight: 400; font-style: italic; text-transform: none; letter-spacing: .06em; font-size: .95rem; }
+html[data-skin="kabinett"] .gm-scrollcue:hover { color: var(--ink); }
+html[data-skin="kabinett"] .gm-scrollcue .gm-ico { color: var(--accent); }
+html[data-skin="kabinett"] .gm-hero :focus-visible { outline-color: var(--accent); }
+
+/* ---- Orientierung, Zahlen ---- */
+html[data-skin="kabinett"] .gm-step-ico { border-radius: 50% 45% 55% 40% / 55% 50% 50% 45%; }
+html[data-skin="kabinett"] .gm-step h3 { font-weight: 400; }
+html[data-skin="kabinett"] .gm-stat dd { font-weight: 400; text-shadow: none; color: var(--accent); font-style: italic; }
+html[data-skin="kabinett"] .gm-stat dt { font-weight: 400; font-style: italic; text-transform: none; letter-spacing: .05em; font-size: .95rem; }
+
+/* ---- Reise-Karten (Etikett-Kästen) ---- */
+html[data-skin="kabinett"] .gm-cards { counter-reset: tafel; }
+html[data-skin="kabinett"] .gm-card { counter-increment: tafel; border-radius: 4px 22px 4px 22px; border: 1px solid var(--line); outline: 1px solid var(--line); outline-offset: -6px; box-shadow: 2px 3px 0 var(--line); background: var(--bg-2); padding: 1.7rem 1.6rem 1.4rem; }
+html[data-skin="kabinett"] .gm-card::before { right: auto; width: 4.5rem; height: 4px; top: 0; left: 1.4rem; border-radius: 0 0 3px 3px; }
+html[data-skin="kabinett"] .gm-card:hover, html[data-skin="kabinett"] .gm-card:focus-within { transform: translateY(-3px) rotate(-.4deg); box-shadow: 3px 6px 0 var(--jc); }
+html[data-skin="kabinett"] .gm-card:focus-within { outline: 3px solid var(--accent); outline-offset: 3px; }
+html[data-skin="kabinett"] .gm-card-title { font-weight: 400; font-size: 1.4rem; }
+html[data-skin="kabinett"] .gm-card-title::before { content: "Tafel " counter(tafel, upper-roman); display: block; margin-bottom: .2rem; font: italic 400 .85rem/1.2 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+html[data-skin="kabinett"] .gm-card-tag { font-style: italic; }
+html[data-skin="kabinett"] .gm-card-count { font-weight: 400; font-style: italic; text-transform: none; letter-spacing: .02em; font-size: .82rem; }
+html[data-skin="kabinett"] .gm-card-count strong { font-weight: 400; }
+html[data-skin="kabinett"] .gm-card-badge { border-radius: 3px; font-weight: 400; font-style: italic; }
+html[data-skin="kabinett"] .gm-card.is-tool { border-color: var(--warm); background: var(--bg-2); }
+html[data-skin="kabinett"] .gm-card .gm-btn:focus-visible { box-shadow: 0 0 0 3px var(--bg-2), 0 0 0 5px var(--accent); }
+
+/* ---- Ansichts-Kopf ---- */
+html[data-skin="kabinett"] .gm-view-title { font-weight: 400; letter-spacing: 0; }
+html[data-skin="kabinett"] .gm-view-lead { font-style: italic; }
+html[data-skin="kabinett"] .gm-trips { border-block: 3px double var(--line); }
+
+/* ---- Station (Tafel) ---- */
+html[data-skin="kabinett"] .gm-st-head { border-bottom: 1px solid var(--ink-3); }
+html[data-skin="kabinett"] .gm-st-head::after { height: 1px; bottom: -5px; width: 100%; background: var(--ink-3); border-radius: 0; }
+html[data-skin="kabinett"] .gm-st-medal { border-radius: 50% 45% 55% 40% / 55% 50% 50% 45%; box-shadow: 0 0 0 5px var(--bg), 0 0 0 6px var(--jc); }
+html[data-skin="kabinett"] .gm-st-eyebrow { font-style: italic; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 400; }
+html[data-skin="kabinett"] .gm-st-year { border-radius: 2px; border-color: var(--warm); background: var(--bg-2); font-style: italic; font-weight: 400; box-shadow: 2px 2px 0 var(--line); }
+html[data-skin="kabinett"] .gm-st-title { font-weight: 400; letter-spacing: 0; }
+html[data-skin="kabinett"] .gm-st-sub { font-style: italic; }
+html[data-skin="kabinett"] .gm-st-lead { border-left: 0; padding: .3rem 0 .3rem 1.6rem; position: relative; font-style: italic; }
+html[data-skin="kabinett"] .gm-st-lead::before { content: "\201E"; position: absolute; left: -.1rem; top: -.55rem; font: 400 3.6rem/1 var(--font-display); color: var(--accent); }
+html[data-skin="kabinett"] .gm-st-body p { font-size: clamp(1.1rem, 1.04rem + .3vw, 1.25rem); line-height: 1.68; }
+html[data-skin="kabinett"] .gm-st-body.has-dc p:first-child::first-letter { font-weight: 400; font-size: 3.9em; color: var(--accent); padding: .06em .09em 0 0; }
+html[data-skin="kabinett"] .gm-st-factlist { counter-reset: fakt; }
+html[data-skin="kabinett"] .gm-fact { counter-increment: fakt; border-radius: 3px 14px 3px 14px; border-top-width: 1px; border-color: var(--line); box-shadow: 2px 3px 0 var(--line); }
+html[data-skin="kabinett"] .gm-fact-n { border-radius: 50%; font-style: italic; font-weight: 400; background: transparent; }
+html[data-skin="kabinett"] .gm-st-quote { border: 1px solid var(--line); border-left: 1px solid var(--line); border-radius: 3px 18px 3px 18px; background: var(--bg-2); box-shadow: 2px 3px 0 var(--line); position: relative; padding-left: 3.4rem; }
+html[data-skin="kabinett"] .gm-st-quote::before { content: "\201C"; position: absolute; left: .8rem; top: .3rem; font: 400 4rem/1 var(--font-display); color: var(--accent); }
+html[data-skin="kabinett"] .gm-flip-face { border-radius: 4px 22px 4px 22px; box-shadow: 3px 5px 0 var(--line); }
+html[data-skin="kabinett"] .gm-flip-front { background: linear-gradient(155deg, #F3EBCF, #E5D7AA); border: 1px dashed #8F7A3A; }
+html[data-skin="kabinett"] .gm-flip-back { background: linear-gradient(155deg, #2A3A2B, #1A261B); border: 1px solid #C9A84C; }
+html[data-skin="kabinett"] .gm-flip-back .gm-flip-label { color: #E3C25E; }
+html[data-skin="kabinett"] .gm-flip-label, html[data-skin="kabinett"] .gm-flip-stamp { font-weight: 400; font-style: italic; }
+html[data-skin="kabinett"] .gm-flip-text { font-family: var(--font-display); }
+html[data-skin="kabinett"] .gm-st-transfer { border: 1px dashed var(--ink-3); border-radius: 4px 20px 4px 20px; background: var(--bg-3); }
+html[data-skin="kabinett"] .gm-tr-btn { border-radius: 3px 12px 3px 12px; }
+html[data-skin="kabinett"] .gm-st-more { border-top: 1px solid var(--ink-3); }
+html[data-skin="kabinett"] .gm-panel-sheet { border-left: 3px double var(--line); }
+html[data-skin="kabinett"] .gm-panel-bar { border-bottom: 1px solid var(--line); }
+
+/* ---- Fuß ---- */
+html[data-skin="kabinett"] .gm-footer { border-top: 3px double var(--line); }
+html[data-skin="kabinett"] .gm-foot-help { border-left: 2px solid var(--warm); border-radius: 0 12px 12px 0; }
+
+/* ---- Karte, Zeitstrahl, Reisepass, Suche (nutzen Tokens; Feinschliff) ---- */
+html[data-skin="kabinett"] .gm-karte-svg text, html[data-skin="kabinett"] .gm-zeit-svg text { font-family: var(--font-display); font-style: italic; }
+html[data-skin="kabinett"] .gm-pass-card, html[data-skin="kabinett"] .gm-pass-cover { border-radius: 4px 20px 4px 20px; }
+html[data-skin="kabinett"] .gm-suche-panel { border-radius: 4px 20px 4px 20px; }
+html[data-skin="kabinett"] .gm-suche-input { font-family: var(--font-ui); }
+
+html[data-skin="kabinett"] .gm-pass-cover { background: linear-gradient(160deg, #2A3A2B, #1A261B); border: 1px solid #C9A84C; border-radius: 4px 26px 4px 26px; }
+html[data-skin="kabinett"] .gm-pass-cover::before { border-radius: 4px 20px 4px 20px; border-color: rgba(201,168,76,.45); }
+
+@media (prefers-reduced-motion: reduce) { html[data-skin="kabinett"] .gm-card:hover, html[data-skin="kabinett"] .gm-card:focus-within, html[data-skin="kabinett"] .gm-btn:hover { transform: none; } }
