@@ -63,6 +63,14 @@ const orderBy = (files, wanted) => {
 const packFile = path.join(PACK_DIR, 'pack.json');
 if (!exists(packFile)) die(`${path.relative(ROOT, packFile)} fehlt`);
 const pack = readJSON(packFile);
+// Lokale Überschreibung (nicht im Repo): packs/<id>/pack.local.json, z. B. Impressum und Datenschutz der eigenen Domain.
+// Objekte werden zusammengeführt, alles andere (auch Listen) ersetzt.
+const localFile = path.join(PACK_DIR, 'pack.local.json');
+if (exists(localFile)) {
+  const merge = (a, b) => { for (const k of Object.keys(b)) a[k] = (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) ? merge(a[k], b[k]) : b[k]; return a; };
+  merge(pack, readJSON(localFile));
+  console.log('• pack.local.json eingemischt');
+}
 if (!pack.title) die('pack.json: "title" fehlt');
 const planFile = path.join(PACK_DIR, 'plan.json');
 if (!exists(planFile)) die(`${path.relative(ROOT, planFile)} fehlt`);
