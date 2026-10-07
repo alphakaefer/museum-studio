@@ -1,70 +1,83 @@
 # Einrichtung (Onboarding)
 
-Beim Installieren stellt `npm run setup` (oder `node tools/onboarding.mjs`) ein paar kurze Fragen zu Thema, Umfang und Rahmen eines neuen Museums.
-Daraus entsteht ein **startbereites Paket** unter `packs/<id>/` und ein **Auftrag für KI-Agenten** (`BRIEFING.md`). Nur Node.js ab 18 nötig, keine Abhängigkeiten.
+Das Onboarding stellt ein paar kurze Fragen zu Thema, Zielgruppe und Rahmen eines neuen Museums und macht daraus einen **Auftrag für KI-Agenten** (`BRIEFING.md`), bei Bedarf auch ein startbereites Paket unter `packs/<id>/`. **Zahlen (Reisen, Stationen) werden nicht abgefragt:** Das entscheidet der Agent fachlich und zeigt den Plan zur Freigabe, bevor er Texte schreibt.
+
+Drei Wege, alle mit denselben Fragen (einzige Quelle: `tools/onboarding-fragen.json`) und demselben Auftragstext (gemeinsamer Kern: `tools/onboarding-core.mjs`):
+
+| Weg | Wann | Aufruf |
+|---|---|---|
+| **Dialog mit einer KI** | kein Terminal, KI hat Zugriff auf das Repository | KI auf `AGENTS.md` verweisen (Claude Code, Codex, Gemini CLI, Copilot, Cursor …); sie führt Dialog und Befehle selbst aus |
+| **`onboarding.html`** | kein Terminal, kein Repository-Zugriff der KI | Datei per Doppelklick im Browser öffnen, Fragen beantworten, drei Ergebnisse kopieren oder speichern |
+| **Terminal** | Node.js ab 18 vorhanden | `npm run setup` (oder `node tools/onboarding.mjs`) |
 
 ```bash
 npm run doctor     # prüft Node, Git, Playwright/Chromium und erklärt, was fehlt (und dass es meist ohne geht)
 npm run setup      # Einrichtung; ruft doctor am Anfang selbst auf
 ```
 
-Jede Frage hat eine Erklärung und einen Standardwert in eckigen Klammern (**Enter übernimmt ihn**). Falsche Eingaben werden freundlich erklärt und neu erfragt.
+Im Terminal hat jede Frage eine Erklärung und einen Standardwert in eckigen Klammern (**Enter übernimmt ihn**). Falsche Eingaben werden freundlich erklärt und neu erfragt.
 Am Ende steht eine Zusammenfassung: **J** (anlegen), **N** (abbrechen), **W** (alle Fragen nochmal, deine Antworten als Vorgabe).
-Geschrieben wird erst nach der Bestätigung und in einem Zug: Strg+C oder ein Abbruch hinterlässt nie ein halbes Paket, und ein bestehendes Paket wird **nie** überschrieben.
+Geschrieben wird erst nach der Bestätigung und in einem Zug: Strg+C oder ein Abbruch hinterlässt nie ein halbes Paket, ein bestehendes Paket wird **nie** überschrieben.
+Danach nennt das Werkzeug den **vollständigen Pfad** des Pakets und von `BRIEFING.md` („Dein Auftrag liegt hier: …“) und bietet an, den Ordner zu öffnen (nur mit angeschlossenem Terminal: macOS `open`, Linux `xdg-open`, Windows `explorer`).
 
 ## Was entsteht
 
 | Datei in `packs/<id>/` | Inhalt |
 |---|---|
-| `pack.json` | ausgefüllt: `title`, `eyebrow`, `tagline`, `lang`, `defaultSkin`, `limits` (mit `visualShare`), `requireVisualPlan`, `footer`, `license`, `credits` (und `author`, falls angegeben) |
-| `plan.json`, `journeys.js`, `stationen/*.js` | Gerüst von `tools/new-pack.mjs` mit der gewählten Reisezahl, den historischen Reisen und Stationsrümpfen (alles Weitere ist `TODO`) |
-| `BRIEFING.md` | lesbarer Auftrag: Thema, Zielgruppe, Ton, Umfang, Reisevorschläge, Sorgfaltsregeln, Quellen, Look, Lizenz, Checkliste „Was der Agent liefern soll“ |
-| `BRIEFING.json` | derselbe Auftrag maschinenlesbar (alle Antworten, dazu abgeleitete Werte) |
+| `pack.json` | ausgefüllt: `title`, `eyebrow`, `tagline`, `lang`, `defaultSkin`, `limits` (Standard: je Reise 11 bis 28 Stationen, dazu `visualShare`), `requireVisualPlan`, `footer`, `license`, `credits` (und `author`) |
+| `plan.json` | **leerer Plan** (`journeys:[]`, `stations:[]`, `orders:{}`) mit TODO-Markierung `_TODO`; keine Stub-Reisen |
+| `journeys.js` | ohne Reisen, mit Hinweis, was einzutragen ist |
+| `BRIEFING.md` | lesbarer Auftrag: Thema, Zielgruppe, Ton, Umfang und Aufbau (Entscheidungsregeln), Reisenamen, Sorgfaltsregeln, Quellen, Look, Anschauung, Lizenz, Checkliste „Was der Agent liefern soll“ |
+| `BRIEFING.json` | derselbe Auftrag maschinenlesbar (alle Antworten, abgeleitete Werte) |
 | `ARBEITSSTAND.md` | vorbefüllt; alles, was nicht ausdrücklich der Auftraggeber entschieden hat, steht als **Annahme** mit „Bestätigt: offen“ |
 
-Am Ende druckt das Skript „Nächste Schritte“: einen fertigen Prompt zum Kopieren für Claude oder andere KI-Agenten sowie die Befehle für Prüfung und Bau.
-Die Prüfung (`node tools/check-pack.mjs <id>`) meldet danach nur die gewollten `TODO`-Platzhalter, keine Strukturfehler.
+`node tools/check-pack.mjs <id>` meldet für ein frisches Paket genau eine verständliche Meldung („Plan noch leer: Schritt 1 und 2 der Anleitung“), keine Folgefehler. Wer ein Gerüst mit Platzhaltern will, nutzt weiter `node tools/new-pack.mjs <id> --title=… --journeys=… [--historical=…] [--stations=…]` (Verhalten unverändert).
 
 ## Die Fragen und ihre Wirkung
 
-| Nr. | Frage | Feld in `BRIEFING.json` | Wirkung |
-|---|---|---|---|
-| 1 | **Museumsname** (Richtwert höchstens 24 Zeichen; länger gibt eine Warnung) | `name` | `pack.json` `title`; die Prüfung warnt ab 30 Zeichen |
-| 2 | **Paket-ID**, abgeleitet aus dem Namen (a–z, 0–9, Bindestrich; nicht vergeben) | `id` | Ordner `packs/<id>/`, `pack.json` `id`; vergeben heißt: neue ID wählen |
-| 3 | **Untertitel oder Leitfrage** | `untertitel` | `pack.json` `tagline` |
-| 4 | **Thema** in ein bis zwei Sätzen | `thema` | Auftrag im Briefing; `eyebrow` (kurzer erster Satz, sonst „Ein vernetztes Museum“) |
-| 5 | **Zielgruppe** (Laien, Studierende, Fachleute, gemischt) | `zielgruppe` | Tonregeln im Briefing |
-| 6 | **Sprache der Inhalte** und **Anrede** (du/Sie) | `sprache`, `anrede` | `pack.json` `lang`; Anrede im Briefing und in den Fußtexten. Deutsch ist vollständig unterstützt; bei anderen Sprachen werden Code und Inhalte angenommen, die festen Oberflächentexte der Engine bleiben aber deutsch (Hinweis im Briefing, Wortschatz `vocab` muss der Agent übersetzen) |
-| 7 | **Umfang**: Reisen (3 bis 16, Standard 6) und Stationen je Reise (11 bis 28, Standard 14) | `reisen`, `stationenJeReise` | Zahl der Reisen im Gerüst; `limits.max` = Stationen je Reise + 6 (höchstens 28), `limits.min` = 11. Angezeigt wird eine Schätzung eindeutiger Stationen (Mitgliedschaften mal 0,8) und ein Aufwandshinweis; mehr als rund 220 eindeutige werden abgelehnt (Richtwert 200) |
-| 8 | **Historische Reisen** (0 bis 3, weniger als Reisen) | `historisch` | die letzten Reisen werden `typ:'historisch'` und erscheinen im **Zeitstrahl** (Stationen mit `year`/`yearLabel`, chronologisch) |
-| 9 | **Reisenamen oder Themenideen** (optional, mit Komma, bei Kommas im Namen mit Semikolon) | `reisenamen` | Arbeitsnamen in `plan.json` und `journeys.js`; im Briefing als Vorschläge; leer heißt: der Agent macht Vorschläge |
-| 10 | **Standard-Look** (Liste der Skins aus `themes/` mit je einem Satz aus `theme.json`) und **Umschaltung für Besucher** | `skin`, `skinWahl` | `pack.json` `defaultSkin`; Baubefehl `--skins=all` (Umschaltung) oder `--skins=<skin>` |
-| 11 | **Wie wichtig ist Anschauung?** zentral (≈ 50 % der Stationen mit Abbildung oder Exponat), viel (≈ 35 %, Standard), etwas (≈ 20 %), wenig (≈ 10 %). Abstrakte Themen (Mathematik, Physik, Ökonomie) vertragen mehr | `anschauung` | `pack.json` `limits.visualShare` (0,5 / 0,35 / 0,2 / 0,1) und `requireVisualPlan: true`; im Briefing und in der Prüfliste steht die **konkrete Mindestzahl** (Anteil mal geschätzte eindeutige Stationen), ebenso in der Zusammenfassung; jede Station braucht in `plan.json` ein Feld `visual` |
-| 12 | **Heikle Themen** (Gesundheit, Politik/Weltanschauung, Religion, Gewalt/Trauma; Mehrfachauswahl oder keine) | `heikel` | erzeugt den Text in `pack.json` `footer` (bei Gesundheit/Gewalt zusätzlich eine Hilfe-Spalte mit Telefonseelsorge, Deutschland) und **Sorgfaltsregeln** im Briefing |
-| 13 | **Quellenregeln** (offene Quellen, eigene Texte des Auftraggebers, eigene Domain für Weiterlesen-Links; Mehrfachauswahl) | `quellen`, `materialHost` | Quellenabschnitt im Briefing; bei „Domain“ die Nachfrage nach der Adresse, die als `MATERIAL_HOST` in den Prüfbefehl kommt |
-| 14 | **Urheber/Credits**, **Lizenz** (CC BY 4.0, CC BY-SA 4.0, alle Rechte vorbehalten, andere) und optional **Impressum/Datenschutz-URL** | `urheber`, `lizenz`, `lizenzText`, `impressumUrl` | `pack.json` `credits`, `author`, `license`; der Link steht als Fußspalte „Rechtliches“ |
+| Nr. | Frage (Schlüssel) | Wirkung |
+|---|---|---|
+| 1 | **Museumsname** (`name`; Richtwert höchstens 24 Zeichen, Warnung darüber) | `pack.json` `title`; Prüfung warnt ab 30 Zeichen |
+| 2 | **Paket-ID** (`id`; aus dem Namen abgeleitet, a–z, 0–9, Bindestrich, nicht vergeben) | Ordner `packs/<id>/`; vergeben heißt: neue ID wählen |
+| 3 | **Untertitel oder Leitfrage** (`untertitel`) | `pack.json` `tagline` |
+| 4 | **Thema** in ein bis zwei Sätzen (`thema`) | Auftrag im Briefing; `eyebrow` (kurzer erster Satz) |
+| 5 | **Zielgruppe** (`zielgruppe`: laien, studierende, fachleute, gemischt) | Tonregeln im Briefing |
+| 6 | **Sprache** (`sprache`) | `pack.json` `lang`; bei anderen Sprachen als Deutsch Hinweis, dass die festen Oberflächentexte der Engine deutsch bleiben |
+| 7 | **Anrede** (`anrede`: du, Sie) | Briefing und Fußtexte |
+| 8 | **Soll die Geschichte des Fachs eine eigene Reise bekommen?** (`geschichte`: ja, agent, nein; Standard agent) | Entscheidungsregel im Briefing für historische Reisen (Zeitstrahl) |
+| 9 | **Größenordnung** als Wunsch (`groesse`: kompakt, mittel, umfassend, agent; Standard agent) | nur Hinweis mit Richtwert im Briefing, keine Zahl im Paket |
+| 10 | **Reisenamen oder Themenideen** (optional, `reisenamen`) | Ideen im Briefing; der Agent übernimmt oder formuliert um |
+| 11 | **Standard-Look** (`skin`, Ordner unter `themes/`) und 12 **Umschaltung für Besucher** (`skinWahl`) | `defaultSkin`; Baubefehl `--skins=all` oder `--skins=<skin>` |
+| 13 | **Wie wichtig ist Anschauung?** (`anschauung`: zentral 50 %, viel 35 %, etwas 20 %, wenig 10 %) | `limits.visualShare`, `requireVisualPlan: true`; Briefing: Mindestzahl nach dem Plan ausrechnen |
+| 14 | **Heikle Themen** (`heikel`: gesundheit, politik, religion, gewalt; Mehrfachauswahl) | `footer` (bei Gesundheit/Gewalt Hilfe-Spalte, Telefonseelsorge Deutschland) und Sorgfaltsregeln im Briefing |
+| 15 | **Quellenregeln** (`quellen`: offen, eigene, domain) und bei domain **Adresse** (`materialHost`, https) | Quellenabschnitt im Briefing; `MATERIAL_HOST` im Prüfbefehl |
+| 16 | **Urheber/Credits** (`urheber`) | `credits`, `author` |
+| 17 | **Lizenz** (`lizenz`): **nur freie**: `cc-by-4.0` (Standard: frei nutzbar mit Namensnennung), `cc-by-sa-4.0` (Bearbeitungen unter derselben Lizenz), `cc0-1.0` (gemeinfrei gewidmet) | `license`; „alle Rechte vorbehalten“ und andere Werte werden abgelehnt (freie Lizenzen sind Voraussetzung) |
+| 18 | **Impressum/Datenschutz-URL** (optional, `impressumUrl`) | Fußspalte „Rechtliches“ |
 
-Alle Standardwerte, die du nicht ausdrücklich gewählt hast, stehen in `BRIEFING.json` unter `standardUebernommen` und in `ARBEITSSTAND.md` als Annahme.
+Alle Standardwerte, die nicht ausdrücklich gewählt wurden, stehen in `BRIEFING.json` unter `standardUebernommen` und in `ARBEITSSTAND.md` als Annahme.
 
-**Zum Gerüst.** `new-pack` legt ein gleichmäßiges Fenstermuster an (jede Reise hat die gewählte Stationszahl, benachbarte Reisen kreuzen sich, ab 6 Reisen kreuzt jede Reise vier andere).
-Die Zahl der Rümpfe ist daher nicht die Zielzahl; das Briefing nennt die Zielzahl, und der Agent ergänzt oder streicht im Plan.
+### Fragenquelle
+
+`tools/onboarding-fragen.json` enthält je Frage: `key`, `block`, `titel`, `hilfe` (ein Satz), `erklaerung` (optional, nur auf der Seite), `typ` (`text`, `id`, `sprache`, `auswahl`, `mehrfach`, `jaNein`, `liste`, `url`), `optionen` (mit `id`, `label`, `beschreibung`, Alias-Namen und wirkungstragenden Texten wie `ton`, `sorgfalt`, `regel`, `richtwert`, `anteil`), `standard`, `pflicht`, `nurWenn`, `validierung` (Regel und Fehlertexte) und `wirkung`. Die Regeln und der Briefing-Text stehen in `tools/onboarding-core.mjs` (reine Funktionen, keine Node-Zugriffe).
+Nach jeder Änderung an einer dieser Dateien oder an `tools/onboarding-seite.tpl.html`: `node tools/build-onboarding-html.mjs` (erzeugt `onboarding.html`, `--check` prüft nur). Test, dass Browser und Terminal denselben Auftrag erzeugen: `PLAYWRIGHT_MODULE_DIR=<ordner> node tools/onboarding-test.mjs`.
 
 ## Nichtinteraktiv
 
 ```bash
 node tools/onboarding.mjs --config=meine-antworten.json     # keine Fragen, keine Abschlussfrage
 node tools/onboarding.mjs --defaults                        # alles Standard (Name „Mein Museum“)
-node tools/onboarding.mjs --config=datei.json --dry-run     # nur zeigen, nichts schreiben
+node tools/onboarding.mjs --config=datei.json --dry-run     # Probelauf: nichts anlegen, nur zeigen
 node tools/onboarding.mjs --yes                             # Fragen ja, Abschlussfrage nein
 ```
 
-Die Konfiguration hat **dieselben Felder wie `BRIEFING.json`**; man kann eine vorhandene `BRIEFING.json` mit anderer `id` direkt wieder einspeisen.
-Fehlende Felder bekommen den Standardwert (nur `name` ist Pflicht, bei `--defaults` nicht); unbekannte Felder, Zahlen außerhalb des Bereichs oder eine vergebene `id` werden mit Fehlertext und Exit-Code 2 abgelehnt.
-Ohne `id` wird sie aus dem Namen abgeleitet (bei Kollision mit Zähler, zum Beispiel `spieltheorie-2`).
+Die Konfiguration hat **dieselben Felder wie `BRIEFING.json`**; eine vorhandene `BRIEFING.json` mit anderer `id` lässt sich direkt wieder einspeisen.
+Fehlende Felder bekommen den Standardwert (nur `name` ist Pflicht); unbekannte Felder, ungültige Werte, eine nicht freie Lizenz oder eine vergebene `id` werden mit Fehlertext und Exit-Code 2 abgelehnt. Ohne `id` wird sie aus dem Namen abgeleitet.
+Bei `--dry-run` steht am Anfang und Ende „Probelauf: es wurde nichts angelegt.“.
 
-Auch **Antworten aus einer Pipe** funktionieren (eine Antwort je Zeile, leere Zeile = Standard):
-`printf 'Quantenwelt\n\nWas ist wirklich?\n…' | node tools/onboarding.mjs`. Die Antworten werden zur Kontrolle mit ausgegeben; fehlende am Ende sind Standard,
-die Abschlussfrage braucht ein ausdrückliches „ja“ (oder `--yes`), sonst wird nichts angelegt.
+**Alte Konfigurationsdateien** mit `reisen`, `stationenJeReise`, `historisch` oder `exponate` laden weiter: Die Zahlen gehen nur als **unverbindlicher Hinweis** ins Briefing (mit Hinweis in der Ausgabe), `historisch` wird zu `geschichte` (0 = nein, größer 0 = ja), `exponate` (ja/spaeter/nein) zu `anschauung` (viel/etwas/wenig).
+
+Auch **Antworten aus einer Pipe** funktionieren (eine Antwort je Zeile, leere Zeile = Standard); sie werden zur Kontrolle ausgegeben, und die Abschlussfrage braucht ein „ja“ oder `--yes`.
 
 ### Beispiel: „Spieltheorie“
 
@@ -77,9 +90,8 @@ die Abschlussfrage braucht ein ausdrückliches „ja“ (oder `--yes`), sonst wi
   "zielgruppe": "laien",
   "sprache": "de",
   "anrede": "du",
-  "reisen": 3,
-  "stationenJeReise": 13,
-  "historisch": 1,
+  "geschichte": "ja",
+  "groesse": "mittel",
   "reisenamen": ["Grundmodelle", "Wann kooperieren Egoisten?", "Eine kurze Geschichte der Spieltheorie"],
   "skin": "halle",
   "skinWahl": true,
@@ -92,20 +104,28 @@ die Abschlussfrage braucht ein ausdrückliches „ja“ (oder `--yes`), sonst wi
 }
 ```
 
-Zulässige Werte: `zielgruppe` laien | studierende | fachleute | gemischt; `anrede` du | Sie; `anschauung` zentral | viel | etwas | wenig (das frühere Feld `exponate` ja | spaeter | nein wird weiter gelesen und als viel | etwas | wenig umgesetzt, mit Hinweis); `heikel` Liste aus gesundheit, politik, religion, gewalt (leer = keine);
-`quellen` Liste aus offen, eigene, domain (bei domain zusätzlich `materialHost`, https-Adresse); `lizenz` cc-by-4.0 | cc-by-sa-4.0 | alle-rechte | andere (bei andere zusätzlich `lizenzText`); `skin` ein Ordner unter `themes/`.
+Zulässige Werte: `zielgruppe` laien | studierende | fachleute | gemischt; `anrede` du | Sie; `geschichte` ja | agent | nein; `groesse` kompakt | mittel | umfassend | agent; `anschauung` zentral | viel | etwas | wenig; `heikel` Liste aus gesundheit, politik, religion, gewalt (leer = keine);
+`quellen` Liste aus offen, eigene, domain (bei domain zusätzlich `materialHost`, https-Adresse); `lizenz` cc-by-4.0 | cc-by-sa-4.0 | cc0-1.0; `skin` ein Ordner unter `themes/`.
+
+## Ohne Werkzeuge
+
+Kann die KI keine Befehle ausführen (reiner Chat) und ist auch `onboarding.html` keine Option, entstehen die Dateien von Hand (die KI liefert sie als Codeblöcke mit Zielpfad). Ordner `packs/<id>/` mit:
+
+1. **`pack.json`**: Pflicht `id` (wie der Ordner), `title`, `tagline`, `lang`; empfohlen `eyebrow`, `defaultSkin` (`halle`), `vocab` (Wortschatz, Muster: `packs/_vorlage/pack.json`), `limits` `{ "min": 11, "max": 28, "visualShare": 0.35 }`, `requireVisualPlan: true`, `footer`, `license` (zum Beispiel `Inhalte: CC BY 4.0. Code: MIT (Museum Studio).`), `credits`.
+2. **`plan.json`**: zuerst leer `{ "journeys": [], "stations": [], "orders": {} }`; nach der Freigabe mit Reisen (`{id,typ,name}`), Stationen (`{id,title,kind,journeys,why,visual}`) und `orders` gefüllt (`docs/AGENTEN.md`, Schritt 1, 2 und 2b).
+3. **`journeys.js`**: Reisen mit Name, Kurzname, Tagline, Intro, Outro, Farben, Icon (Muster: `packs/_vorlage/journeys.js`).
+4. **`stationen/<reise-id>.js`**: Stationstexte (Schema: `docs/INHALT-SCHREIBEN.md`, Muster: `packs/_vorlage/stationen/`).
+5. **`BRIEFING.md`** (der Auftrag) und **`ARBEITSSTAND.md`** (Annahmen, Fortschritt).
+
+Danach prüft jemand mit Node: `node tools/check-pack.mjs <id>` und baut mit `node tools/build.mjs <id> --skins=all`.
 
 ## Wie Agenten den Auftrag lesen
 
-`docs/AGENTEN.md`, Schritt 0, verweist auf die Auftragsdatei: Gibt es `packs/<id>/BRIEFING.md` (und `BRIEFING.json`), **ist das der Auftrag**.
-Der Agent stellt die Rahmenfragen nicht erneut, sondern arbeitet ab Schritt 1 ab. Was im Briefing fehlt oder als „Standardwert“ markiert ist, trägt er als Annahme in `ARBEITSSTAND.md` ein (die wichtigsten sind schon vorbereitet).
-`BRIEFING.json` ist für Werkzeuge gedacht (zum Beispiel Zahlen für Prüfungen oder eine Vorbelegung in einem anderen Tool); `BRIEFING.md` ist die Fassung für Menschen und Agenten, mit der Checkliste „Was der Agent liefern soll“.
-
-Der Prompt, den das Onboarding ausgibt, lautet sinngemäß: „Lies `docs/AGENTEN.md` und `packs/<id>/BRIEFING.md` und richte das Paket nach der Anleitung ein …“.
+`docs/AGENTEN.md`, Schritt 0, verweist auf die Auftragsdatei: Gibt es `packs/<id>/BRIEFING.md`, **ist das der Auftrag**. Der Agent stellt die Rahmenfragen nicht erneut, entscheidet Reisen und Stationen fachlich, zeigt den Plan zur Freigabe und arbeitet ab Schritt 1. Was als „Standardwert“ markiert ist oder fehlt, trägt er als Annahme in `ARBEITSSTAND.md` ein.
+Den Dialog für Menschen ohne Terminal beschreibt `AGENTS.md` (mit dünnen Zeigerdateien `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursor/rules/museum-studio.mdc`).
 
 ## Bekannte Grenzen
 
 - Nicht-deutsche Inhalte: Die festen Oberflächentexte der Engine bleiben deutsch.
-- Die Hilfenummern im Fuß (Telefonseelsorge) gelten für Deutschland; für andere Länder steht ein allgemeiner Hinweis, den man anpassen muss.
-- Die Schätzung eindeutiger Stationen (Mitgliedschaften mal 0,8) ist ein Faustwert; echte Kreuzungen entscheiden.
-- Das Gerüst ist ein Muster, keine inhaltliche Planung. Die Stationsrümpfe in `plan.json` tragen ein `visual`-Platzhalterfeld mit `TODO`; die Prüfung meldet es, bis der Agent es durch eine Entscheidung ersetzt hat.
+- Die Hilfenummern im Fuß (Telefonseelsorge) gelten für Deutschland.
+- `onboarding.html` kann die Vergabe einer ID nicht prüfen (kein Zugriff auf den Ordner); das Terminal-Werkzeug tut es und überschreibt nie etwas.

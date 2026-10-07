@@ -85,6 +85,14 @@ export function checkPack(P, opts = {}) {
     }
   }
 
+  // ---- Leerer Plan (frisch angelegt vom Onboarding): eine verständliche Meldung statt vieler Folgefehler
+  const emptyPlan = loadPlan(P, newReport());
+  if (emptyPlan && Array.isArray(emptyPlan.journeys) && Array.isArray(emptyPlan.stations) && !emptyPlan.journeys.length && !emptyPlan.stations.length) {
+    R.err(`${P.rel('plan.json')}: Plan noch leer: Schritt 1 und 2 der Anleitung (docs/AGENTEN.md: Reisen finden, Stationsplan anlegen). Das ist nach dem Onboarding normal; weitere Prüfungen laufen, sobald Reisen und Stationen im Plan stehen.`);
+    R.info = { reisen: 0, stationen: 0, kreuzungen: 0, exponate: exhibitsOf(pack).length, materialLinks: 0, anschauung: null };
+    return R;
+  }
+
   // ---- Teilprüfungen
   const rp = checkPlan(P); add(rp);
   const rd = checkData(P); add(rd);

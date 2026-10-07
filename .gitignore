@@ -3,3 +3,4 @@ node_modules/
 packs/gehirn/
 .DS_Store
 packs/*/pack.local.json
+_site/

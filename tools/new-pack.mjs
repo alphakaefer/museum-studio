@@ -7,7 +7,9 @@
 // Jede Station bekommt einen Platzhalter für das Plan-Feld "visual" (Anschauung); pack.json setzt requireVisualPlan:true.
 // Alle noch auszufüllenden Stellen sind mit „TODO“ markiert; `node tools/check-pack.mjs <id>` meldet sie als Fehler,
 // bis sie durch echten Inhalt ersetzt sind. Ein fertiges Muster zum Abschauen: packs/_vorlage/.
-// Programmatisch nutzbar: import { createPack } from './new-pack.mjs'; createPack({ id, title, journeys, historical, stations, journeyNames, pack, extraFiles, dryRun }).
+// Programmatisch nutzbar: import { createPack } from './new-pack.mjs'; createPack({ id, title, journeys, historical, stations, journeyNames, pack, extraFiles, dryRun, empty }).
+//   empty: true  legt KEIN Gerüst an (das Onboarding nutzt das): plan.json mit leerem Plan (journeys:[], stations:[], orders:{}) und TODO-Markierung,
+//                journeys.js ohne Reisen, keine Stationsdateien. check-pack meldet dann „Plan noch leer“. Reisen und Stationen plant der Agent (docs/AGENTEN.md, Schritt 1 und 2).
 // Das Paket wird erst in einem versteckten Ordner angelegt und dann umbenannt: es gibt nie ein halbes Paket.
 import fs from 'fs';
 import path from 'path';
@@ -19,6 +21,11 @@ const fail = m => { throw new PackError(m); };
 /** Prüft die Optionen und gibt die bereinigten Werte zurück (wirft PackError). */
 export function normalizeOptions(o) {
   const id = o.id;
+  if (o.empty) {
+    if (!id) fail('Aufruf: node tools/new-pack.mjs <id> --title="Name des Museums"');
+    if (!SLUG.test(id)) fail(`ID „${id}“ ist ungültig. Erlaubt: Kleinbuchstaben, Ziffern und einzelne Bindestriche, keine Umlaute oder Leerzeichen (z. B. spieltheorie).`);
+    return { id, N: 0, H: 0, PER: 11, title: typeof o.title === 'string' && o.title.trim() ? o.title.trim() : 'TODO: Name des Museums', names: [] };
+  }
   if (!id) fail('Aufruf: node tools/new-pack.mjs <id> --title="Name des Museums" [--journeys=3] [--historical=0] [--stations=11]\n  <id>: Kleinbuchstaben, Ziffern, Bindestriche (z. B. quantenphysik).');
   if (!SLUG.test(id)) fail(`ID „${id}“ ist ungültig. Erlaubt: Kleinbuchstaben, Ziffern und einzelne Bindestriche, keine Umlaute oder Leerzeichen (z. B. spieltheorie).`);
   const num = (v, d) => v === undefined || v === null || v === '' ? d : (typeof v === 'number' ? v : (/^-?\d+$/.test(String(v).trim()) ? parseInt(v, 10) : NaN));
@@ -40,8 +47,9 @@ export function createPack(opts = {}) {
 // benachbarte Fenster überlappen (= Kreuzungen). Ab 6 Reisen verlangt check-plan Kreuzungen zu je 4 anderen Reisen, daher dichter gepackt.
 // Dichte der Rümpfe: ab 6 Reisen so, dass jede Reise vier andere kreuzt (Fenster ≥ 2 Schritte + 1) und insgesamt höchstens ~200 Stationen entstehen.
 // Mit PER = 11 ergibt das wie bisher 5 bzw. 8 Stationen Schrittweite. Die Rümpfe sind ein Gerüst, nicht die Zielzahl: überzählige löscht man im Plan.
+const EMPTY = !!opts.empty;
 const SP = N >= 6 ? Math.max(3, Math.min(Math.floor((PER - 1) / 2), Math.floor(200 / N))) : Math.max(8, Math.round(PER * 0.6));
-const NS = Math.max(N * SP, PER + 5);
+const NS = EMPTY ? 0 : Math.max(N * SP, PER + 5);
 const JID = Array.from({ length: N }, (_, k) => 'reise-' + String.fromCharCode(97 + k)); // reise-a, reise-b, …
 const isHist = k => k >= N - H;
 const sid = i => 'station-' + String(i + 1).padStart(2, '0');
@@ -64,10 +72,20 @@ const stations = Array.from({ length: NS }, (_, i) => {
 });
 const orders = {};
 JID.forEach((j, k) => { orders[j] = (isHist(k) ? members[k].slice().sort((a, b) => a - b) : members[k]).map(sid); });
-const plan = { journeys: JID.map((j, k) => ({ id: j, typ: isHist(k) ? 'historisch' : 'funktional', name: jname(k) })), stations, orders };
+const plan = EMPTY
+  ? { _TODO: 'TODO: Plan noch leer. Reisen und Stationen planen: docs/AGENTEN.md, Schritt 1 (Reisen finden) und Schritt 2 (Stationsplan). Format: journeys [{id,typ,name}], stations [{id,title,kind,journeys,why,visual}], orders {reiseId:[stationIds]}. Dieses Feld danach löschen.', journeys: [], stations: [], orders: {} }
+  : { journeys: JID.map((j, k) => ({ id: j, typ: isHist(k) ? 'historisch' : 'funktional', name: jname(k) })), stations, orders };
 
 // journeys.js
-const jsrc = `// TODO: Reisen. Name, Kurzname (≤ 14 Zeichen), Tagline (≤ 70 Zeichen), Intro (2–3 Sätze), Outro (1–2 Sätze, offene Frage), Icon, Farbe.
+const jsrc = EMPTY ? `// TODO: Reisen. Noch leer: erst Reisen und Plan entwerfen (docs/AGENTEN.md, Schritt 1 bis 3), dann hier je Reise eintragen:
+// { id, typ:'funktional'|'historisch', name, kurz (≤ 14 Zeichen), tagline (≤ 70), intro, outro, color:{light,dark}, icon }. ids wie in plan.json.
+// Muster: packs/_vorlage/journeys.js. Icons: node tools/list-icons.mjs
+(function(){'use strict';
+window.MUSEUM=window.MUSEUM||{};
+MUSEUM.data=MUSEUM.data||{};
+MUSEUM.data.journeys=[];
+})();
+` : `// TODO: Reisen. Name, Kurzname (≤ 14 Zeichen), Tagline (≤ 70 Zeichen), Intro (2–3 Sätze), Outro (1–2 Sätze, offene Frage), Icon, Farbe.
 // typ:'historisch' = Zeitstrahl-Reise (Stationen mit year/yearLabel, chronologisch); sonst 'funktional'.
 // color: light = Farbe auf hellem Grund (≥ 3:1 Kontrast), dark = aufgehellte Variante für dunklen Grund. Reisen müssen gut unterscheidbar sein.
 // icon: ein Schlüssel aus engine/js/icons.js (Liste: node tools/list-icons.mjs). ids müssen mit plan.json übereinstimmen.
@@ -139,7 +157,7 @@ const pack = {
   vocab: { journey: 'Reise', journeys: 'Reisen', station: 'Station', stations: 'Stationen', interchange: 'Kreuzung', interchanges: 'Kreuzungen', transfer: 'Umsteigen', passport: 'Reisepass', grandTour: 'Große Rundreise', networkMap: 'Netzplan', timeline: 'Zeitstrahl' },
   journeyTypes: { funktional: 'Funktionale Reisen', historisch: 'Historische Reisen' },
   exhibits: [],
-  limits: { min: 11, max: Math.min(28, PER + 6), visualShare: 0.3 },
+  limits: { min: 11, max: EMPTY ? 28 : Math.min(28, PER + 6), visualShare: 0.3 },
   requireVisualPlan: true,
   footer: 'TODO: Hinweis am Seitenende (Text ohne HTML; Leerzeile = neuer Absatz), z. B. Bildung statt Beratung, bei heiklen Themen Hilfsangebote',
   license: 'TODO: Lizenz der Inhalte',

@@ -22,9 +22,10 @@ Man merkt, dass das Gebiet ein Netz ist und kein Inhaltsverzeichnis.
 Arbeite in dieser Reihenfolge. Jeder Schritt endet mit einem Befehl, der grün sein muss, und mit einem Commit.
 
 ### 0. Rahmen klären
-**Gibt es `packs/<id>/BRIEFING.md` (und `BRIEFING.json`)? Dann ist das der Auftrag.** Das Onboarding (`npm run setup`, siehe `docs/ONBOARDING.md`) hat Thema, Zielgruppe, Ton, Umfang, Reisevorschläge, heikle Themen, Quellen, Look und Lizenz bereits mit dem Auftraggeber geklärt,
+**Gibt es `packs/<id>/BRIEFING.md` (und `BRIEFING.json`)? Dann ist das der Auftrag.** Das Onboarding (`npm run setup`, `onboarding.html` oder der Dialog nach `AGENTS.md`; siehe `docs/ONBOARDING.md`) hat Thema, Zielgruppe, Ton, Umfang, Reisevorschläge, heikle Themen, Quellen, Look und Lizenz bereits mit dem Auftraggeber geklärt,
 `pack.json` ausgefüllt und das Gerüst angelegt. **Frage das nicht erneut**, sondern lies `BRIEFING.md` ganz (Sorgfaltsregeln und die Checkliste „Was der Agent liefern soll“ inklusive) und arbeite ab Schritt 1.
 Was im Briefing fehlt oder dort als „Standardwert“ markiert ist, entscheidest du vorsichtig und trägst es in `ARBEITSSTAND.md` unter „Annahmen“ ein (die Onboarding-Annahmen stehen schon dort; „Bestätigt“ bleibt „offen“). Das Gerüst darfst du im Plan umbauen; der Auftrag (Umfang, Quellen, Sorgfalt) gilt.
+Das Onboarding fragt bewusst **keine Zahlen** (Reisen, Stationen): Die entscheidest du fachlich nach Thema und Zielgruppe, zeigst den **Plan zur Freigabe** und schreibst erst danach Texte. Das Paket liegt dann mit leerem Plan vor (`check-pack`: „Plan noch leer“).
 Fehlt das Briefing, klärst du den Rahmen selbst, wie folgt.
 
 Kläre in wenigen Sätzen und schreibe es in `packs/<id>/pack.json` und `packs/<id>/ARBEITSSTAND.md` (das legt `new-pack` an; Vorlage: `packs/_vorlage/ARBEITSSTAND.md`):

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Museum planen</title>
+<!-- ERZEUGT von tools/build-onboarding-html.mjs aus tools/onboarding-fragen.json, tools/onboarding-core.mjs und tools/onboarding-seite.tpl.html. Nicht von Hand ändern: Quellen ändern und den Generator neu starten. -->
+<style>
+:root {
+  --bg: #f6f2ea; --card: #ffffff; --ink: #1d2433; --muted: #596175; --line: #d8d0c0; --accent: #8a4b1f; --accent-ink: #ffffff;
+  --soft: #efe8da; --ok: #1f6f3a; --err: #a11d2e; --focus: #1f5fbf; --shadow: 0 1px 2px rgba(20,24,40,.08), 0 6px 20px rgba(20,24,40,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1420; --card: #161e2e; --ink: #e9edf5; --muted: #a6b0c4; --line: #2c3750; --accent: #e3ad72; --accent-ink: #1a1208;
+    --soft: #1d2740; --ok: #6fd28f; --err: #ff8f9d; --focus: #8ab8ff; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1420; --card: #161e2e; --ink: #e9edf5; --muted: #a6b0c4; --line: #2c3750; --accent: #e3ad72; --accent-ink: #1a1208;
+  --soft: #1d2740; --ok: #6fd28f; --err: #ff8f9d; --focus: #8ab8ff; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.3);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0 8px; }
+header.top .brand { font-weight: 700; letter-spacing: .01em; }
+header.top .brand span { color: var(--muted); font-weight: 400; }
+button { font: inherit; }
+.theme { background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; min-height: 40px; }
+h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.15; margin: 8px 0 10px; }
+h2 { font-size: 1.4rem; line-height: 1.25; margin: 0 0 6px; }
+h3 { font-size: 1.1rem; margin: 0 0 4px; }
+p { margin: 0 0 12px; }
+.lead { font-size: 1.1rem; color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); margin: 16px 0; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); font-weight: 600; cursor: pointer; text-decoration: none; }
+.btn.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn:hover { filter: brightness(1.06); }
+.btn:focus-visible, .theme:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; margin-top: 18px; }
+.nav .right { margin-left: auto; }
+/* Fortschritt */
+.progress { margin: 8px 0 4px; }
+.progress .label { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: .95rem; color: var(--muted); margin-bottom: 6px; }
+.bar { height: 10px; border-radius: 999px; background: var(--soft); overflow: hidden; border: 1px solid var(--line); }
+.bar > i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .35s ease; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+.dots { display: flex; gap: 6px; list-style: none; padding: 0; margin: 10px 0 0; }
+.dots li { flex: 1; height: 6px; border-radius: 3px; background: var(--soft); border: 1px solid var(--line); }
+.dots li.done { background: var(--accent); border-color: var(--accent); }
+.dots li.now { background: var(--card); border-color: var(--accent); }
+/* Fragen */
+.q { padding: 14px 0 16px; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; padding-top: 4px; }
+.q[hidden] { display: none; }
+.q label.t, .q legend { display: block; font-weight: 650; margin: 0 0 4px; padding: 0; }
+.q fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.help { color: var(--muted); font-size: .96rem; margin-bottom: 8px; }
+details.more { margin: 0 0 8px; font-size: .95rem; }
+details.more summary { cursor: pointer; color: var(--accent); }
+input[type=text], textarea, select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px; min-height: 46px; }
+textarea { resize: vertical; }
+.opts { display: grid; gap: 8px; }
+label.opt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); cursor: pointer; min-height: 48px; }
+label.opt:hover { border-color: var(--accent); }
+label.opt:has(input:checked) { border-color: var(--accent); background: var(--soft); }
+label.opt input { margin-top: 4px; width: 20px; height: 20px; flex: none; accent-color: var(--accent); }
+label.opt .od { display: block; color: var(--muted); font-size: .94rem; }
+.err { color: var(--err); font-weight: 600; margin: 6px 0 0; }
+.err:empty, .note:empty { display: none; }
+.note { color: var(--muted); font-size: .94rem; margin: 6px 0 0; padding: 8px 10px; background: var(--soft); border-radius: 8px; }
+/* Zusammenfassung */
+dl.sum { display: grid; grid-template-columns: minmax(120px, 190px) 1fr; gap: 6px 16px; margin: 0; }
+dl.sum dt { color: var(--muted); }
+dl.sum dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 560px) { dl.sum { grid-template-columns: 1fr; gap: 0; } dl.sum dt { margin-top: 10px; font-size: .9rem; } }
+/* Ergebnisse */
+.res textarea { font: 13.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; min-height: 220px; max-height: 420px; }
+.res .tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.res .status { min-height: 1.4em; margin: 8px 0 0; font-size: .95rem; color: var(--ok); }
+.res .status.warn { color: var(--muted); }
+.badge { display: inline-block; font-size: .8rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); margin-left: 8px; vertical-align: middle; }
+.steps { padding-left: 1.2em; margin: 0 0 8px; }
+.steps li { margin-bottom: 6px; }
+footer { color: var(--muted); font-size: .9rem; margin-top: 28px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand">Museum Studio <span>· Museum planen</span></div>
+  <button class="theme" id="theme" type="button" aria-label="Hell oder dunkel umschalten">Hell / Dunkel</button>
+</header>
+<noscript><div class="card"><p><strong>Diese Seite braucht JavaScript.</strong> Alternativ: im Repository <code>AGENTS.md</code> an eine KI geben oder im Terminal <code>npm run setup</code> ausführen.</p></div></noscript>
+<main id="main" tabindex="-1">
+
+<section id="intro" class="card">
+  <h1>Dein Museum planen</h1>
+  <p class="lead">Beantworte ein paar Fragen zu deinem Thema. Am Ende bekommst du einen fertigen Auftrag, den du jeder KI geben kannst (ChatGPT, Claude, Gemini, Copilot und andere).</p>
+  <ul class="steps">
+    <li>Du brauchst <strong>kein Fachwissen</strong> und musst <strong>keine Zahlen</strong> nennen. Wie viele Reisen und Stationen es gibt, entscheidet die KI fachlich und zeigt dir den Plan, bevor sie Texte schreibt.</li>
+    <li>Zu jeder Frage gibt es einen Vorschlag. Was du nicht ändern willst, lässt du einfach so.</li>
+    <li><strong>Alles bleibt in deinem Browser.</strong> Nichts wird gesendet oder gespeichert.</li>
+  </ul>
+  <p>Dauert etwa fünf Minuten.</p>
+  <button class="btn" id="start" type="button">Los geht’s</button>
+</section>
+
+<section id="wizard" hidden>
+  <div class="progress" id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1">
+    <div class="label"><span id="plabel"></span><span id="pmsg"></span></div>
+    <div class="bar"><i id="pbar"></i></div>
+    <ol class="dots" id="pdots" aria-hidden="true"></ol>
+  </div>
+  <form id="form" class="card" novalidate>
+    <div id="steps"></div>
+    <div class="nav">
+      <button class="btn secondary" type="button" id="back">Zurück</button>
+      <button class="btn right" type="submit" id="next">Weiter</button>
+    </div>
+  </form>
+</section>
+
+<section id="summary" class="card" hidden>
+  <h2 id="sumtitle" tabindex="-1">Stimmt das so?</h2>
+  <p class="help">Das ist dein Auftrag in Kurzform. Mit „Ergebnisse erzeugen“ entstehen drei Texte zum Kopieren und Speichern.</p>
+  <dl class="sum" id="sumlist"></dl>
+  <div class="nav">
+    <button class="btn secondary" type="button" id="sumback">Antworten ändern</button>
+    <button class="btn right" type="button" id="gen">Ergebnisse erzeugen</button>
+  </div>
+</section>
+
+<section id="results" hidden>
+  <div class="card">
+    <h2 id="restitle" tabindex="-1">Fertig: Dein Auftrag ist da</h2>
+    <p class="lead">So geht es weiter:</p>
+    <ol class="steps">
+      <li><strong>Am einfachsten:</strong> Text Nr. 3 kopieren und in eine KI deiner Wahl einfügen (Chat reicht). Die KI fragt dich nichts mehr zum Rahmen, sondern macht einen Plan und zeigt ihn dir zur Freigabe.</li>
+      <li><strong>Mit dem Projektordner:</strong> Nr. 2 als <code>BRIEFING.json</code> im Repository speichern und <code>node tools/onboarding.mjs --config=BRIEFING.json --yes</code> ausführen, oder die KI mit <code>AGENTS.md</code> den Rest erledigen lassen.</li>
+      <li>Nr. 1 ist der Auftrag zum Lesen (<code>BRIEFING.md</code>), für dich und für jede KI.</li>
+    </ol>
+    <p class="help" id="idnote"></p>
+  </div>
+  <div id="resbox"></div>
+  <div class="nav">
+    <button class="btn secondary" type="button" id="resback">Antworten ändern</button>
+    <button class="btn secondary" type="button" id="restart">Neu beginnen</button>
+  </div>
+</section>
+
+</main>
+<footer>
+  <p>Diese Seite sendet nichts und lädt nichts nach; sie läuft per Doppelklick im Browser. Museum Studio: Code MIT, Beispielinhalte CC BY 4.0. Zuletzt erzeugt aus den Fragen in <code>tools/onboarding-fragen.json</code> (__GENERIERT__).</p>
+</footer>
+</div>
+
+<script>
+(function () {
+'use strict';
+/*__CORE__*/
+
+var DATA = /*__FRAGEN__*/;
+var SKINS = /*__SKINS__*/;
+
+var ctx = makeContext({ data: DATA, skins: SKINS, today: new Date().toISOString().slice(0, 10), packExists: function () { return false; } });
+var Q = ctx.questions, BL = DATA.bloecke, TOTAL = BL.length + 1;
+var A = {}, D = new Set(), touched = new Set(), fields = {};
+var step = -1;
+var MSG = ['Los geht’s.', 'Gut, das Wichtigste ist geschafft.', 'Die Hälfte rückt näher.', 'Der Aufbau steht.', 'Nur noch Feinheiten.', 'Fast geschafft.', 'Letzter Blick.'];
+
+function $(s, r) { return (r || document).querySelector(s); }
+function el(tag, attrs) {
+  var e = document.createElement(tag);
+  for (var k in (attrs || {})) { if (attrs[k] !== null && attrs[k] !== undefined && attrs[k] !== false) e.setAttribute(k, attrs[k] === true ? '' : attrs[k]); }
+  for (var i = 2; i < arguments.length; i++) { var c = arguments[i]; if (c === null || c === undefined || c === false) continue; e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); }
+  return e;
+}
+function safeStore(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+// ───────── Fragen aufbauen
+function jaNeinOptions(q) { return [{ id: 'ja', label: 'Ja', beschreibung: (q.anzeigeJa || '').replace(/^ja,?\s*/, '') }, { id: 'nein', label: 'Nein', beschreibung: (q.anzeigeNein || '').replace(/^nein,?\s*/, '') }]; }
+
+function buildField(q) {
+  var hid = 'h-' + q.key, eid = 'e-' + q.key;
+  var wrap = el('div', { 'class': 'q', 'data-key': q.key });
+  var help = el('p', { 'class': 'help', id: hid }, q.hilfe);
+  var more = q.erklaerung ? el('details', { 'class': 'more' }, el('summary', null, 'Mehr dazu'), el('p', null, q.erklaerung)) : null;
+  var err = el('p', { 'class': 'err', id: eid, role: 'alert' });
+  var note = el('p', { 'class': 'note', 'aria-live': 'polite' });
+  var f = { q: q, root: wrap, err: err, note: note };
+  var def = defaultFor(q, { name: 'Mein Museum' }, ctx, null);
+  var multi = q.typ === 'mehrfach';
+  if (q.typ === 'auswahl' || q.typ === 'jaNein' || multi) {
+    var opts = q.typ === 'jaNein' ? jaNeinOptions(q) : q.optionen;
+    var fs = el('fieldset', { 'class': 'opts-wrap', 'aria-describedby': hid + ' ' + eid }, el('legend', null, q.titel), help);
+    if (more) fs.appendChild(more);
+    var grid = el('div', { 'class': 'opts' });
+    opts.forEach(function (o, i) {
+      var checked = q.typ === 'jaNein' ? (def ? o.id === 'ja' : o.id === 'nein') : multi ? def.indexOf(o.id) >= 0 : o.id === def;
+      var inp = el('input', { type: multi ? 'checkbox' : 'radio', name: 'n-' + q.key, value: o.id, id: 'o-' + q.key + '-' + i, checked: checked });
+      inp.addEventListener('change', function () { touched.add(q.key); if (q.key === 'quellen') updateConditional(); });
+      grid.appendChild(el('label', { 'class': 'opt', 'for': inp.id }, inp, el('span', null, el('strong', null, o.label), o.beschreibung ? el('span', { 'class': 'od' }, o.beschreibung) : null)));
+    });
+    fs.appendChild(grid);
+    wrap.appendChild(fs);
+    f.get = function () { var c = wrap.querySelectorAll('input:checked'); var v = []; for (var i = 0; i < c.length; i++) v.push(c[i].value); return v.join(','); };
+    f.focus = function () { var i = wrap.querySelector('input'); if (i) i.focus(); };
+  } else {
+    var id = 'f-' + q.key, ctl;
+    if (q.typ === 'sprache') {
+      ctl = el('select', { id: id, 'aria-describedby': hid + ' ' + eid });
+      ctl.addEventListener('change', function () { touched.add(q.key); });
+      Object.keys(ctx.langs).forEach(function (c) { ctl.appendChild(el('option', { value: c, selected: c === def }, ctx.langs[c] + ' (' + c + ')')); });
+    } else if (q.lang || q.typ === 'liste') {
+      ctl = el('textarea', { id: id, rows: q.lang ? 4 : 3, 'aria-describedby': hid + ' ' + eid });
+    } else {
+      ctl = el('input', { type: 'text', id: id, autocomplete: 'off', inputmode: q.typ === 'url' ? 'url' : null, 'aria-describedby': hid + ' ' + eid });
+    }
+    if (q.typ !== 'sprache') {
+      var ph = q.platzhalter || (def !== '' && def !== undefined && !Array.isArray(def) ? 'Vorschlag: ' + def : '');
+      if (q.key === 'id') ph = 'Vorschlag: ' + ctx.freeId(slugify('Mein Museum'));
+      if (ph) ctl.setAttribute('placeholder', ph);
+    }
+    wrap.appendChild(el('label', { 'class': 't', 'for': id }, q.titel));
+    wrap.appendChild(help);
+    if (more) wrap.appendChild(more);
+    wrap.appendChild(ctl);
+    f.ctl = ctl;
+    f.get = function () { var v = ctl.value; if (q.typ === 'liste') v = v.replace(/\s*\n\s*/g, ';'); return v; };
+    f.focus = function () { ctl.focus(); };
+  }
+  wrap.appendChild(err); wrap.appendChild(note);
+  f.setError = function (m) { err.textContent = m || ''; var c = f.ctl || wrap.querySelector('input'); if (c) { if (m) c.setAttribute('aria-invalid', 'true'); else c.removeAttribute('aria-invalid'); } };
+  f.setNote = function (m) { note.textContent = m || ''; };
+  return f;
+}
+
+function currentSources() { var c = fields.quellen.root.querySelectorAll('input:checked'), v = []; for (var i = 0; i < c.length; i++) v.push(c[i].value); return v; }
+function updateConditional() {
+  var q = Q.filter(function (x) { return x.key === 'materialHost'; })[0];
+  var show = currentSources().indexOf('domain') >= 0;
+  fields.materialHost.root.hidden = !show;
+}
+function updateIdPlaceholder() {
+  var n = fields.name.get().trim() || 'Mein Museum';
+  fields.id.ctl.setAttribute('placeholder', 'Vorschlag: ' + ctx.freeId(slugify(n)));
+}
+
+function init() {
+  var host = $('#steps');
+  BL.forEach(function (b, i) {
+    var sec = el('section', { 'class': 'step', 'data-step': String(i), hidden: true, 'aria-labelledby': 'st-' + i });
+    sec.appendChild(el('h2', { id: 'st-' + i, tabindex: '-1' }, b.titel));
+    sec.appendChild(el('p', { 'class': 'help' }, b.einleitung));
+    Q.filter(function (q) { return q.block === b.id; }).forEach(function (q) { var f = buildField(q); fields[q.key] = f; sec.appendChild(f.root); });
+    host.appendChild(sec);
+    $('#pdots').appendChild(el('li'));
+  });
+  $('#pdots').appendChild(el('li'));
+  fields.name.ctl.addEventListener('input', updateIdPlaceholder);
+  updateConditional();
+  updateIdPlaceholder();
+}
+
+// ───────── Prüfen
+function validateBlock(i) {
+  var ok = true, first = null;
+  Q.filter(function (q) { return q.block === BL[i].id; }).forEach(function (q) {
+    var f = fields[q.key];
+    if (!isVisible(q, A)) { A[q.key] = ''; D.delete(q.key); f.root.hidden = true; return; }
+    f.root.hidden = false;
+    var raw = f.get(), opts = {};
+    if (q.typ === 'mehrfach') {
+      opts.leerIstStandard = false;
+      if (!raw) { if (q.keineAlias) raw = 'keine'; else { f.setError('Bitte mindestens eine Möglichkeit ankreuzen.'); ok = false; first = first || f; return; } }
+    }
+    if (q.typ === 'auswahl' || q.typ === 'jaNein') opts.leerIstStandard = false;
+    var res = resolveAnswer(q, raw, A, ctx, null, opts);
+    if (res.error) { f.setError(res.error); f.setNote(''); ok = false; first = first || f; return; }
+    f.setError(''); f.setNote(res.warn || '');
+    A[q.key] = res.value;
+    var used = (q.typ === 'auswahl' || q.typ === 'mehrfach' || q.typ === 'jaNein' || q.typ === 'sprache') ? !touched.has(q.key) : res.usedDefault;
+    if (used) D.add(q.key); else D.delete(q.key);
+  });
+  if (!ok && first) first.focus();
+  return ok;
+}
+
+// ───────── Ablauf
+function show(n) {
+  step = n;
+  $('#intro').hidden = n !== -1;
+  $('#wizard').hidden = !(n >= 0 && n < BL.length);
+  $('#summary').hidden = n !== BL.length;
+  $('#results').hidden = n !== BL.length + 1;
+  var steps = document.querySelectorAll('.step');
+  for (var i = 0; i < steps.length; i++) steps[i].hidden = (i !== n);
+  var shown = Math.min(n, BL.length) + 1;
+  if (n >= 0 && n <= BL.length) {
+    var title = n < BL.length ? BL[n].titel : 'Zusammenfassung';
+    if (n < BL.length) {
+      $('#plabel').textContent = 'Schritt ' + shown + ' von ' + TOTAL + ': ' + title;
+      $('#pmsg').textContent = (TOTAL - shown) === 0 ? '' : 'Noch ' + (TOTAL - shown) + (TOTAL - shown === 1 ? ' Schritt' : ' Schritte') + '. ' + MSG[n];
+      $('#pbar').style.width = Math.round(shown / TOTAL * 100) + '%';
+      $('#progress').setAttribute('aria-valuenow', String(shown));
+      var dots = $('#pdots').children;
+      for (var d = 0; d < dots.length; d++) dots[d].className = d < n ? 'done' : d === n ? 'now' : '';
+      $('#next').textContent = n === BL.length - 1 ? 'Zur Zusammenfassung' : 'Weiter';
+      $('#back').textContent = n === 0 ? 'Zur Startseite' : 'Zurück';
+    }
+  }
+  window.scrollTo(0, 0);
+  var h = n === -1 ? $('#intro h1') : n < BL.length ? $('#st-' + n) : n === BL.length ? $('#sumtitle') : $('#restitle');
+  if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+}
+
+function renderSummary() {
+  var dl = $('#sumlist'); dl.textContent = '';
+  summaryRows(A, D, ctx).forEach(function (r) { dl.appendChild(el('dt', null, r[0])); dl.appendChild(el('dd', null, r[1])); });
+}
+
+function makeResult(kind, title, text, file, mime, note, badge) {
+  var id = 'r-' + kind;
+  var ta = el('textarea', { id: id, readonly: true, rows: 12, spellcheck: 'false', 'aria-label': title });
+  ta.value = text;
+  var status = el('p', { 'class': 'status', role: 'status' });
+  var say = function (m, warn) { status.textContent = m; status.className = 'status' + (warn ? ' warn' : ''); };
+  var copy = el('button', { 'class': 'btn', type: 'button' }, 'Kopieren');
+  var save = el('button', { 'class': 'btn secondary', type: 'button' }, 'Als Datei speichern');
+  var sel = el('button', { 'class': 'btn secondary', type: 'button' }, 'Text markieren');
+  copy.addEventListener('click', function () {
+    var fallback = function () {
+      ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      if (ok) say('Kopiert.'); else say('Das Kopieren ist hier nicht erlaubt. Der Text ist markiert: Strg+C (Mac: Cmd+C), am Handy gedrückt halten und „Kopieren“ wählen.', true);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(function () { say('Kopiert.'); }, fallback); else fallback();
+  });
+  sel.addEventListener('click', function () { ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length); say('Text markiert: jetzt Strg+C (Mac: Cmd+C) oder am Handy gedrückt halten und „Kopieren“ wählen.', true); });
+  save.addEventListener('click', function () {
+    try {
+      var url = URL.createObjectURL(new Blob([text], { type: mime + ';charset=utf-8' }));
+      var a = el('a', { href: url, download: file }); document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+      say('Gespeichert als ' + file + ' (im Download-Ordner, falls der Browser nicht nachfragt).');
+    } catch (e) { say('Das Speichern ist hier nicht möglich. Bitte „Text markieren“ und kopieren.', true); }
+  });
+  return el('div', { 'class': 'card res', id: 'card-' + kind },
+    el('h3', null, title, badge ? el('span', { 'class': 'badge' }, badge) : null),
+    el('p', { 'class': 'help' }, note), ta, el('div', { 'class': 'tools' }, copy, save, sel), status);
+}
+
+function generate() {
+  var md = briefingMd(A, D, ctx), js = briefingJson(A, D, ctx), pr = promptText(A, md, js);
+  var box = $('#resbox'); box.textContent = '';
+  box.appendChild(makeResult('md', '1. BRIEFING.md (Auftrag zum Lesen)', md, 'BRIEFING.md', 'text/markdown', 'Der Auftrag in lesbarer Form, für dich und für jede KI. Gehört im Projektordner nach packs/' + A.id + '/BRIEFING.md.'));
+  box.appendChild(makeResult('json', '2. BRIEFING.json (Antworten für Werkzeuge)', js, 'BRIEFING.json', 'application/json', 'Dieselben Antworten maschinenlesbar. Das Werkzeug nimmt sie mit node tools/onboarding.mjs --config=BRIEFING.json --yes.'));
+  box.appendChild(makeResult('prompt', '3. Fertiger Prompt für jede KI', pr, 'auftrag-prompt-' + A.id + '.txt', 'text/plain', 'Einfach in einen KI-Chat einfügen. Enthält den ganzen Auftrag und sagt der KI, wie sie weitermacht (mit und ohne Zugriff auf das Projekt).', 'am einfachsten'));
+  $('#idnote').textContent = 'Die ID „' + A.id + '“ konnte hier nicht auf Vergabe geprüft werden. Ist sie im Projektordner schon vergeben, nimmt das Werkzeug beziehungsweise die KI eine andere (es wird nie etwas überschrieben).';
+  show(BL.length + 1);
+}
+
+$('#start').addEventListener('click', function () { show(0); });
+$('#form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  if (!validateBlock(step)) return;
+  if (step < BL.length - 1) show(step + 1); else { renderSummary(); show(BL.length); }
+});
+$('#back').addEventListener('click', function () { if (step <= 0) show(-1); else show(step - 1); });
+$('#sumback').addEventListener('click', function () { show(BL.length - 1); });
+$('#gen').addEventListener('click', generate);
+$('#resback').addEventListener('click', function () { renderSummary(); show(BL.length); });
+$('#restart').addEventListener('click', function () { if (window.confirm('Alle Antworten verwerfen und neu beginnen?')) window.location.reload(); });
+$('#theme').addEventListener('click', function () {
+  var cur = document.documentElement.getAttribute('data-theme');
+  var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var next = dark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next); safeStore('ms-theme', next);
+});
+var saved = safeStore('ms-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+
+init();
+show(-1);
+})();
+</script>
+</body>
+</html>

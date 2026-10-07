@@ -19,7 +19,13 @@ the vocabulary is configurable per pack.
 - **Pakete:** `packs/_vorlage` (kleines Muster), `packs/beispiel-gehirn` (Ausschnitt aus dem Gehirnmuseum), eigene Pakete über `npm run setup` (Einrichtung mit Fragen) oder `tools/new-pack.mjs`.
 - **Kein Tracking, keine Cookies, keine externen Abrufe, Systemschriften.** Läuft per Doppelklick (`file://`) und auf jedem Webspace.
 
-## Installation und Start
+## Ohne Terminal
+Du brauchst weder Programmierkenntnisse noch ein Terminal. Drei Wege:
+1. **Im Dialog mit einer KI.** Gib einer KI mit Zugriff auf dieses Projekt (Claude Code, Codex, Gemini CLI, Copilot, Cursor …) den Satz „Ich möchte ein neues Museum bauen“. Sie liest [`AGENTS.md`](AGENTS.md), stellt dir einfache Fragen (ohne Zahlen, mit Vorschlägen zum Übernehmen), führt alle Befehle selbst aus und zeigt dir den Plan, bevor sie Texte schreibt.
+2. **`onboarding.html` per Doppelklick.** Die Datei im Browser öffnen, Fragen beantworten und am Ende den fertigen **Prompt** kopieren (oder `BRIEFING.md` und `BRIEFING.json` speichern). Der Prompt funktioniert in jedem KI-Chat, auch ohne Zugriff auf das Projekt. Die Seite läuft komplett offline.
+3. **GitHub-Vorlage und Pages.** Über „Use this template“ eine eigene Kopie anlegen, in den Einstellungen unter Pages die Quelle „GitHub Actions“ wählen: Jedes Paket unter `packs/` wird dann automatisch gebaut und veröffentlicht. Anleitung: [`docs/VEROEFFENTLICHEN.md`](docs/VEROEFFENTLICHEN.md).
+
+## Installation und Start (Terminal)
 **Voraussetzungen:** [Node.js](https://nodejs.org) ab Version 18. Git ist praktisch, aber nicht nötig. Playwright mit Chromium braucht nur der Browser-Rauchtest (`npm run smoke`), alles andere läuft ohne.
 
 ```bash
@@ -27,9 +33,9 @@ git clone https://github.com/alphakaefer/museum-studio.git
 cd museum-studio
 npm run setup            # oder: node tools/onboarding.mjs
 ```
-Die Einrichtung prüft zuerst deine Umgebung (`npm run doctor`), stellt dann ein paar kurze Fragen (Name, Thema, Zielgruppe, Umfang, Look, heikle Themen, Quellen, Lizenz; Enter übernimmt jeweils den Vorschlag)
-und legt `packs/<id>/` an, samt **Auftragsdatei** `BRIEFING.md` für KI-Agenten. Danach hast du zwei Wege:
-1. **Mit einer KI:** den am Ende ausgegebenen Prompt in Claude Code (oder einen anderen Agenten) einfügen: „Lies `docs/AGENTEN.md` und `packs/<id>/BRIEFING.md` und richte das Paket nach der Anleitung ein …“.
+Die Einrichtung prüft zuerst deine Umgebung (`npm run doctor`), stellt dann ein paar kurze Fragen (Name, Thema, Zielgruppe, Aufbau, Look, heikle Themen, Quellen, freie Lizenz; Enter übernimmt jeweils den Vorschlag, Zahlen von Reisen und Stationen werden nicht verlangt)
+und legt `packs/<id>/` mit leerem Plan an, samt **Auftragsdatei** `BRIEFING.md` für KI-Agenten; am Ende steht der vollständige Pfad. Danach hast du zwei Wege:
+1. **Mit einer KI:** den am Ende ausgegebenen Prompt in Claude Code (oder einen anderen Agenten) einfügen: „Lies `AGENTS.md`, `docs/AGENTEN.md` und `packs/<id>/BRIEFING.md` und richte das Paket nach der Anleitung ein …“.
 2. **Von Hand:** `BRIEFING.md` lesen und `docs/AGENTEN.md` ab Schritt 1 abarbeiten.
 
 Beispielpakete bauen und ansehen:
@@ -38,12 +44,12 @@ npm run check -- beispiel-gehirn                    # Prüfungen
 npm run build -- beispiel-gehirn --skins=all        # erzeugt dist/beispiel-gehirn/
 open dist/beispiel-gehirn/index.html                # oder per Doppelklick (auch: spieltheorie)
 ```
-Fertig? `npm run check -- <id>`, `node tools/layout-map.mjs <id>`, `npm run build -- <id> --skins=all`. Die Seite in `dist/<id>/` ist rein statisch und läuft auf jedem Webspace.
+Fertig? `npm run check -- <id>`, `node tools/layout-map.mjs <id>`, `npm run build -- <id> --skins=all`. Die Seite in `dist/<id>/` ist rein statisch und läuft auf jedem Webspace (Veröffentlichen: [`docs/VEROEFFENTLICHEN.md`](docs/VEROEFFENTLICHEN.md)).
 Alle Fragen, ihre Wirkung und der nichtinteraktive Aufruf (`--config`, `--defaults`, `--dry-run`): [`docs/ONBOARDING.md`](docs/ONBOARDING.md).
 
 ## Werkzeuge
 ```bash
-node tools/new-pack.mjs quanten --title="Quantenwelt" --journeys=6 --historical=1 [--stations=14]   # Gerüst ohne Befragung
+node tools/new-pack.mjs quanten --title="Quantenwelt" --journeys=6 --historical=1 [--stations=14]   # Gerüst mit Platzhaltern, ohne Befragung
 node tools/layout-map.mjs quanten && node tools/check-pack.mjs quanten && node tools/build.mjs quanten --skins=all
 node tools/list-icons.mjs            # gültige Icon-Schlüssel
 node tools/check-skin.mjs --all      # Skins prüfen
@@ -60,7 +66,9 @@ Screenshots landen standardmäßig in `dist/<paket>/_shots/` (`--shots=<ordner>`
 ## Dokumentation
 | Datei | Für wen |
 |---|---|
-| `docs/ONBOARDING.md` | **Einrichtung**: die Fragen von `npm run setup`, ihre Wirkung, Konfiguration ohne Fragen, Auftragsdatei |
+| `AGENTS.md` | **KI-Agenten, anbieterneutral**: Dialog-Onboarding für Laien, Regeln (Zeigerdateien: `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursor/rules/`) |
+| `docs/ONBOARDING.md` | **Einrichtung**: Fragen und ihre Wirkung, `onboarding.html`, Konfiguration ohne Fragen, „Ohne Werkzeuge“ |
+| `docs/VEROEFFENTLICHEN.md` | **Veröffentlichen**: GitHub Pages ohne Terminal, rsync/SSH, Upload auf beliebigen Webspace |
 | `docs/AGENTEN.md` | **KI-Agenten und Redaktion**: Schritt für Schritt ein neues Wissensgebiet einrichten, Regeln, Qualitätstore |
 | `docs/INHALT-SCHREIBEN.md` | Wer Stationen schreibt: Schema, Stil, Beispiele, Checkliste |
 | `docs/DESIGNER.md` | **Gestalter**: eigene Skins entwerfen, Tokens, Komponenten, Prüfung |

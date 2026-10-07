@@ -1,0 +1,222 @@
+{
+  "_hinweis": "EINZIGE QUELLE aller Onboarding-Fragen. Gelesen von tools/onboarding.mjs (Terminal) und tools/build-onboarding-html.mjs (erzeugt onboarding.html); die Regeln stehen in tools/onboarding-core.mjs. Nach jeder Änderung hier: node tools/build-onboarding-html.mjs. Beschreibung der Felder: docs/ONBOARDING.md, Abschnitt „Fragenquelle“.",
+  "schema": 1,
+  "sprachen": { "de": "Deutsch", "en": "Englisch", "fr": "Französisch", "es": "Spanisch", "it": "Italienisch", "nl": "Niederländisch", "pt": "Portugiesisch", "pl": "Polnisch", "sv": "Schwedisch", "da": "Dänisch", "cs": "Tschechisch", "tr": "Türkisch" },
+  "bloecke": [
+    { "id": "thema", "titel": "Worum geht es?", "einleitung": "Name, Leitfrage und Thema deines Museums. Das ist das Wichtigste; alles Weitere kannst du meist mit „passt“ übernehmen." },
+    { "id": "publikum", "titel": "Für wen?", "einleitung": "Wer soll das Museum besuchen, und wie sollen die Texte klingen?" },
+    { "id": "aufbau", "titel": "Aufbau", "einleitung": "Du musst keine Zahlen nennen. Wie viele Reisen und Stationen es gibt, entscheidet der KI-Agent fachlich und zeigt dir den Plan, bevor er Texte schreibt." },
+    { "id": "look", "titel": "Aussehen und Anschauung", "einleitung": "Wie sieht das Museum aus, und wie viel Bildhaftes und Ausprobierbares soll es enthalten?" },
+    { "id": "sorgfalt", "titel": "Sorgfalt und Quellen", "einleitung": "Wo ist besondere Vorsicht nötig, und woher darf der Inhalt stammen?" },
+    { "id": "recht", "titel": "Urheber, Lizenz, Impressum", "einleitung": "Wer steht im Fuß, unter welcher freien Lizenz stehen die Inhalte, und wo liegt das Impressum?" }
+  ],
+  "fragen": [
+    {
+      "key": "name", "block": "thema", "titel": "Museumsname", "typ": "text", "pflicht": true,
+      "hilfe": "Steht in der Kopfleiste und als große Überschrift; kurz halten (Richtwert höchstens 24 Zeichen).",
+      "erklaerung": "Zum Beispiel „Spieltheorie“ oder „Quantenwelt“. Ein langer Name bricht in der Kopfleiste um; den Rest schreibst du in den Untertitel.",
+      "standard": "Mein Museum",
+      "validierung": { "regel": "text", "max": 80, "keinHtml": true, "warnAb": 24,
+        "fehler": { "leer": "Ohne Namen geht es nicht.", "zuLang": "Das ist zu lang für einen Namen (höchstens 80 Zeichen). Den Rest kannst du in den Untertitel schreiben.", "html": "Bitte ohne spitze Klammern (kein HTML)." },
+        "warnung": "{n} Zeichen sind länger als der Richtwert 24 (die Prüfung warnt ab 30): Kopfleiste und Eingang brechen dann um. Tipp: kurzer Name, Untertitel als eigene Frage." },
+      "wirkung": "pack.json `title`; die Prüfung warnt ab 30 Zeichen"
+    },
+    {
+      "key": "id", "block": "thema", "titel": "Paket-ID", "typ": "id",
+      "hilfe": "Ordnername unter packs/ und Teil der Adresse: Kleinbuchstaben, Ziffern, Bindestriche, keine Umlaute.",
+      "erklaerung": "Das ist der „technische Name“. Du kannst den Vorschlag fast immer übernehmen.",
+      "standard": { "ableitung": "id-aus-name" },
+      "validierung": { "regel": "id", "max": 40 },
+      "wirkung": "Ordner `packs/<id>/`, pack.json `id`; ist die ID vergeben, wird eine neue gewählt (das Werkzeug überschreibt nie)"
+    },
+    {
+      "key": "untertitel", "block": "thema", "titel": "Untertitel oder Leitfrage", "typ": "text",
+      "hilfe": "Ein Satz unter dem Namen im Eingang, am besten eine Frage oder ein Versprechen.",
+      "erklaerung": "Zum Beispiel: „Wie Entscheidungen aufeinander treffen“.",
+      "standard": "Wege durch ein vernetztes Wissensgebiet",
+      "validierung": { "regel": "text", "max": 160, "keinHtml": true,
+        "fehler": { "leer": "Bitte einen Satz (oder den Vorschlag übernehmen).", "zuLang": "Bitte höchstens 160 Zeichen, es ist ein Untertitel.", "html": "Bitte ohne spitze Klammern (kein HTML)." } },
+      "wirkung": "pack.json `tagline`"
+    },
+    {
+      "key": "thema", "platzhalter": "Zum Beispiel: Wie Akteure entscheiden, wenn das Ergebnis vom Verhalten der anderen abhängt: Dilemmata, Gleichgewichte, Kooperation.", "block": "thema", "titel": "Thema", "typ": "text", "lang": true,
+      "hilfe": "In ein bis zwei Sätzen: Worum geht es, was gehört dazu, was nicht? Daran richtet sich der Agent aus.",
+      "erklaerung": "Schreib einfach, wie du es einem Freund erklären würdest. Auch Abgrenzungen helfen („nicht dabei: …“).",
+      "standard": "",
+      "anzeigeLeer": "(nicht angegeben, der Agent trifft eine Annahme)",
+      "validierung": { "regel": "text", "max": 800, "leerErlaubt": true, "fehler": { "zuLang": "Bitte höchstens 800 Zeichen, ein bis zwei Sätze genügen." } },
+      "wirkung": "Auftrag im Briefing; `eyebrow` (kurzer erster Satz, sonst „Ein vernetztes Museum“)"
+    },
+
+    {
+      "key": "zielgruppe", "block": "publikum", "titel": "Zielgruppe und Vorwissen", "typ": "auswahl",
+      "hilfe": "Bestimmt Sprache, Tiefe und wie viel erklärt wird.",
+      "standard": "laien",
+      "optionen": [
+        { "id": "laien", "label": "Neugierige Laien", "beschreibung": "kein Vorwissen, Alltagssprache, Fachwörter werden erklärt", "aliases": ["laie", "neugierig"],
+          "ton": "Neugierige Laien ohne Vorwissen. Alltagssprache, kurze Sätze, jedes Fachwort beim ersten Gebrauch in einem Halbsatz erklären, Bilder und Beispiele aus dem Alltag, Einstieg über eine Szene statt über eine Definition." },
+        { "id": "studierende", "label": "Studierende", "beschreibung": "Grundlagen bekannt, Fachbegriffe erlaubt, mehr Belege", "aliases": ["studium", "student"],
+          "ton": "Studierende mit Grundwissen. Fachbegriffe sind erlaubt, werden aber beim ersten Auftreten kurz gesetzt; mehr Belege (Namen, Jahre, Studien), Streitstände benennen, Hinweise zum Weiterlesen auf Lehrbuch-Niveau." },
+        { "id": "fachleute", "label": "Fachleute", "beschreibung": "dichte Sprache, Streitstand, Primärquellen", "aliases": ["fach", "profis", "experten"],
+          "ton": "Fachleute. Dichte, präzise Sprache, Fachbegriffe ohne Erklärung, Streitstand und Primärquellen im Vordergrund; trotzdem lesbar und ohne Jargon-Nebel." },
+        { "id": "gemischt", "label": "Gemischt", "beschreibung": "leicht einsteigen, in der Tiefe anspruchsvoll", "aliases": ["mix", "alle"],
+          "ton": "Gemischtes Publikum. Der Einstieg jeder Station ist für Laien verständlich (Szene, Bild), die Tiefe darunter trägt auch Fachleute; Fachwörter werden erklärt, aber nicht weggelassen." }
+      ],
+      "wirkung": "Tonregeln im Briefing"
+    },
+    {
+      "key": "sprache", "block": "publikum", "titel": "Sprache der Inhalte", "typ": "sprache",
+      "hilfe": "Zweibuchstabiger Code (de, en, fr …) oder der Name. Deutsch ist vollständig unterstützt; bei anderen Sprachen sind die festen Oberflächentexte (Knöpfe, Meldungen) vorerst noch deutsch.",
+      "standard": "de",
+      "validierung": { "regel": "sprache",
+        "fehler": { "ungueltig": "Bitte einen Sprachcode wie de oder en (oder den Namen, zum Beispiel Englisch)." },
+        "warnung": "Ich nehme {name} an. Ehrlich gesagt: Die festen Oberflächentexte der Engine (Knöpfe, Hinweise) und der Wortschatz in pack.json bleiben vorerst deutsch; Inhalte und Wortschatz kann der Agent übersetzen, die Engine-Texte nicht ohne Weiteres (siehe docs/ENGINE-WUENSCHE.md)." },
+      "wirkung": "pack.json `lang`; bei anderen Sprachen Hinweis im Briefing (Wortschatz `vocab` übersetzen)"
+    },
+    {
+      "key": "anrede", "block": "publikum", "titel": "Anrede", "typ": "auswahl",
+      "hilfe": "Wie sprechen die Texte die Besucher an? Bei anderen Sprachen sinngemäß: vertraut oder förmlich.",
+      "standard": "du",
+      "optionen": [
+        { "id": "du", "label": "du", "beschreibung": "persönlich, locker", "aliases": [] },
+        { "id": "Sie", "label": "Sie", "beschreibung": "förmlich", "aliases": ["sie"] }
+      ],
+      "wirkung": "Anrede im Briefing und in den Fußtexten"
+    },
+
+    {
+      "key": "geschichte", "block": "aufbau", "titel": "Soll die Geschichte des Fachs eine eigene Reise bekommen?", "typ": "auswahl",
+      "hilfe": "Eine Geschichts-Reise erzählt, wie das Wissen entstanden ist (Wendepunkte, Irrtümer, wichtige Personen) und erscheint im Zeitstrahl. Sie lohnt sich nur, wenn die Geschichte selbst etwas erklärt.",
+      "erklaerung": "Wenn du unsicher bist, wähle „Der Agent entscheidet“: Er prüft fachlich, ob eine Geschichts-Reise etwas beiträgt, und zeigt dir die Entscheidung im Plan.",
+      "standard": "agent",
+      "optionen": [
+        { "id": "ja", "label": "Ja", "beschreibung": "mindestens eine eigene Reise zur Geschichte", "aliases": ["j"],
+          "regel": "Lege mindestens eine historische Reise an (Zeitstrahl: Stationen mit `year`/`yearLabel`, streng chronologisch)." },
+        { "id": "agent", "label": "Der Agent entscheidet", "beschreibung": "nur wenn die Geschichte selbst etwas erklärt", "aliases": ["egal", "weissnicht", "unsicher"],
+          "regel": "Entscheide fachlich, ob eine historische Reise etwas beiträgt (nur wenn die Geschichte selbst etwas erklärt: Wendepunkte, Irrtümer; höchstens 3), und begründe die Entscheidung im Plan." },
+        { "id": "nein", "label": "Nein", "beschreibung": "Geschichte höchstens als einzelne Stationen", "aliases": ["n", "keine"],
+          "regel": "Keine historische Reise; Geschichtliches höchstens als einzelne Stationen in funktionalen Reisen." }
+      ],
+      "wirkung": "Briefing (Entscheidungsregel für historische Reisen). Der Agent legt `typ:'historisch'`-Reisen an oder nicht; im Zeitstrahl erscheinen sie, wenn sie existieren"
+    },
+    {
+      "key": "groesse", "block": "aufbau", "titel": "Größenordnung (nur als Wunsch)", "typ": "auswahl",
+      "hilfe": "Optional und unverbindlich: Soll das Museum eher klein oder groß werden? Keine Zahl nötig; die genauen Zahlen entscheidet der Agent und zeigt dir den Plan.",
+      "standard": "agent",
+      "optionen": [
+        { "id": "kompakt", "label": "Kompakt zum Einstieg", "beschreibung": "wenige, gut erzählte Reisen", "aliases": ["klein", "einstieg"],
+          "richtwert": "etwa 3 bis 5 Reisen und etwa 30 bis 60 eindeutige Stationen" },
+        { "id": "mittel", "label": "Mittel", "beschreibung": "ein solides Netz", "aliases": ["normal"],
+          "richtwert": "etwa 6 bis 9 Reisen und etwa 70 bis 120 eindeutige Stationen" },
+        { "id": "umfassend", "label": "Umfassend", "beschreibung": "ein großes Netz mit vielen Kreuzungen", "aliases": ["gross", "groß"],
+          "richtwert": "etwa 10 bis 16 Reisen und bis zu rund 200 eindeutige Stationen" },
+        { "id": "agent", "label": "Der Agent entscheidet", "beschreibung": "nach Thema und Zielgruppe", "aliases": ["egal", "unsicher"],
+          "richtwert": "" }
+      ],
+      "wirkung": "nur ein Hinweis im Briefing, keine Zahl im Gerüst"
+    },
+    {
+      "key": "reisenamen", "platzhalter": "Zum Beispiel: Grundmodelle, Wann kooperieren Egoisten?", "block": "aufbau", "titel": "Reisenamen oder Themenideen (optional)", "typ": "liste",
+      "hilfe": "Mit Komma getrennt (oder mit Semikolon, wenn ein Name selbst Kommas enthält); leer lassen, dann macht der Agent Vorschläge. Gute Reisen sind Fragen oder Wege.",
+      "erklaerung": "Zum Beispiel: „Grundmodelle, Wann kooperieren Egoisten?“. Es sind Ideen, keine festen Titel.",
+      "standard": [],
+      "anzeigeLeer": "(keine, der Agent schlägt vor)",
+      "validierung": { "regel": "liste", "maxEintrag": 80, "fehler": { "zuLang": "Ein Reisename sollte kurz sein (höchstens 80 Zeichen)." } },
+      "wirkung": "Vorschläge im Briefing (Themenideen, keine fertigen Titel)"
+    },
+
+    {
+      "key": "skin", "block": "look", "titel": "Standard-Look (Skin)", "typ": "auswahl", "optionenQuelle": "skins",
+      "hilfe": "So sieht das Museum beim ersten Besuch aus; Aussehen und Inhalt sind unabhängig.",
+      "standard": "halle",
+      "wirkung": "pack.json `defaultSkin`"
+    },
+    {
+      "key": "skinWahl", "block": "look", "titel": "Umschaltung für Besucher", "typ": "jaNein",
+      "hilfe": "Ja: alle Looks sind eingebaut und Besucher wählen selbst. Nein: nur der gewählte, schlankere Build.",
+      "standard": true,
+      "anzeigeJa": "ja, alle Looks (--skins=all)", "anzeigeNein": "nein, nur der gewählte",
+      "wirkung": "Baubefehl `--skins=all` oder `--skins=<skin>`"
+    },
+    {
+      "key": "anschauung", "block": "look", "titel": "Wie wichtig ist Anschauung?", "typ": "auswahl",
+      "hilfe": "Abbildungen (Kurven, Tabellen, Schemata) und Exponate (zum Ausprobieren). Je abstrakter das Thema, desto mehr verträgt es davon (Mathematik, Physik, Ökonomie eher „zentral“ oder „viel“).",
+      "erklaerung": "Das legt fest, wie viele Stationen mindestens ein Bild oder ein Ausprobier-Stück bekommen; die Prüfung verlangt diese Mindestzahl.",
+      "standard": "viel",
+      "optionen": [
+        { "id": "zentral", "label": "Zentral", "beschreibung": "etwa 50 % der Stationen mit Abbildung oder Exponat", "anteil": 0.5, "aliases": ["z"] },
+        { "id": "viel", "label": "Viel", "beschreibung": "etwa 35 %", "anteil": 0.35, "aliases": ["v"] },
+        { "id": "etwas", "label": "Etwas", "beschreibung": "etwa 20 %", "anteil": 0.2, "aliases": ["e"] },
+        { "id": "wenig", "label": "Wenig", "beschreibung": "etwa 10 %", "anteil": 0.1, "aliases": ["w"] }
+      ],
+      "wirkung": "pack.json `limits.visualShare` (0,5 / 0,35 / 0,2 / 0,1) und `requireVisualPlan: true`; im Briefing die Regel für die Mindestzahl"
+    },
+
+    {
+      "key": "heikel", "block": "sorgfalt", "titel": "Heikle Themen", "typ": "mehrfach",
+      "hilfe": "Mehrfachauswahl möglich (zum Beispiel 1,4); „keine“ oder Enter, wenn nichts davon zutrifft. Daraus entstehen der Hinweistext im Fuß und Sorgfaltsregeln für den Agenten.",
+      "standard": [],
+      "keineAlias": ["0", "keine", "keines", "nichts", "nein", "-"],
+      "anzeigeLeer": "keine",
+      "optionen": [
+        { "id": "gesundheit", "label": "Gesundheit", "beschreibung": "Krankheit, Therapie, Psyche", "aliases": ["gesund", "medizin", "krank"],
+          "sorgfalt": ["Keine Diagnosen, keine Therapie- oder Dosierungsempfehlungen, keine Heilversprechen. Es wird erklärt, nicht beraten.", "Studienaussagen mit Stichprobe, Jahr und Einschränkung nennen; Korrelation nicht als Ursache darstellen; populäre Irrtümer als Mythos-Station mit „Wahrheit“ behandeln.", "Den Hinweistext im Fuß (`pack.json` `footer`) passend zum Inhalt formulieren bzw. die vorbereitete Fassung prüfen; vor der Veröffentlichung kontrollieren, ob die Hilfsnummer für das Zielland stimmt."] },
+        { "id": "politik", "label": "Politik / Weltanschauung", "beschreibung": "", "aliases": ["weltanschauung", "polit", "ideologie"],
+          "sorgfalt": ["Positionen darstellen, nicht empfehlen: jede Position so, dass ihre Vertreter sich wiedererkennen (AGENTEN.md, Regel 3). Tatsachen von Wertungen trennen.", "Keine Parteien-, Wahl- oder Handlungsempfehlung. Nach dem Schreiben bewusst prüfen: Welche Schulen oder Lager fehlen?", "Begriffe neutral wählen; wo ein Begriff selbst umstritten ist, das einmal benennen."] },
+        { "id": "religion", "label": "Religion", "beschreibung": "", "aliases": ["relig", "glaube"],
+          "sorgfalt": ["Überzeugungen beschreiben, nicht bewerten: „Im Christentum gilt …“ statt „Es ist so …“. Innen- und Außenperspektive kenntlich machen.", "Keine Aussagen über Wahrheit oder Unwahrheit; Verhältnis von Religion und Wissenschaft sachlich und mit mehreren Stimmen darstellen.", "Heilige Texte und Praktiken respektvoll behandeln, Zitate belegen."] },
+        { "id": "gewalt", "label": "Gewalt / Trauma", "beschreibung": "Krieg, Missbrauch, Suizid, Verlust", "aliases": ["trauma", "krieg", "suizid"],
+          "sorgfalt": ["Sachlich und würdig schreiben, keine Details, die verletzen, verherrlichen oder zum Nachahmen taugen (keine Methodenbeschreibung bei Suizid oder Gewalt).", "Betroffene nur nennen, wenn öffentlich dokumentiert und notwendig; keine Opfer-Schaulust, kein Reißerisches im Teaser.", "Einen Hinweis auf Hilfsangebote im Fuß setzen (`pack.json` `footer`) und die Reihenfolge so wählen, dass belastende Stationen nie ohne Kontext am Anfang einer Reise stehen."] }
+      ],
+      "wirkung": "pack.json `footer` (bei Gesundheit/Gewalt zusätzlich eine Hilfe-Spalte mit Telefonseelsorge, Deutschland) und Sorgfaltsregeln im Briefing"
+    },
+    {
+      "key": "quellen", "block": "sorgfalt", "titel": "Quellenregeln", "typ": "mehrfach",
+      "hilfe": "Woher darf der Inhalt stammen? Mehrfachauswahl möglich (zum Beispiel 1,3).",
+      "standard": ["offen"],
+      "optionen": [
+        { "id": "offen", "label": "Offene, frei zugängliche Quellen", "beschreibung": "eigene Formulierungen, nichts Fremdes kopieren", "aliases": ["offene"] },
+        { "id": "eigene", "label": "Eigene Texte des Auftraggebers", "beschreibung": "nur sie sind Grundlage; Rechte liegen dort", "aliases": ["auftraggeber", "texte"] },
+        { "id": "domain", "label": "Weiterlesen-Links nur auf eine eigene Domain", "beschreibung": "", "aliases": ["host", "links"] }
+      ],
+      "wirkung": "Quellenabschnitt im Briefing; bei „Domain“ die Nachfrage nach der Adresse (`MATERIAL_HOST` im Prüfbefehl)"
+    },
+    {
+      "key": "materialHost", "platzhalter": "https://www.beispiel.de/", "block": "sorgfalt", "titel": "Eigene Domain für Weiterlesen-Links", "typ": "url", "pflicht": true,
+      "nurWenn": { "key": "quellen", "enthaelt": "domain" },
+      "hilfe": "Adresse, auf die alle Weiterlesen-Links zeigen dürfen, mit https:// (zum Beispiel https://www.beispiel.de/).",
+      "standard": "",
+      "validierung": { "regel": "url", "fehler": { "ungueltig": "Bitte eine Adresse mit https:// und Domain, zum Beispiel https://www.beispiel.de/." } },
+      "wirkung": "`MATERIAL_HOST` im Prüfbefehl"
+    },
+
+    {
+      "key": "urheber", "platzhalter": "Zum Beispiel: Karl Hosang", "block": "recht", "titel": "Urheber und Credits", "typ": "text",
+      "hilfe": "Wer steht im Fuß als Autorin, Autor oder Institution? Leer: nur „Erstellt mit Museum Studio“.",
+      "standard": "",
+      "anzeigeLeer": "(keine Angabe)",
+      "validierung": { "regel": "text", "max": 200, "keinHtml": true, "leerErlaubt": true, "fehler": { "zuLang": "Bitte höchstens 200 Zeichen.", "html": "Bitte ohne spitze Klammern (kein HTML)." } },
+      "wirkung": "pack.json `credits`, `author`"
+    },
+    {
+      "key": "lizenz", "block": "recht", "titel": "Lizenz der Inhalte", "typ": "auswahl",
+      "hilfe": "Museum Studio ist ein freies Projekt: Es gibt nur freie Lizenzen zur Wahl. Sie gelten für die Texte dieses Pakets; der Code von Museum Studio bleibt unter MIT.",
+      "standard": "cc-by-4.0",
+      "fehlerUnbekannt": "„{eingabe}“ geht hier nicht. Museum Studio setzt freie Lizenzen voraus; zur Wahl stehen nur CC BY 4.0, CC BY-SA 4.0 und CC0 1.0 (Nummer 1, 2 oder 3). „Alle Rechte vorbehalten“ und andere, nicht freie Lizenzen sind nicht möglich.",
+      "optionen": [
+        { "id": "cc-by-4.0", "label": "CC BY 4.0", "beschreibung": "frei nutzbar, auch weiterverbreiten und verändern, wenn dein Name genannt wird (Standard)", "text": "CC BY 4.0", "aliases": ["ccby", "cc-by", "ccby4"] },
+        { "id": "cc-by-sa-4.0", "label": "CC BY-SA 4.0", "beschreibung": "wie CC BY, aber Bearbeitungen müssen unter derselben freien Lizenz weitergegeben werden", "text": "CC BY-SA 4.0", "aliases": ["ccbysa", "cc-by-sa", "bysa"] },
+        { "id": "cc0-1.0", "label": "CC0 1.0", "beschreibung": "gemeinfrei gewidmet: jede Nutzung ohne Bedingungen, auch ohne Namensnennung", "text": "CC0 1.0", "aliases": ["cc0", "cc-0", "gemeinfrei"] }
+      ],
+      "wirkung": "pack.json `license` und Lizenzangabe im Briefing. Nur freie Lizenzen; Konfigurationen mit anderen Werten werden abgelehnt"
+    },
+    {
+      "key": "impressumUrl", "platzhalter": "https://www.beispiel.de/impressum", "block": "recht", "titel": "Impressum und Datenschutz (optional)", "typ": "url", "leerErlaubt": true,
+      "hilfe": "Adresse einer Seite mit Impressum/Datenschutz (https://…); sie wird im Fuß verlinkt. Leer: kein Link (bei öffentlicher Veröffentlichung in Deutschland ist ein Impressum Pflicht).",
+      "standard": "",
+      "anzeigeLeer": "(kein Link)",
+      "validierung": { "regel": "url", "leerErlaubt": true, "keineKlammern": true, "fehler": { "ungueltig": "Bitte eine Adresse mit https:// ohne Leerzeichen und Klammern, oder leer lassen für „kein Link“." } },
+      "wirkung": "Fußspalte „Rechtliches“ mit dem Link"
+    }
+  ]
+}
