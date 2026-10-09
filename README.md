@@ -74,6 +74,7 @@ Screenshots landen standardmäßig in `dist/<paket>/_shots/` (`--shots=<ordner>`
 | `docs/DESIGNER.md` | **Gestalter**: eigene Skins entwerfen, Tokens, Komponenten, Prüfung |
 | `docs/ARCHITEKTUR.md` | Entwickler: Verzeichnisse, Datenformate (alle `pack.json`-Felder), Namespace-API, Build, Prüfwerkzeuge |
 | `docs/ENGINE-WUENSCHE.md` | Wunschliste an die Engine-Pflege (Vorlage; Pakete-Autoren tragen dort ein, statt die Engine anzufassen) |
+| `docs/NEUE-TESTTHEMEN.md` | Zwei vorbereitete Testthemen (Tschechisch A1–A2, ADHS) mit fertigen Onboarding-Antworten und Hinweisen |
 | `docs/THEMENIDEEN.md` | Startpunkte für fünf weitere Wissensgebiete |
 | `docs/FRAMEWORK-PLAN.md` | Bauplan und Entwurfsentscheidungen |
 

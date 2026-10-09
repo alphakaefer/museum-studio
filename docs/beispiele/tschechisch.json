@@ -1,0 +1,19 @@
+{
+  "name": "Tschechisch A1–A2",
+  "id": "tschechisch",
+  "untertitel": "Die ersten Schritte, Satz für Satz",
+  "thema": "Tschechisch für Anfängerinnen und Anfänger auf dem Niveau A1 bis A2 des Europäischen Referenzrahmens: Aussprache, Alltagssätze, Grundgrammatik und Wortschatz, mit Übungen zum Ausprobieren. Die Inhalte sind deutsch, die Beispiele tschechisch.",
+  "zielgruppe": "laien",
+  "sprache": "de",
+  "anrede": "du",
+  "geschichte": "nein",
+  "groesse": "agent",
+  "reisenamen": [],
+  "skin": "halle",
+  "skinWahl": true,
+  "anschauung": "zentral",
+  "heikel": [],
+  "quellen": ["offen"],
+  "urheber": "Karl Hosang",
+  "lizenz": "cc-by-4.0"
+}

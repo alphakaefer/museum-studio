@@ -1,0 +1,19 @@
+{
+  "name": "ADHS verstehen",
+  "id": "adhs",
+  "untertitel": "Aufmerksamkeit, Alltag und was die Forschung weiß",
+  "thema": "ADHS bei Kindern und Erwachsenen: wie das Gehirn Aufmerksamkeit steuert, wie sich ADHS im Alltag zeigt, was Forschung und Leitlinien zu Diagnose und Behandlung sagen, verbreitete Mythen und die Sicht der Neurodiversität. Bildung, keine Beratung und keine Diagnosehilfe.",
+  "zielgruppe": "gemischt",
+  "sprache": "de",
+  "anrede": "du",
+  "geschichte": "agent",
+  "groesse": "agent",
+  "reisenamen": [],
+  "skin": "halle",
+  "skinWahl": true,
+  "anschauung": "viel",
+  "heikel": ["gesundheit"],
+  "quellen": ["offen"],
+  "urheber": "Karl Hosang",
+  "lizenz": "cc-by-4.0"
+}
