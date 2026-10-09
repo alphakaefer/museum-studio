@@ -180,7 +180,7 @@ Der Kern entstand in einem privaten Prototyp und wurde in dieses öffentliche Re
 ## Museum-Anbindung A: der Spielplan im Museum (Kern, Stationen, Reise-Modus, Eingang)
 
 *Dateien:* `engine/js/spiel.js` (906 Zeilen), `engine/css/spiel.css` (182), kleine Eingriffe in `engine/js/core.js`, `journey.js`, `app.js`, `search.js` (zusammen rund 200 neue Zeilen, alle hinter `if (MUSEUM.spiel && MUSEUM.spiel.aktiv)`), `tools/check-pack.mjs` (Prüfung des Spielplans im Paket),
-`tools/smoke.mjs` (Freier Zugang an), `tools/spiel-test.mjs` (Browser-Test der Anbindung, 21 Prüfungen), `tools/spiel-vergleich.mjs` (alt gegen neu für Pakete ohne Spielplan). Entscheidungen: M1 bis M15 und BM1 bis BM8 in `docs/spielplan-auslegung.md`.
+`tools/smoke.mjs` (Freier Zugang an), `tools/spiel-test.mjs` (Browser-Test der Anbindung, 22 Prüfungen), `tools/spiel-vergleich.mjs` (alt gegen neu für Pakete ohne Spielplan). Entscheidungen: M1 bis M15 und BM1 bis BM8 in `docs/spielplan-auslegung.md`.
 Der Build (`tools/build.mjs`) band `data/spielplan.js`, `js/spielplan.js`, `js/spiel.js` und `css/spiel.css` nur mit `spielplan.json` ein, nie den Adapter; das war schon vorbereitet und ist unverändert.
 
 ### Was geht
@@ -193,7 +193,7 @@ Der Build (`tools/build.mjs`) band `data/spielplan.js`, `js/spielplan.js`, `js/s
 - **Freier Zugang** als Schalter im Eingang und auf jedem Hinweisbild (und als Vorbelegung `"spielFrei": true` in `pack.json`): öffnet alles, überspringt Pausen, zählt weiter.
 
 ### Zahlen
-- **Tests:** 21 Prüfungen im Browser (`node tools/spiel-test.mjs`, gut drei Minuten mit allen Skins; `--schnell` nur mit `halle`), darunter die Darstellung in vier Skins × hell/dunkel × Handy/Desktop (Kontrast aller Texte der Spielplan-Blöcke gegen den gemischten Hintergrund, kein seitliches Scrollen).
+- **Tests:** 22 Prüfungen im Browser (`node tools/spiel-test.mjs`, gut drei Minuten mit allen Skins; `--schnell` nur mit `halle`), darunter die Darstellung in vier Skins × hell/dunkel × Handy/Desktop (Kontrast aller Texte der Spielplan-Blöcke gegen den gemischten Hintergrund, kein seitliches Scrollen).
   `tools/spielplan-test.mjs` bleibt grün (149 Tests), `tools/smoke.mjs` läuft für das Beispielpaket mit Spielplan sauber durch (mit Freiem Zugang, sonst fände es die Exponate gesperrter Stationen nicht).
 - **Spielverlauf im Museum:** Wer im Beispielpaket (kuratierte Schicht, 91 Einheiten) jeweils der einen Aufgabe folgt (Stationen lesen, Mythos-Karten drehen, Exponate bedienen, Werkzeuge einsetzen), bekommt den ersten Moment nach **einem** Schritt (die erste Station schenkt das Pre-Mortem);
   die acht Freischaltungen kommen bei Schritt 1, 3, 5, 8, 10, 13, 15 und 15, danach tragen sechs Fähigkeiten (Schritt 15, 28, 29, 41, 47, 50) und fünf Abschlüsse (drei Reisen, zwei Gebiete) die Momente, zusammen 19 Karten; nach **71 Aufgaben** gibt es keine mehr und alle 91 Einheiten stehen auf Stufe 2.
@@ -205,6 +205,8 @@ Der Build (`tools/build.mjs`) band `data/spielplan.js`, `js/spielplan.js`, `js/s
   Jetzt gilt sie als erreicht, sobald sie im Bild war **oder schon darüber hinaus** liegt. Das Muster: Wer „gelesen“ misst, muss die Seite beschreiben, die er nicht kennt (Exponate, Abbildungen, hohe Karten).
 - **Der Zähler zählte bei der ersten Runde null** (die Zeit seit der Anlage wurde erst im zweiten Takt gerechnet); ein Exponat ohne Aufräumfunktion meldete nie sein Ende (die Seite meldet jetzt Start und Ende selbst, nicht über die Aufräumfunktion des Exponats).
 - **Der Fokus ging verloren, wenn der Eingang sich neu zeichnete.** Der Stand wird jede halbe Minute neu gerechnet; zeichnete der Eingang dabei seinen Schalter neu, verlor jemand, der gerade mit der Tastatur umschaltete, die Stelle. Jetzt wird nur der Teil erneuert, dessen Inhalt sich ändert, der Schalter nie, der Satz mit der Pause an Ort und Stelle.
+- **Verborgenes schien an drei Stellen durch**, die niemand als Quelle gesehen hatte: der Meta-Text der Suche (jede Station trägt die Namen ihrer Reisen und wird darüber gefunden), die Reise-Chips am Kopf einer Station und die Kreuzungen im Linienplan des Reise-Modus.
+  Gefunden hat es ein Test, der eine verborgene Reise anlegt und an allen Stellen nach ihrem Namen sucht (Karten, Suche, Station, Reise-Modus, Hinweisbild, Seitentitel). Die Regel dahinter: Wer etwas verbirgt, muss jede Stelle kennen, die Namen ausgibt; Netzplan, Zeitstrahl und Reisepass (andere Anbindung) sind solche Stellen.
 - **Ein verstecktes Panel behält seinen Inhalt.** Das Hinweisbild einer gesperrten Reise blieb im geschlossenen Stationspanel stehen; Tests, die nach dem Hinweisbild fragen, müssen die Sichtbarkeit prüfen, nicht das Vorhandensein.
 - **Kontrast gegen die Skins:** Der Knopf `gm-btn-primary` hat im dunklen Skin „ma“ nur 2,49:1 (Text des Knopfes gegen seine Fläche; `themes/` gehört der Anbindung nicht). Die Anbindung benutzt deshalb `gm-btn-warm`, das in allen vier Skins besteht, und meldet es hier; derselbe Knopf steht an anderer Stelle des Museums („Reise beginnen“).
 - **Die langen Bedingungen:** Bei drei Wegen schreibt der Kern einen langen Satz („Zum Öffnen: … oder (… und … Pause, nachdem …)“). Im Hinweisbild ist Platz dafür, auf einer Reise-Karte nicht; dort sind fünf Zeilen erlaubt, der volle Satz steht im `title`.
