@@ -247,6 +247,12 @@ test('Zuordnung: gewicht, uebt, staerke, name und reihenfolge an Stationen und a
   const e = id => plan.einheiten.find(u => u.id === id);
   gleich([e('inhalt/s1-1').gewicht, e('inhalt/s1-1').uebt], ['optional', ['skill/x']]);
   gleich([e('quest/s1-3-mythos').staerke, e('quest/s1-3-mythos').name, e('quest/s1-3-mythos').reihenfolge], [2, 'Eigener Name', 0]);
+  // braucht: Werkzeuge an der Mythos-Karte der Station (Kurzform), an einer Station ohne Mythos-Karte mit Warnung
+  fs.writeFileSync(path.join(dir, 'spielplan-zuordnung', 'b.json'), JSON.stringify({ 's1-3': { braucht: ['w'] }, 's1-4': { braucht: ['w'] } }));
+  const kern2 = { werkzeuge: [{ id: 'werkzeug/w', name: 'W', sorte: 'methode' }], regeln: [{ id: 'w-offen', schaltet: ['werkzeug/w'], wenn: { einheit: 'inhalt/s1-1', stufe: 2 }, enthuellung: 'Ein Werkzeug.' }], skills: kern.skills };
+  const r2 = leiteAb(resolvePack(dir), { auto: true, kern: kern2 });
+  gleich(r2.spielplan.einheiten.find(u => u.id === 'quest/s1-3-mythos').braucht, ['werkzeug/w']);
+  wahr(r2.R.warnings.some(w => /s1-4: braucht gilt laut Standard 3.1 für Mythos-Karten/.test(w)), r2.R.warnings.join(' | '));
 });
 
 test('Texte: Enthüllungen nennen Namen aus den Paketdaten, enden mit Satzzeichen und enthalten kein Fachwort des Generators', () => {

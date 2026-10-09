@@ -118,3 +118,60 @@ Der Kern entstand in einem privaten Prototyp und wurde in dieses öffentliche Re
 ### Wie die Bereinigung geprüft wurde
 - Suche nach den Namen und Begriffen des privaten Prototyps in `engine/`, `tools/` und den Spielplan-Dokumenten (Treffer wurden entfernt oder durch Kaffee-Beispiel und neutrale Namen ersetzt).
 - Wortvergleich der Dokumente mit dem Entwurf (Reihen gleicher Wörter, ab sechs Wörtern in Folge): zitierte Sätze wurden durch eigene Formulierungen mit Abschnittsnummer ersetzt. Übrig sind Feldnamen und Gerüst des Kaffee-Beispiels (Ids, Namen der Einheiten); dessen Freitexte sind neu geschrieben (H4). Das Konformitätsset wurde danach neu erzeugt; die Tests laufen mit und ohne den Entwurf.
+
+
+## Generator: ein Spielplan mit einem Befehl, danach von Hand verfeinert
+
+*Dateien:* `tools/spielplan-aus-plan.mjs` (663 Zeilen), `tools/check-spielplan.mjs` (um Bericht, Engpass-Analyse und Spielzeit erweitert, 271), `tools/spielplan-generator-test.mjs` (22 Tests, 2 Sekunden), `docs/spielplan-vorlage-kern.yaml` (die kommentierte Vorlage),
+`packs/beispiel-gehirn/spielplan-kern.yaml` (226 Zeilen), `packs/beispiel-gehirn/spielplan-zuordnung/*.json` (drei Dateien, 60 Einträge), `packs/beispiel-gehirn/spielplan.json` (erzeugt). Entscheidungen: E1 bis E13 und BE1 bis BE6 in `docs/spielplan-auslegung.md`.
+
+### Was geht
+- `node tools/spielplan-aus-plan.mjs <paket> --auto` erzeugt in einem Zehntel bis einer halben Sekunde einen **spielbaren** Standard-Spielplan für jedes Paket, auch für eines mit einer einzigen Reise: Gebiete, Etappen, ein Drittel der Reisen offen, mindestens zwei Wege je gesperrter Reise,
+  Enthüllungen und Auftakt/Abschluss aus den Paketdaten, Rhythmus. Die Ausgabe ist ohne Warnung und besteht `check-spielplan --streng`; ein Paket ohne Mythos-Karte in der ersten Reise bekommt eine einzige, erklärte Warnung (BE1).
+- Danach genügt es, die Vorlage zu kopieren und nur zu ändern, was anders sein soll; der Generator nennt jede Ersetzung als Hinweis. Ohne `--auto` entsteht nur das Kuratierte (so entstand `spielplan.json` des Beispielpakets).
+- `check-spielplan --bericht --wege` rechnet mit dem Kern als Spielerin: was beim Start offen ist, Regeln je gesperrter Reise, ob eine einzelne Einheit etwas für immer sperren könnte (Engpass), und wie viele Schritte es dauert, wenn man jeweils der einen Aufgabe folgt.
+- Für Sprachenlernen und sensible Themen steht ein eigener Abschnitt in der Vorlage (Kompetenzsätze nach Niveau, Wiederkehr für Wortschatz; Freier Zugang als Standard, keine Wartezeiten, Sicherheit vor Erinnerung).
+
+### Zahlen (Rechnung mit dem Kern, ein Schritt = eine Einheit, 4 Minuten je Schritt angenommen)
+| Paket | Modus | Einheiten | Regeln | Reisen offen / gesperrt | Regeln je gesperrter Reise | erste Freischaltung | alles offen | alles auf Stufe 2 |
+|---|---|---|---|---|---|---|---|---|
+| Kaffee-Vorlage (2 Reisen, 18 Stationen) | auto | 21 | 2 | 1 / 1 | 2 | nach 1 Schritt | 1 | 19 (76 Min.) |
+| Spieltheorie (3 Reisen, historische, 28) | auto | 35 | 5 | 1 / 2 | 2 und 3 | 1 | 2 | 31 (2,1 Std.) |
+| Beispielpaket (3 Reisen, 66) | auto | 78 | 5 | 1 / 2 | 2 und 3 | 1 | 2 | 74 (4,9 Std.) |
+| Beispielpaket | kuratiert | 91 | 13 | 2 / 1 | 3 | 1 | 15 (60 Min.) | 80 (5,3 Std.) |
+| Wegwerf: 1 Reise, 14 Stationen | auto | 17 | 4 | 1 / 0 (Kapitel: 8 Einheiten offen, 9 gesperrt) | – | 1 | 3 | 16 |
+| Wegwerf: 4 Reisen, ohne Kreuzungen und Exponate | auto | 57 | 6 | 1 / 3 | 2, 2, 2 | 2 | 22 | 52 |
+| Wegwerf: 8 Reisen, 2 Kreuzungen je Paar | auto | 124 | 15 | 3 / 5 | 3 je Reise | 1 | 5 | 114 (7,6 Std.) |
+- **Engpässe:** bei keinem der sieben Pläne hängt eine gesperrte Einheit mit mindestens zwei Regeln an einer einzelnen Einheit. Die vier Werkzeuge mit nur einem Weg im kuratierten Plan stehen getrennt („Nur ein Weg“).
+- **Die Momente im kuratierten Plan** kommen nach Schritt 1 (Pre-Mortem), 3 (die gesperrte Reise), 5, 8, 10, 13, 15 und 15 (acht Freischaltungen in der ersten Stunde); danach tragen Stufen, Fähigkeiten, Wiedersehen und der Takt.
+- Der Test baut Wegwerf-Pakete (1, 2, 4, 6, 8, 16 Reisen; mit und ohne Mythos-Karten, Kreuzungen, Exponate; Werkzeug-Reise; historische Reise; abweichendes Vokabular) und prüft Offen-Zahl, zwei Wege, Engpässe, Spielbarkeit und Gleichheit zweier Läufe.
+
+### Was sich beim Bau gezeigt hat
+- **Die erste Fassung öffnete alles mit einer Station.** Eine Station, die auf allen drei Reisen liegt, war der Schlüssel jeder gesperrten Reise; ein Exponat öffnete alle Kapitel einer einzigen Reise zugleich. Behoben mit einer Liste schon vergebener Schlüssel (kein Schlüssel öffnet zwei Reisen, soweit die Daten es zulassen)
+  und mit „Exponat des vorigen Kapitels“. Der Test „Spielbarkeit“ und die Spielzeit (alles offen nach einem Schritt) haben es gezeigt, die Durchsicht der Regeln allein nicht.
+- **Auch dann sind die Sperren der Automatik dünn:** höchstens zwei Schritte bis alles offen (E5, Grenze). Ein Schlüssel ist eben eine Station. Wer eine Dramaturgie will, schreibt sie: Meilensteine (`mindestens: 6` Stationen einer Reise), Ketten (ein Werkzeug öffnet das nächste), eine Fähigkeit als Bedingung.
+  Im kuratierten Plan liegen die Momente über 15 Schritte (eine Stunde) statt über 2; Ziel wäre eine Verteilung über das Spiel, nicht nur über die erste Stunde.
+- **Die Aufgabe springt, und Werkzeuge ziehen sie.** Sie wählt die billigste Regel, wo immer sie liegt: Nach der ersten Station führte sie in die zweite Reise (ein billiger Weg) und dann durch alle Werkzeugregeln, bevor sie in die erste Reise zurückkam. Gemildert haben drei Dinge:
+  der Einstiegsschlüssel liegt auf der ersten, kritischen Station der ersten Reise (G5), die Werkzeuge der späteren Reisen kosten zwei Einheiten statt einer (Station und Exponat), und Werkzeuge hängen in Ketten (das Grounding erst nach dem Toleranzfenster). Das Grundproblem ist BE4, nicht lösbar im Plan.
+- **Schritte in Stufen, Sätze für Menschen:** Der Kern sagt „Noch 2 Schritte“ für eine unberührte Station, die ein einziges Ereignis auf Stufe 2 bringt (BE2). Die Anbindung sollte `noch_einheiten` zeigen.
+- **Die verschachtelten Klammern kamen aus meinem Plan:** Ein Weg als `eine` in einer Regel, die selbst neben anderen Regeln steht, ergab „((A oder B) oder C)“ im Sperrsatz. Je Weg eine eigene Regel (mit eigener Enthüllung, die den Ort nennt) liest sich flach; der Preis ist, dass jede Regel einen Satzteil beisteuert.
+  Mehr als drei bis vier Wege je Einheit machen den Satz auf einer grauen Karte unlesbar; die Automatik baut höchstens vier.
+- **Werkzeug als Bedingung:** Weil das Museum keine Meldung „Werkzeug benutzt“ kennt, taugt `braucht` (verlangt Stufe 1) nicht. Im kuratierten Plan steht `{ einheit: werkzeug/…, stufe: 0, offen: true }` (Besitz statt Benutzung, BE3); keine Regel hängt an einer höheren Stufe eines Werkzeugs.
+  Die Werkzeuge sind Nebenquests; ohne Meldungen der Anbindung bliebe die letzte Aufgabe („Probier … aus“) offen. Die Anbindung sollte das Feld `einsatz` lesen und beim Abschluss von Station oder Exponat `mit: [werkzeug/…]` melden (E7).
+- **Ein Kreis, den ich fast gebaut hätte:** Die Mythos-Karte der Stärke 3 öffnet sich mit der Fähigkeit „Belege prüfen“; hätte die Karte selbst diese Fähigkeit geübt, wäre sie ihre eigene Bedingung gewesen. Die Prüfung findet solche Kreise, aber erst, wenn sie schon im Plan stehen; die Zuordnung (`uebt`) ist die Stelle, an der man sie baut.
+- **Die eine Pause nur, wo der andere Weg schwer ist:** Eine Wartezeit neben einem ebenso billigen Weg ist sinnlos (der Mensch nimmt den billigen). Beim Verhaltensexperiment steht sie neben dem schweren Weg (eine Fähigkeit auf Stufe 2): Wer lieber wartet, kann es; der Freie Zugang überspringt sie.
+- **Ein sensibles Thema ist kein Endgame-Gegner.** Die Traumareise ist offen, weil niemand durch eine Sperre von dem ausgeschlossen werden soll, was er sucht. Gesperrt ist nur die schwerste Mythos-Karte; kritisch sind die Stationen, die Halt geben. Die Sprache vermeidet „Gegner“ und „Boss“.
+  Diese Entscheidung lässt sich nur im Kern treffen; die Automatik sperrt jede Reise nach demselben Schema, und `offen: [...]` ist der Griff dafür.
+- **Aufwand:** Der Kern des Beispielpakets entstand in einem Arbeitsgang nach Lektüre aller Stationstitel und -teaser und der Exponat-Stationen. Die meiste Zeit ging nicht in Daten, sondern in die Dramaturgie: die ersten 30 Aufgaben ausgeben, lesen, Regeln verschieben, wieder ausgeben.
+  Der Generator mit Bericht macht diesen Kreislauf in einer Sekunde möglich; ohne ihn wäre der Plan nicht zu beurteilen gewesen.
+
+### Was nicht trägt
+- **Etappe und Quest:** Ein Paket ohne Mythos-Karten kann `onboarding` und `endgame` nicht ohne Warnung vergeben (BE1). Die Automatik lässt dann `endgame` weg und nennt den Grund; für `onboarding` bleibt die Warnung.
+- **Skills fehlen in der Automatik.** Ein „Ich kann …“ schreibt ein Mensch; ohne sie zeigt der Reisepass nur Reisen und Stempel, die Wiederkehr hat nichts Fachliches zu bringen und der Zielzustand der Onboarding-Reise ist nur das, was gesperrt ist. Die Vorlage sagt das und zeigt, wie man Fähigkeiten anlegt und zuordnet.
+- **Die Aufgabe ist der schwächste Teil:** Sie springt (BE4), sie zählt Stufen (BE2) und sie kennt keine Dramaturgie. Wer eine Erzählung will, muss sie mit Regeln erzwingen.
+
+### Grenzen
+- **Die Zahlen sind gerechnet, nicht gemessen.** Vier Minuten je Schritt sind eine Annahme; die Wege der Menschen (Stöbern statt der Aufgabe folgen) sind nicht gerechnet. Ob acht Momente in der ersten Stunde „Spielgefühl“ oder Lärm sind, zeigt nur ein Test mit Menschen.
+- **Texte sind Entwürfe.** Enthüllungen, Auftakte und Abschlüsse des Beispielpakets sind aus den Stationstexten geschrieben, nicht gegen Quellen geprüft; die zur Traumareise und zum Grounding gehören vor einer Veröffentlichung fachlich gelesen.
+- **Die Automatik ist an synthetischen Paketen mit Werkzeug-Reise getestet, an keinem echten.** Ob die Sorte-Abbildung (konzept, methode, instrument) trägt, zeigt das erste Paket mit einer Werkzeug-Reise.
+- **Verriegelte Stationen und der Rauchtest:** Ein Rauchtest, der jede Station mit Exponat öffnet, findet keine Start-Schaltfläche, wo die Station gesperrt ist (im Beispielpaket die beiden Exponate der gesperrten Reise). Der Test muss zuerst den Freien Zugang einschalten.

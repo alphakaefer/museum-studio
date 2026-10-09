@@ -217,7 +217,7 @@ regeln:
         - { einheit: werkzeug/gedankenprotokoll, stufe: 0, offen: true }
         - { einheit: werkzeug/reframing, stufe: 0, offen: true }
         - { einheit: werkzeug/verhaltensexperiment, stufe: 0, offen: true }
-    enthuellung: "Vier Werkzeuge liegen in deiner Ausrüstung, und alle prüfen nüchtern, was sich wie eine Tatsache anfühlt. Die Mythos-Karte zu verdrängten Erinnerungen ist offen; beide Seiten haben dort etwas Wahres."
+    enthuellung: "Vier Werkzeuge liegen in deiner Ausrüstung, und alle helfen dir, nüchtern zu prüfen, was sich wie eine Tatsache anfühlt. Die Mythos-Karte zu verdrängten Erinnerungen ist offen; beide Seiten haben dort etwas Wahres."
 
 # Rhythmus: eine Woche als Takt, Wiedersehen für Fähigkeiten, Verwitterung nach fünf Wochen. Keine Serien, nichts reißt; wer lange weg war, bekommt eine Aufgabe, keine Bilanz.
 rhythmus:
