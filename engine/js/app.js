@@ -341,8 +341,30 @@
           M.el('span', null, (M.t('journey') + ' antreten')),
           M.el('span', { class: 'gm-sr' }, ': ' + j.name),
           M.el('span', { 'aria-hidden': 'true', html: ico('arrow-right', 18) }))));
-    cardRefs[j.id] = { dots: dots, prog: prog, total: order.length };
+    cardRefs[j.id] = { dots: dots, prog: prog, total: order.length, card: card, orig: { tag: j.tagline || '' } };
+    if (M.spiel && M.spiel.aktiv) {   // Spielplan: Schloss-Zeichen für noch verschlossene Reisen (sonst unsichtbar)
+      card.querySelector('.gm-card-top').appendChild(M.el('span', { class: 'gm-card-lock', hidden: true, 'aria-hidden': 'true', html: ico('lock', 20) }));
+    }
     return card;
+  }
+
+  // Spielplan: gesperrte Reisen angedeutet (Titel, Symbol, ein Satz mit der Bedingung, kein Inhalt), verborgene gar nicht,
+  // lange nicht besuchte mit einem freundlichen Hinweis statt Strafe. Ohne Spielplan wird das nie aufgerufen.
+  function paintSpiel(jid, ref) {
+    var card = ref.card;
+    if (!card) return;
+    var z = M.spiel.zugang('episode/' + jid), e = M.spiel.einheit('episode/' + jid);
+    var locked = !z.offen, tag = card.querySelector('.gm-card-tag'), lab = card.querySelector('.gm-card-foot .gm-btn > span');
+    card.hidden = !z.sichtbar;
+    card.classList.toggle('is-locked', locked);
+    card.classList.toggle('is-verwittert', !locked && !!(e && e.verwittert));
+    var lockEl = card.querySelector('.gm-card-lock');
+    if (lockEl) lockEl.hidden = !locked;
+    ['.gm-card-count', '.gm-strip', '.gm-card-badge'].forEach(function (sel) { var n = card.querySelector(sel); if (n) n.hidden = locked; });
+    if (tag) { tag.textContent = locked ? (z.bedingung || M.t('spielGesperrt')) : ref.orig.tag; if (locked) tag.title = tag.textContent; else tag.removeAttribute('title'); }
+    if (lab) lab.textContent = locked ? M.t('spielWasFehlt') : (M.t('journey') + ' antreten');
+    if (locked) ref.prog.textContent = M.t('spielGesperrt');
+    else if (e && e.verwittert) ref.prog.textContent = M.t('spielWiedersehenKarte');
   }
 
   function updateCards() {
@@ -352,6 +374,7 @@
       var p = M.store.progress(jid);
       ref.prog.textContent = p.total === 0 ? ('Noch keine ' + M.t('stations'))
         : (p.done >= p.total ? 'Alle ' + p.total + ' besucht' : (p.done > 0 ? p.done + ' von ' + p.total + ' besucht' : 'Noch nicht besucht'));
+      if (M.spiel && M.spiel.aktiv) paintSpiel(jid, ref);
     });
   }
 
@@ -367,6 +390,7 @@
     });
     updateCards();
     M.store.onChange(updateCards);
+    if (M.spiel && M.spiel.aktiv) M.spiel.bei('aenderung', updateCards);
   }
 
   /* ---------------- Kopfleiste ---------------- */
@@ -462,6 +486,7 @@
     renderWords();
     renderStats();
     renderCards();
+    if (M.spiel && M.spiel.aktiv && typeof M.spiel.eingang === 'function') M.spiel.eingang($('.gm-hero-cta'));   // Spielplan: genau eine nächste Aufgabe im Eingang
     bindHeader();
     bindSearch();
     startHero();

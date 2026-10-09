@@ -537,6 +537,16 @@
   function jOf(id) { return (M.data && M.data.journeyById && M.data.journeyById[id]) || null; }
   function orderOf(id) { return (M.data && M.data.orders && M.data.orders[id]) || []; }
   function stOf(id) { return (M.data && M.data.stations && M.data.stations[id]) || null; }
+  // Spielplan (nur mit spielplan.json): eine noch verschlossene Station zeigt nur Titel und Hinweis, nie den Inhalt
+  function spielAn() { return !!(M.spiel && M.spiel.aktiv); }
+  function anzeige(sid) { return spielAn() ? M.spiel.anzeige('inhalt/' + sid) : null; }
+  function stM(sid) {
+    var s = stOf(sid), a = s && anzeige(sid);
+    if (!a || !a.gesperrt) return s;
+    return { id: s.id, title: a.titel, teaser: '', journeys: s.journeys, locked: true };
+  }
+  function gesperrt(sid) { var a = anzeige(sid); return !!(a && a.gesperrt); }
+  function episodeSichtbar(jid) { if (!spielAn()) return true; var z = M.spiel.zugang('episode/' + jid); return !z || z.sichtbar; }
   function jColor(id) { return 'var(--j-' + id + ')'; }
   function nameOf(id) { var j = jOf(id); return j ? j.name : id; }
   function realJ(st) { return (st.journeys || []).filter(function (j) { var x = jOf(j); return x && !x.virtual; }); }
@@ -725,14 +735,15 @@
         return el('span', { class: 'gm-reise-br', 'aria-hidden': 'true', style: { '--bc': jColor(x), '--k': k, '--n': Math.min(others.length, 4) } });
       });
       var node = el('span', { class: 'gm-reise-node', 'aria-hidden': 'true', html: kind === 'end' ? ico('stamp', 14) : '' });
+      var tEl = el('span', { class: 'gm-reise-t' }, title);
+      var yEl = year ? el('span', { class: 'gm-reise-y', 'aria-hidden': 'true' }, year) : null;
       var btn = el('button', {
         type: 'button', class: 'gm-reise-stopbtn', tabindex: '-1', 'aria-label': label,
         on: { click: function () { hideTip(true); show(i, {}); } }
       }, brs, node,
         el('span', { class: 'gm-reise-lab' },
           el('span', { class: 'gm-reise-num', 'aria-hidden': 'true' }, cap ? '' : String(i + 1)),
-          el('span', { class: 'gm-reise-t' }, title),
-          year ? el('span', { class: 'gm-reise-y', 'aria-hidden': 'true' }, year) : null));
+          tEl, yEl));
       li.appendChild(btn);
       if (isX && st) {
         li.addEventListener('mouseenter', function () { showTip(li, st, i); });
@@ -741,7 +752,7 @@
         btn.addEventListener('blur', function () { hideTip(); });
       }
       S.line.appendChild(li);
-      S.stops.push({ i: i, li: li, btn: btn, sid: sid, label: label, cap: kind });
+      S.stops.push({ i: i, li: li, btn: btn, sid: sid, label: label, cap: kind, tEl: tEl, yEl: yEl, t0: title, label0: label, pre: sid ? (M.t('station') + ' ') + (i + 1) + ': ' : '' });
     }
 
     add(-1, 'start');
@@ -764,8 +775,18 @@
       s.li.classList.toggle('is-in', i <= cur);
       s.li.classList.toggle('is-out', i < cur);
       s.li.classList.toggle('is-seen', !!seen);
+      if (s.sid && spielAn()) {   // Spielplan: noch verschlossene Haltestellen tragen nur Titel und Hinweis
+        var lk = anzeige(s.sid), isLk = !!(lk && lk.gesperrt);
+        if (isLk !== !!s.locked) {
+          s.locked = isLk;
+          s.li.classList.toggle('is-locked', isLk);
+          s.tEl.textContent = isLk ? lk.titel : s.t0;
+          if (s.yEl) s.yEl.hidden = isLk;
+          s.label = isLk ? s.pre + lk.titel : s.label0;
+        }
+      }
       if (i === cur) s.btn.setAttribute('aria-current', 'step'); else s.btn.removeAttribute('aria-current');
-      s.btn.setAttribute('aria-label', s.label + (seen && i >= 0 && i < N ? '. Besucht' : '') + (seen && i >= N ? '. Stempel gesammelt' : ''));
+      s.btn.setAttribute('aria-label', s.label + (s.locked ? '. ' + M.t('spielGesperrt') : '') + (seen && i >= 0 && i < N ? '. Besucht' : '') + (seen && i >= N ? '. Stempel gesammelt' : ''));
       s.btn.tabIndex = i === cur ? 0 : -1;
     });
     if (center) centerRail(center === 'smooth');
@@ -874,7 +895,7 @@
     orderOf(jid).forEach(function (sid) {
       var s = stOf(sid);
       if (!s) return;
-      realJ(s).forEach(function (x) { if (x !== jid) (map[x] = map[x] || []).push(sid); });
+      realJ(s).forEach(function (x) { if (x !== jid && episodeSichtbar(x)) (map[x] = map[x] || []).push(sid); });
     });
     var rank = {};
     ((M.data && M.data.journeys) || []).forEach(function (j, k) { rank[j.id] = k; });
@@ -883,7 +904,7 @@
   }
 
   function firstOpen() {
-    for (var i = 0; i < S.order.length; i++) if (!M.store.isVisited(S.order[i])) return i;
+    for (var i = 0; i < S.order.length; i++) if (!M.store.isVisited(S.order[i]) && !gesperrt(S.order[i])) return i;
     return -1;
   }
 
@@ -914,11 +935,16 @@
     if (rd) j.legs.forEach(function (l) { if (l && legUnique.indexOf(l) < 0) legUnique.push(l); });
 
     var sec = el('section', { class: 'gm-reise-intro', 'aria-labelledby': id },
-      el('p', { class: 'gm-reise-kicker' }, 'Einführung'),
+      el('p', { class: 'gm-reise-kicker' }, (spielAn() && M.spiel.etappe('episode/' + S.jid)) || 'Einführung'),
       el('h2', { class: 'gm-reise-ph gm-reise-ph--big', id: id, tabindex: '-1' }, j.name),
       j.tagline ? el('p', { class: 'gm-reise-tagline' }, j.tagline) : null,
       N ? routeStrip() : null,
       j.intro ? el('p', { class: 'gm-reise-introtext' }, j.intro) : null);
+
+    if (spielAn()) {   // Spielplan: der Auftakt der Episode (Geschichte), sofern er nicht nur wiederholt, was die Einführung schon sagt
+      var auftakt = M.spiel.geschichte('episode/' + S.jid, 'auftakt', [j.tagline, j.intro]);
+      if (auftakt) { var it0 = sec.querySelector('.gm-reise-introtext'); if (it0) sec.insertBefore(auftakt, it0); else sec.appendChild(auftakt); }
+    }
 
     if (N) {
       var facts = el('dl', { class: 'gm-reise-facts', 'aria-label': ('Die ' + M.t('journey') + ' in Zahlen') },
@@ -962,7 +988,7 @@
       acts.appendChild(el('button', { type: 'button', class: 'gm-btn gm-btn-primary', on: { click: function () { show(0, {}); } } },
         el('span', null, prog.done >= prog.total ? 'Noch einmal von vorn' : (M.t('journey') + ' beginnen')), el('span', { 'aria-hidden': 'true', html: ico('arrow-right', 18) })));
       if (prog.done > 0 && fo > 0) {
-        var fs = stOf(S.order[fo]);
+        var fs = stM(S.order[fo]);
         acts.appendChild(el('button', { type: 'button', class: 'gm-btn gm-btn-ghost', on: { click: function () { show(fo, {}); } } },
           el('span', null, ('Weiter bei ' + M.t('station') + ' ') + (fo + 1) + (fs ? ': ' + shortTitle(fs.title) : ''))));
       }
@@ -992,8 +1018,8 @@
   function nextCard(i) {
     var N = S.order.length;
     var last = i >= N - 1;
-    var nx = last ? null : stOf(S.order[i + 1]);
-    var btn = el('button', { type: 'button', class: 'gm-reise-nextcard', on: { click: function () { nextStep(); } } },
+    var nx = last ? null : stM(S.order[i + 1]);
+    var btn = el('button', { type: 'button', class: 'gm-reise-nextcard' + (nx && nx.locked ? ' is-locked' : ''), on: { click: function () { nextStep(); } } },
       el('span', { class: 'gm-reise-nc-k' }, last ? 'Endstation' : ('Nächster Halt · ' + M.t('station') + ' ') + (i + 2) + ' von ' + N),
       el('span', { class: 'gm-reise-nc-t' }, last ? 'Ziel erreichen und Stempel abholen' : (nx ? nx.title : 'Weiter')),
       !last && nx && nx.teaser ? el('span', { class: 'gm-reise-nc-s' }, nx.teaser) : null,
@@ -1012,6 +1038,15 @@
       return page;
     }
     if (S.rd) { var et = etappeNote(i); if (et) page.appendChild(et); }
+    var lock = spielAn() ? M.spiel.sperrseite('inhalt/' + sid, { journeyId: S.jid, inReise: true }) : null;
+    if (lock) {   // Spielplan: noch verschlossen; der Hinweis erklärt, was fehlt, und „Weiter“ geht einfach weiter
+      page.appendChild(lock);
+      page.appendChild(nextCard(i));
+      page._locked = true;
+      page._title = lock.getAttribute('data-titel');
+      page._focus = lock.querySelector('.gm-spiel-sperre-t');
+      return page;
+    }
     var art = M.ui.renderStation(st, {
       journeyId: S.jid, headingLevel: 2,
       onTransfer: function (jid, s) { transferTo(jid, s); },
@@ -1074,6 +1109,11 @@
         return (b.score - a.score) || ((a.p.done / (a.p.total || 1)) - (b.p.done / (b.p.total || 1)));
       });
     }
+    if (spielAn()) {   // Spielplan: Verborgenes bleibt ungenannt, Verschlossenes kommt nach dem Offenen
+      list = list.filter(function (x) { return episodeSichtbar(x.jid); });
+      var offene = list.filter(function (x) { return M.spiel.zugang('episode/' + x.jid).offen; });
+      list = offene.concat(list.filter(function (x) { return offene.indexOf(x) < 0; }));
+    }
     var fresh = list.filter(function (x) { return stamps.indexOf(x.jid) < 0; });
     var done = list.filter(function (x) { return stamps.indexOf(x.jid) >= 0; });
     var out = fresh.slice(0, 3);
@@ -1119,11 +1159,15 @@
         ? 'Der Stempel für „' + j.name + '“ wartet noch: Dir ' + (missing === 1 ? 'fehlt' : 'fehlen') + ' noch ' + plural(missing, M.t('station'), M.t('stations')) + '.'
         : '';
     }
+    if (spielAn() && (complete || ((M.spiel.einheit('episode/' + S.jid) || {}).stufe >= 2))) {   // Spielplan: der Abschluss der Episode (Geschichte), nicht doppelt zum Ausblick der Reise
+      var abschluss = M.spiel.geschichte('episode/' + S.jid, 'abschluss', [j.outro]);
+      if (abschluss) out.appendChild(abschluss);
+    }
     if (j.outro) out.appendChild(el('p', { class: 'gm-reise-outrotext' }, j.outro));
 
     var acts = el('div', { class: 'gm-reise-actions' });
     if (!complete && fo >= 0) {
-      var fs = stOf(S.order[fo]);
+      var fs = stM(S.order[fo]);
       acts.appendChild(el('button', { type: 'button', class: 'gm-btn gm-btn-primary', on: { click: function () { show(fo, {}); } } },
         el('span', null, ('Zur nächsten offenen ' + M.t('station')) + (fs ? ': ' + shortTitle(fs.title) : '')), el('span', { 'aria-hidden': 'true', html: ico('arrow-right', 18) })));
     }
@@ -1143,6 +1187,7 @@
       recs.forEach(function (r) {
         var rj = jOf(r.jid);
         if (!rj) return;
+        var rz = spielAn() ? M.spiel.zugang('episode/' + r.jid) : null, rLock = !!(rz && !rz.offen);
         var names = r.shared.slice(0, 2).map(function (sid) { var s = stOf(sid); return s ? shortTitle(s.title) : ''; }).filter(Boolean);
         var meta;
         if (S.rd) meta = [el('strong', null, r.p.done + ' von ' + r.p.total), (' ' + M.t('stations') + ' besucht')];
@@ -1150,14 +1195,14 @@
           names.length ? ' (u. a. ' + names.join(' und ') + ')' : '',
           ' · ' + r.p.done + ' von ' + r.p.total + ' besucht'];
         ul.appendChild(el('li', null, el('button', {
-          type: 'button', class: 'gm-reise-rec', style: { '--jc': jColor(r.jid) },
+          type: 'button', class: 'gm-reise-rec' + (rLock ? ' is-locked' : ''), style: { '--jc': jColor(r.jid) },
           'aria-label': (M.t('journey') + ' antreten: ') + rj.name,
           on: { click: function () { if (M.nav) M.nav.openJourney(r.jid); } }
         },
           el('span', { class: 'gm-reise-rec-ico', 'aria-hidden': 'true', html: ico(rj.icon || 'train', 26) }),
           el('span', { class: 'gm-reise-rec-n' }, rj.name),
-          el('span', { class: 'gm-reise-rec-t' }, rj.tagline || ''),
-          el('span', { class: 'gm-reise-rec-m' }, meta),
+          el('span', { class: 'gm-reise-rec-t' }, rLock ? (rz.bedingung || M.t('spielGesperrt')) : (rj.tagline || '')),
+          rLock ? null : el('span', { class: 'gm-reise-rec-m' }, meta),
           el('span', { class: 'gm-reise-rec-go', 'aria-hidden': 'true', html: ico('arrow-right', 22) }))));
       });
       out.appendChild(el('section', { class: 'gm-reise-recs gm-reise-sec', 'aria-labelledby': rid },
@@ -1261,7 +1306,7 @@
     ui.nextIco.innerHTML = ico(atEnd ? 'stamp' : 'arrow-right', 18);
     if (i < 0) {
       ui.pos.textContent = 'Einführung';
-      var first = stOf(S.order[0]);
+      var first = stM(S.order[0]);
       ui.hint.textContent = first ? 'Als Nächstes: ' + shortTitle(first.title) : '';
       ui.nextLab.textContent = 'Beginnen';
       ui.next.setAttribute('aria-label', (M.t('journey') + ' beginnen') + (first ? ': ' + first.title : ''));
@@ -1269,8 +1314,8 @@
       ui.prev.setAttribute('aria-label', ('Zurück (am Anfang der ' + M.t('journey') + ')'));
     } else if (!atEnd) {
       ui.pos.textContent = (M.t('station') + ' ') + (i + 1) + ' von ' + N;
-      nextT = i < N - 1 ? stOf(S.order[i + 1]) : null;
-      prevT = i > 0 ? stOf(S.order[i - 1]) : null;
+      nextT = i < N - 1 ? stM(S.order[i + 1]) : null;
+      prevT = i > 0 ? stM(S.order[i - 1]) : null;
       ui.hint.textContent = nextT ? 'Weiter: ' + shortTitle(nextT.title) : 'Als Nächstes: Ziel und Stempel';
       ui.nextLab.textContent = i === N - 1 ? 'Zum Ziel' : 'Weiter';
       ui.next.setAttribute('aria-label', nextT ? ('Weiter zur nächsten ' + M.t('station') + ': ') + nextT.title : ('Weiter zum Ziel der ' + M.t('journey')));
@@ -1280,7 +1325,7 @@
       ui.hint.textContent = '';
       ui.nextLab.textContent = M.t('passport');
       ui.next.setAttribute('aria-label', ('Zum ' + M.t('passport')));
-      var lastT = stOf(S.order[N - 1]);
+      var lastT = stM(S.order[N - 1]);
       ui.prev.setAttribute('aria-label', ('Zurück zur letzten ' + M.t('station')) + (lastT ? ': ' + lastT.title : ''));
     }
   }
@@ -1303,6 +1348,7 @@
     hideTip(true);
     var dir = o.dir || (i > prev ? 'next' : (i < prev ? 'prev' : 'none'));
     S.idx = i;
+    fire('gm:journey-step', { journeyId: S.jid, index: i, from: prev, total: N, first: !!o.first });
     var page = buildPage(i);
     if (i < 0) page._say = 'Einführung';
     else if (i < N) page._say = (M.t('station') + ' ') + (i + 1) + ' von ' + N;
@@ -1510,6 +1556,13 @@
     doc.addEventListener('gm:stamp', onStamp);
     S.unsub.push(function () { doc.removeEventListener('gm:stamp', onStamp); });
     if (M.store && M.store.onChange) S.unsub.push(M.store.onChange(function () { if (S.open) updateRail(); }));
+    if (spielAn()) S.unsub.push(M.spiel.bei('aenderung', function () {
+      if (!S.open) return;
+      updateRail();
+      updateFoot();
+      var lockedNow = S.idx >= 0 && S.idx < S.order.length && gesperrt(S.order[S.idx]);
+      if (S.page && S.idx >= 0 && S.idx < S.order.length && !!S.page._locked !== lockedNow) show(S.idx, { force: true, noUrl: true, instant: true });   // geöffnet oder wieder verschlossen: Seite neu aufbauen
+    }));
 
     show(S.idx, { first: true, noUrl: true, instant: true, transfer: !!arrival, keep: arrival ? arrival.keep : 0 });
     if (arrival) {

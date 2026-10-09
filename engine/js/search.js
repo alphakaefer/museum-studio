@@ -49,6 +49,7 @@
   function sset(k, v) { try { M.store.set(k, v); } catch (e) { /* egal */ } }
   function plural(n, one, many) { return n === 1 ? one : many; }
   function stations() { return (M.data && M.data.stations) || {}; }
+  function spielAn() { return !!(M.spiel && M.spiel.aktiv); }
   function journeyOf(id) { return M.data && M.data.journeyById && M.data.journeyById[id]; }
   /* Farbband über alle Reisen: so viele gleich breite Abschnitte, wie es Reisen gibt */
   function stripGradient() {
@@ -294,6 +295,18 @@
       var st = D[r.e.id], home = homeOf(st);
       return { type: 'station', id: r.e.id, e: r.e, st: st, score: r.score, home: home, jid: null };
     });
+    /* Spielplan: noch Verschlossenes erscheint nur angedeutet (Titel und Hinweis), und nur, wenn der Titel selbst trifft;
+       Verborgenes gar nicht. Der Text einer verschlossenen Station wird nie durchsucht gezeigt. */
+    if (spielAn()) {
+      items = items.filter(function (it) {
+        var a = M.spiel.anzeige('inhalt/' + it.id);
+        if (!a.gesperrt) return true;
+        if (a.verborgen) return false;
+        if (toks.length && !toks.every(function (t) { return it.e.nTitle.indexOf(t) >= 0; })) return false;
+        it.gesperrt = a;
+        return true;
+      });
+    }
 
     /* ganze Reisen als Treffer */
     var jitems = [];
@@ -302,7 +315,9 @@
         if (!j || j.virtual) return;
         var hay = nrm(j.name + ' ' + (j.kurz || ''));
         var okAll = hl.every(function (t) { return wstart(hay, t) === 2 && t.length > 1; });
-        if (okAll) jitems.push({ type: 'journey', id: j.id, j: j, score: 1000 });
+        var jz = spielAn() ? M.spiel.zugang('episode/' + j.id) : null;
+        if (jz && !jz.sichtbar) return;   // Verborgenes bleibt ungenannt
+        if (okAll) jitems.push({ type: 'journey', id: j.id, j: j, score: 1000, gesperrt: jz && !jz.offen ? jz : null });
       });
       jitems = jitems.slice(0, 3);
     }
@@ -741,7 +756,7 @@
 
   function fillJourneys(box) {
     if (box.firstChild) return;
-    var js = ((M.data && M.data.journeys) || []).filter(function (j) { return j && !j.virtual && journeyOf(j.id); });
+    var js = ((M.data && M.data.journeys) || []).filter(function (j) { return j && !j.virtual && journeyOf(j.id) && (!spielAn() || M.spiel.zugang('episode/' + j.id).sichtbar); });
     if (!js.length) return;
     box.appendChild(el('p', { class: 'gm-suche-lab', id: ID + 'jl' }, ('Oder gleich auf ' + M.t('journey') + ' gehen')));
     var ul = el('ul', { class: 'gm-suche-chips gm-suche-jchips', 'aria-labelledby': ID + 'jl' });
@@ -766,6 +781,14 @@
     var n = it.n, row, main;
     if (it.type === 'journey') {
       var j = it.j, cnt = ((M.data.orders && M.data.orders[j.id]) || []).length;
+      if (it.gesperrt) {   // Spielplan: nur Titel und Hinweis, kein Inhalt
+        main = el('div', { class: 'gm-suche-main' },
+          el('p', { class: 'gm-suche-title' }, marked(j.name, hl)),
+          el('p', { class: 'gm-suche-meta' }, el('span', { class: 'gm-suche-badge' }, M.t('journey')), el('span', { class: 'gm-suche-badge is-zu' }, M.t('spielGesperrt'))),
+          el('p', { class: 'gm-suche-ex' }, it.gesperrt.bedingung || ''));
+        return el('div', { class: 'gm-suche-opt is-locked', role: 'option', id: ID + 'o' + n, 'aria-selected': 'false', dataset: { n: n }, style: { '--jc': jColor(j.id) } },
+          el('span', { class: 'gm-suche-ico', 'aria-hidden': 'true', html: ico('lock', 20) }), main);
+      }
       main = el('div', { class: 'gm-suche-main' },
         el('p', { class: 'gm-suche-title' }, marked(j.name, hl)),
         el('p', { class: 'gm-suche-meta' }, el('span', { class: 'gm-suche-badge' }, M.t('journey')),
@@ -776,6 +799,14 @@
       return row;
     }
     var st = it.st, kd = kindOf(st), jids = (st.journeys || []).filter(isRealJourney), home = it.home || jids[0] || null;
+    if (it.gesperrt) {   // Spielplan: nur Titel und Hinweis, kein Inhalt, keine Reisen, kein Jahr
+      main = el('div', { class: 'gm-suche-main' },
+        el('p', { class: 'gm-suche-title' }, marked(st.title, hl)),
+        el('p', { class: 'gm-suche-meta' }, el('span', { class: 'gm-suche-badge' }, kd.label), el('span', { class: 'gm-suche-badge is-zu' }, M.t('spielGesperrt'))),
+        el('p', { class: 'gm-suche-ex' }, it.gesperrt.bedingung || ''));
+      return el('div', { class: 'gm-suche-opt is-locked', role: 'option', id: ID + 'o' + n, 'aria-selected': 'false', dataset: { n: n }, style: { '--jc': home ? jColor(home) : 'var(--accent)' } },
+        el('span', { class: 'gm-suche-ico', 'aria-hidden': 'true', html: ico('lock', 20) }), main);
+    }
     var meta = el('p', { class: 'gm-suche-meta' }, el('span', { class: 'gm-suche-badge' }, kd.label));
     if (jids.length > 1) meta.appendChild(el('span', { class: 'gm-suche-badge is-kreuz' }, M.t('interchange')));
     var yt = yearText(st);
@@ -959,6 +990,8 @@
 
   function surprise() {
     var D = stations(), ids = Object.keys(D);
+    if (!ids.length) return;
+    if (spielAn()) ids = ids.filter(function (id) { return M.spiel.zugang('inhalt/' + id).offen; });   // Spielplan: keine verschlossene Überraschung
     if (!ids.length) return;
     var fresh = ids.filter(function (id) { try { return !M.store.isVisited(id); } catch (e) { return true; } });
     var pool = fresh.length ? fresh : ids;

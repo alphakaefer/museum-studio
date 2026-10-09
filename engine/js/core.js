@@ -34,7 +34,13 @@
      Die Große Rundreise: MUSEUM.data.journeyById.rundreise (virtual:true) mit legs[], onward[], steps[{station, via, next, hint}];
      MUSEUM.rundreiseStep(stationId) liefert den passenden Schritt.
    - Events auf document: gm:station-open {id, journeyId}, gm:journey-open {id, index}, gm:visited {id},
-     gm:stamp {journey}, gm:theme {mode, effective}.
+     gm:stamp {journey}, gm:theme {mode, effective}. Für den Spielplan (js/spiel.js) zusätzlich: gm:myth {id, card} (Mythos-Karte
+     umgedreht), gm:exhibit-start {id, station, mount} und gm:exhibit-end {id, station}; journey.js sendet gm:journey-step
+     {journeyId, index, from, total, first} bei jedem Seitenwechsel im Reise-Modus.
+   - Spielplan (nur mit spielplan.json): MUSEUM.addVocab(obj) trägt Standardtexte weiterer Module ein (pack.vocab überschreibt).
+     Gibt es MUSEUM.spiel (aktiv), fragt der Kern es an vier Stellen: renderStation (spiel.station), showPanelStation und
+     routeJourney (spiel.sperrseite: ruhiges Hinweisbild für noch Verschlossenes), buildTransfer (spiel.zugang). Ohne Spielplan
+     sind alle vier Aufrufe wirkungslos.
    ========================================================================== */
 (function () {
   'use strict';
@@ -148,6 +154,8 @@
   M.tl = function (key, vars) { var s = M.t(key, vars); return s.charAt(0).toLowerCase() + s.slice(1); };
   // Zahl plus Wort: M.tn(3,'station','stations') -> "3 Stationen"
   M.tn = function (n, one, many) { return n + ' ' + M.t(n === 1 ? one : many); };
+  // Standardtexte weiterer Module (z. B. js/spiel.js): pack.vocab überschreibt sie, Schlüssel des Kerns bleiben unberührt
+  M.addVocab = function (o) { Object.keys(o || {}).forEach(function (k) { if (VOCAB[k] === undefined) VOCAB[k] = o[k]; }); };
 
   var doc = document;
   var root = doc.documentElement;
@@ -879,7 +887,7 @@
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       front.setAttribute('aria-hidden', on ? 'true' : 'false');
       back.setAttribute('aria-hidden', on ? 'false' : 'true');
-      if (on) announce('Heute wissen wir: ' + m.wahrheit);
+      if (on) { announce('Heute wissen wir: ' + m.wahrheit); emit('gm:myth', { id: st.id, card: card }); }
       else announce(frontLabel + ': ' + m.glaube);
     }
     btn.addEventListener('click', flip);
@@ -925,12 +933,13 @@
       ex && ex.blurb ? el('p', { class: 'gm-plaque-blurb' }, ex.blurb) : null);
     var plaque = el('div', { class: 'gm-plaque' }, info);
     var endRow = el('div', { class: 'gm-stage-end', hidden: true });
-    var destroyFn = null;
+    var destroyFn = null, running = false;
     var startBtn, endBtn;
     var note = el('p', { class: 'gm-stage-note', role: 'status' }, ('Dieses ' + M.t('exhibit') + ' ist noch in Vorbereitung.'));
 
     function stop() {
       if (destroyFn) { try { destroyFn(); } catch (e) { warn((M.t('exhibit') + '-destroy'), e); } destroyFn = null; }
+      if (running) { running = false; emit('gm:exhibit-end', { id: id, station: st.id }); }
       mount.innerHTML = '';
       mount.hidden = true;
       endRow.hidden = true;
@@ -957,6 +966,8 @@
         mount.appendChild(el('p', { class: 'gm-stage-note', role: 'alert' }, ('Dieses ' + M.t('exhibit') + ' lässt sich gerade nicht starten. Lade die Seite bitte neu.')));
       }
       announce((M.t('exhibit') + ' gestartet: ') + title);
+      running = true;
+      emit('gm:exhibit-start', { id: id, station: st.id, mount: mount });
       mount.focus({ preventScroll: true });
       try { mount.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' }); } catch (e) { /* egal */ }
     }
@@ -978,8 +989,17 @@
     return sec;
   }
 
+  // Spielplan: Zugang einer Einheit; ohne Spielplan null (alles offen, alles sichtbar)
+  function zugangVon(unitId) { return M.spiel && M.spiel.aktiv ? M.spiel.zugang(unitId) : null; }
+  // Spielplan: ruhiges Hinweisbild für eine noch verschlossene Einheit (Element) oder null, wenn sie offen ist
+  function lockPage(unitId, o) { return M.spiel && M.spiel.aktiv && typeof M.spiel.sperrseite === 'function' ? M.spiel.sperrseite(unitId, o) : null; }
+
   function buildTransfer(st, art, accent, opts) {
-    var others = st.journeys.filter(function (j) { return j !== accent && M.data.journeyById[j]; });
+    var others = st.journeys.filter(function (j) {
+      if (j === accent || !M.data.journeyById[j]) return false;
+      var z = zugangVon('episode/' + j);
+      return !z || z.sichtbar;   // verborgene Reisen werden nicht verraten
+    });
     if (!others.length) return null;
     var step = M.rundreiseStep(st.id);
     var nextRoute = opts.journeyId === 'rundreise' && step ? step.next : null;
@@ -989,6 +1009,8 @@
     others.forEach(function (jid) {
       var j = M.data.journeyById[jid];
       var sentence = st.cross && st.cross[jid];
+      var zj = zugangVon('episode/' + jid);
+      if (zj && !zj.offen) sentence = zj.bedingung || M.t('spielGesperrt');   // gesperrte Reise: nur die Bedingung, kein Inhalt
       var b = el('button', {
         type: 'button', class: 'gm-tr-btn' + (jid === nextRoute ? ' is-next' : ''),
         style: { '--jc': 'var(--j-' + jid + ')' },
@@ -1159,6 +1181,10 @@
         if (art.isConnected && !doc.hidden && art.getClientRects().length > 0) { store.markVisited(st.id); return; }
         if (++tries < 40) setTimeout(tick, 700);
       })();
+    }
+    // Spielplan (nur mit spielplan.json): Lesefortschritt, Rückmeldung am Ort, Teilen
+    if (!compact && M.spiel && M.spiel.aktiv && typeof M.spiel.station === 'function') {
+      try { M.spiel.station(art, st, { journeyId: cj }); } catch (e) { warn('spiel.station', e); }
     }
     return art;
   }
@@ -1503,10 +1529,13 @@
     var order = orderOf(jid);
     var idx = order.indexOf(id);
     var j = M.data.journeyById[jid];
+    var lock = lockPage('inhalt/' + id);   // Spielplan: noch verschlossen -> ruhiges Hinweisbild statt Inhalt
 
     panel.ctxEl.innerHTML = '';
-    panel.ctxEl.appendChild(M.ui.journeyChip(jid, { active: true }));
-    if (idx >= 0) panel.ctxEl.appendChild(el('span', { class: 'gm-panel-pos' }, (M.t('station') + ' ') + (idx + 1) + ' von ' + order.length));
+    if (!lock) {
+      panel.ctxEl.appendChild(M.ui.journeyChip(jid, { active: true }));
+      if (idx >= 0) panel.ctxEl.appendChild(el('span', { class: 'gm-panel-pos' }, (M.t('station') + ' ') + (idx + 1) + ' von ' + order.length));
+    }
 
     function wire(btn, targetId, dirLabel) {
       var t = targetId && M.data.stations[targetId];
@@ -1521,15 +1550,15 @@
         btn.onclick = null;
       }
     }
-    wire(panel.prevBtn, idx > 0 ? order[idx - 1] : null, ('Vorherige ' + M.t('station')));
-    wire(panel.nextBtn, idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null, ('Nächste ' + M.t('station')));
+    wire(panel.prevBtn, !lock && idx > 0 ? order[idx - 1] : null, ('Vorherige ' + M.t('station')));
+    wire(panel.nextBtn, !lock && idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null, ('Nächste ' + M.t('station')));
 
     M.ui.destroyStation(panel.art);
-    var art = renderStation(st, { journeyId: jid, headingLevel: 2, onChip: function (c) { M.nav.openStation(id, c); } });
+    var art = lock || renderStation(st, { journeyId: jid, headingLevel: 2, onChip: function (c) { M.nav.openStation(id, c); } });
     panel.art = art;
     panel.scroll.innerHTML = '';
     panel.scroll.appendChild(art);
-    if (j && idx >= 0) {
+    if (!lock && j && idx >= 0) {
       panel.scroll.appendChild(el('div', { class: 'gm-panel-cont' },
         el('button', {
           type: 'button', class: 'gm-btn gm-btn-primary', style: { '--jc': 'var(--j-' + jid + ')' },
@@ -1543,9 +1572,9 @@
       clearTimeout(panel.swapTimer);
       panel.swapTimer = setTimeout(function () { art.classList.remove('gm-swap-in'); }, 400);
     }
-    setTitle(st.title);
-    emit('gm:station-open', { id: id, journeyId: jid });
-    announce((M.t('station') + ' geöffnet: ') + st.title);
+    setTitle(lock ? lock.getAttribute('data-titel') : st.title);
+    if (!lock) emit('gm:station-open', { id: id, journeyId: jid });
+    announce(lock ? lock.getAttribute('data-ansage') : (M.t('station') + ' geöffnet: ') + st.title);
     return true;
   }
 
@@ -1653,6 +1682,29 @@
     return (M.journey && typeof M.journey.open === 'function') ? M.journey : fallbackJourney;
   }
 
+  // Spielplan: eine noch verschlossene Reise zeigt statt des Reise-Modus das Hinweisbild im Stationspanel
+  function routeLockedJourney(r, lock) {
+    if (S.journeyOpen) leaveJourney(true);
+    if (!panel.el) buildPanel();
+    var wasOpen = S.panelOpen;
+    S.panelOpen = true;
+    S.journey = null;
+    S.station = null;
+    if (!wasOpen && !S.trigger) S.trigger = doc.activeElement;
+    M.ui.destroyStation(panel.art);
+    panel.ctxEl.innerHTML = '';
+    [panel.prevBtn, panel.nextBtn].forEach(function (b) { b.disabled = true; b.onclick = null; b.removeAttribute('title'); b.setAttribute('aria-label', 'Keine weitere ' + M.t('station')); });
+    panel.art = lock;
+    panel.scroll.innerHTML = '';
+    panel.scroll.appendChild(lock);
+    panel.scroll.scrollTop = 0;
+    panel.el.setAttribute('aria-labelledby', lock.getAttribute('aria-labelledby'));
+    setTitle(lock.getAttribute('data-titel'));
+    announce(lock.getAttribute('data-ansage'));
+    if (!wasOpen) ovOpen(panel.el, { onClose: function () { closeOverlay(); }, focus: panel.sheet, returnFocus: S.trigger });
+    else if (!panel.el.contains(doc.activeElement) || doc.activeElement === doc.body) panel.sheet.focus({ preventScroll: true });
+  }
+
   function routeJourney(r) {
     var j = M.data.journeyById[r.id];
     if (!j) {
@@ -1660,6 +1712,8 @@
       bounce();
       return;
     }
+    var lockJ = j.virtual ? null : lockPage('episode/' + r.id);
+    if (lockJ) { routeLockedJourney(r, lockJ); return; }
     var order = orderOf(r.id);
     var idx = r.sid ? order.indexOf(r.sid) : -1;
     if (r.sid && idx < 0) warn((M.t('station') + ' "') + r.sid + ('" liegt nicht auf der ' + M.t('journey') + ' "') + r.id + '".');
