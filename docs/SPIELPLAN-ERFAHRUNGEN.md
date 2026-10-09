@@ -218,7 +218,7 @@ Der Build (`tools/build.mjs`) band `data/spielplan.js`, `js/spielplan.js`, `js/s
   das „Gesehen“ der Enthüllung ist Zustand der App (BM7), und Werkzeuge haben keinen Ort (BM8).
 
 ### Das Spielgefühl gegen den Maßstab
-Karls Diagnose eines früheren Versuchs: ein Dashboard über ein Spiel, kein Spiel. Gegen die vier Dinge, die ein Spielplan im Museum braucht:
+Die Diagnose eines früheren Versuchs (aus dem Auftrag): ein Dashboard über ein Spiel, kein Spiel. Gegen die vier Dinge, die ein Spielplan im Museum braucht:
 1. **Geschichte:** Auftakt (Einführung der Reise, Etappe als Überschrift), Abschluss (Karte beim Schaffen, Abschlusskarte), Auftakt und Abschluss der Gebiete (Karte), „Dein Einstieg“ im Eingang. Die Texte sind die der Spielplan-Datei; die Anbindung erfindet keine.
 2. **Der Moment:** Die Karte mit Enthüllung erscheint dort, wo man gerade handelt, im Panel, im Reise-Modus oder in der Suche. Sie ist nicht blockierend, wird angesagt und hat nur zwei Schaltflächen. Erster Moment nach einem Schritt, acht in den ersten fünfzehn, danach etwa alle sieben Schritte einer.
 3. **Rhythmus:** Wiedersehen als eine Aufgabe, Verwitterung als freundlicher Satz, Takt über Regeln, Pausen über `wartezeit`, nirgends eine Serie, die reißt, nirgends ein Zähler der Tage.
