@@ -448,3 +448,151 @@ Je Befund: Abschnitt, Problem, Vorschlag. Nummern BE1 bis BE6 gehören zu diesem
 | BE4 | 5, 5.6 | Die nächste Aufgabe wählt die billigste Regel. Hat eine Reise einen kurzen und einen langen Weg, ist der lange nie die Aufgabe, und die Sperre dauert so lange wie der kurze Weg. Der Standard sagt nichts darüber, wie lang ein Weg sein darf, und „zwei Wege“ wirkt als zweimal der billigste. | Empfehlen, die Wege nach Kosten zu staffeln (ein kurzer, ein mittlerer), und die Prüfung die Kosten je Weg nennen lassen. |
 | BE5 | 3.2, B13 | Das Gewicht je Einheit macht die Kreuzung zugleich zum Schlüssel einer Reise und zur Pflicht der anderen: Der kurze Weg über die Kreuzungsstation ist dann kein unabhängiger Weg zur langen Pflicht der Nachbarreise. In Paketen mit zwei Reisen ist strenge Unabhängigkeit nicht zu haben (E5). | `in: [{ id, gewicht }]` (B13) oder die schwächere, prüfbare Unabhängigkeit (kein Engpass einzelner Einheiten) als Begriff einführen. |
 | BE6 | 3.3 | `entdecken` hat keine Bedeutung für Rechnung und Prüfung (sie warnt nur bei `onboarding` und `endgame`). Der Generator gebraucht sie für historische Reisen; das steht so nicht im Standard. | Sagen, wofür `entdecken` gilt (Reisen ohne eigene Hauptquest, Erkundungen) und was die Prüfung dazu verlangt. |
+
+
+---
+
+## Museum-Anbindung A: Kern, Stationen, Reise-Modus, Eingang (engine/js/spiel.js)
+
+Kürzel: M = Entscheidung der Anbindung des Spielplans an das Museum, BM = Befund zum Standard, der dabei aufgefallen ist. Die Nummern gelten für diesen Abschnitt.
+Die Anbindung (`engine/js/spiel.js`, `engine/css/spiel.css`) wird nur mit `packs/<paket>/spielplan.json` eingebunden; sie stellt `MUSEUM.spiel` bereit (`aktiv`, `stand()`, `einheit(id)`, `zugang(id)`, `melde()`, `bei()`, `naechsteAufgabe()`,
+`frei`, `setFrei()`, dazu die Aufrufe der Ansichten). Die Stellen in `core.js`, `journey.js`, `app.js` und `search.js` fragen sie nur, wenn sie aktiv ist; ohne Spielplan bleibt jede Ansicht Zeichen für Zeichen, wie sie war (getestet: Vergleich der Seiten mit und ohne die Änderungen
+für drei Pakete in elf Zuständen (Werkzeug `tools/spiel-vergleich.mjs`), siehe `docs/SPIELPLAN-ERFAHRUNGEN.md`).
+
+### M1 · Was im Museum welches Ereignis ist
+- **Stelle:** 6.1, 6.2 (Verben und Kurzform), Abgleich („Zuordnung im Museum“), 7 (die Brücke meldet nur Kennungen).
+- **Lücke:** Der Abgleich nennt die Einheiten, aber nicht, welche Handlung im Museum welches Verb ist. Das Museum kennt nur zwei Dinge, die es von sich aus erfasst: Besuche (`gm:visited`) und Stempel.
+- **Auslegung:**
+
+| Was geschieht | Verb | Einheit |
+|---|---|---|
+| Station sichtbar geöffnet (erstes Mal; die vorhandene Besuchslogik des Kerns, `gm:visited`) | `erkundet` | `inhalt/<station>` |
+| Station bis zum Ende gelesen (M3), oder im Reise-Modus „Weiter“ nach einer Station, die mindestens vier Sekunden offen war | `geschafft` | `inhalt/<station>` |
+| Mythos-Karte auf die Seite „Heute wissen wir“ gedreht | `geschafft` | `quest/<station>-mythos` |
+| Exponat gestartet / Exponat benutzt (M4) | `begonnen` / `geschafft` | `erlebnis/<exponat>` |
+| Einsatz eines Werkzeugs am Ort bestätigt (M5) | `geschafft` mit `mit: [werkzeug/…]` | der Ort (Station, Mythos-Karte oder Exponat) |
+| Reise-Modus einer Reise geöffnet | `begonnen` | `episode/<reise>` |
+| Reisepass-Stempel (alle Stationen der Reise besucht) | `geschafft` | `episode/<reise>` |
+| Link einer Station kopiert (M6) | `geteilt` | `inhalt/<station>` |
+
+  Die Große Rundreise ist keine Einheit (sie ist der Weg über Kreuzungen, keine Geschichte); ihre Stationen zählen wie überall. Gebiete, Fähigkeiten und Werkzeuge bekommen nie ein eigenes Ereignis aus der Oberfläche: Gebiete und Fähigkeiten rechnet der Kern aus ihren Mitgliedern,
+  Werkzeuge bekommen es über `mit`. Ereignisse tragen **nur Kennungen** (Verb, Einheit, Zeit, App, Werkzeug-Kennung); nichts aus einem Exponat (Eingaben, Regler, Texte) wird gemeldet, nur dass es bedient wurde.
+- **Begründung:** Besuch und Stempel gab es schon; alles andere ist die kleinste ehrliche Aussage über das, was ein Mensch im Museum tun kann. „Reise geöffnet“ heißt nur begonnen: Wer die Einführung liest, hat nichts geschafft.
+
+### M2 · Stufen im Museum: höchstens 2, `stufen.bis: 2`
+- **Stelle:** 4 (Stufen), 4.2, 9, Abgleich (Stufen 2, 3, 4 = Grundverständnis, Anwendung, Transfer), Befund B14.
+- **Lücke:** Das Museum soll entscheiden, ob und wie es Anwendung (Stufe 3) und Transfer (Stufe 4) melden kann.
+- **Auslegung:** **Es meldet sie nicht.** Kein `angewendet`, kein `beleg`, keinen `fall`. `spiel.js` rechnet den Spielstand immer mit `bis: 2` (auch wenn ein Plan mehr verlangt); `stufen.bis: 2` gehört in jeden Spielplan für das Museum (der Generator setzt es),
+  und `check-pack` warnt, wenn es fehlt oder größer ist. Die Sätze der nächsten Aufgabe schlagen deshalb nie „Wende … an einem echten Fall an“ vor.
+- **Begründung:** Beleg heißt Nachweis, Fall heißt ein Fall aus dem Leben. Das Museum sieht weder noch: Seine Exponate sind Anschauungsstücke, keine Prüfungen, und jede Eingabe darin bleibt im Browser. Eine Selbstauskunft („Ich habe es angewendet“) wäre ein `beleg` der Art `eigen` ohne etwas,
+  woran man den Fall unterscheiden könnte (Auslegung A12 verbietet Freitext, ein Fall muss eine Kennung sein). Der Einsatz eines Werkzeugs an zwei Orten wäre nach A6 „zwei Fälle“, aber die Orte des Museums sind Orte der Übung, keine Fälle; ihn als Transfer zu zählen, wäre eine Behauptung des Plans, keine des Menschen.
+  „Gemeistert“ bleibt im Museum leer; wer das Spiel um Anwendung erweitern will, braucht eine Anwendung, die den Beleg erhebt (die Brücke nimmt ihn an, `Spielplan.verbinde` und der Adapter sind dafür gebaut), und setzt `bis` dann in ihrem eigenen Plan.
+- **Grenze:** Sammel-Einheiten (Reisen, Gebiete) erreichen Stufe 2 und nie mehr. Das Wort „gemeistert“ kommt in keinem Satz des Museums vor.
+
+### M3 · „Gelesen“: Marke am Ende des Lesestoffs plus Verweildauer; „Weiter“ als bewusster Schritt
+- **Stelle:** 6.1 (`geschafft`), Abgleich („Station geschafft = bis zum Ende gelesen“), 4 (Stufe 2).
+- **Lücke:** Was heißt „bis zum Ende gelesen“, wenn niemand liest, sondern scrollt?
+- **Auslegung:** Hinter dem Lesestoff einer Station (Text, Auf einen Blick, Zitat; **vor** dem Exponat, den Kreuzungen und den Weiterlesen-Links) steht eine unsichtbare Marke. Eine Station gilt als gelesen, wenn (a) die Marke ins Bild kam oder schon überscrollt ist
+  (ein hohes Exponat danach schiebt sie sonst nach oben) und (b) die Station so lange sichtbar offen war, wie ein knappes Drittel der Lesezeit dauert (230 Wörter je Minute; mindestens 5, höchstens 45 Sekunden). Gezählt wird nur, solange der Tab sichtbar ist und die Station im Bild.
+  Im Reise-Modus gilt zusätzlich: „Weiter“ nach vorn (genau eine Station) meldet die verlassene Station, wenn sie mindestens vier Sekunden offen war; so zählt auch, wer die Station gelesen hat, ohne ans Ende zu scrollen. Eine zweite Meldung derselben Station
+  folgt frühestens nach zehn Minuten (Schutz gegen Dauerfeuer); danach zählt jeder Besuch als Wiedersehen (A9).
+- **Begründung:** Scrollen allein ist leicht (ein Wisch nach unten), Zeit allein ist es auch (der Tab bleibt offen). Beides zusammen ist nicht beweisbar, aber nicht mehr im Vorbeigehen zu haben. Die Zahlen sind Annahmen, keine Messung; sie stehen als Konstanten am Kopf von `spiel.js`.
+- **Befund BM1:** siehe unten (Lesen ist kein Verstehen; der Standard hat dafür kein Wort).
+
+### M4 · „Exponat benutzt“
+- **Stelle:** Abgleich („Exponat benutzt = erlebnis geschafft“).
+- **Auslegung:** Starten meldet `begonnen`. `geschafft` kommt, wenn das Exponat bedient wurde (ein Klick, eine Taste, eine Eingabe oder eine Berührung im Bereich des Exponats; es zählt nur, **dass** etwas geschah, nicht was) und mindestens sechs Sekunden lief, beim Beenden oder von selbst.
+- **Begründung:** Starten allein ist Neugier, nicht Benutzung. Sechs Sekunden und eine Bedienung sind die kleinste Schwelle, die „Ich habe es angeschaut“ von „Ich habe damit gespielt“ trennt, ohne in das Exponat hineinzusehen. Die Exponate des Pakets bleiben unverändert (der Kern meldet Start und Ende als Ereignisse der Seite).
+
+### M5 · Einsatz eines Werkzeugs: ein Knopf am Ort, mit Bestätigung
+- **Stelle:** 4.2, A7 (Ereignisse über `mit`), G2 (Einsatz an Orten, „bestätigt“), E7 (der Generator sagt, die Anbindung solle `einsatz` lesen).
+- **Auslegung:** Nennt ein Werkzeug des Plans im Feld `einsatz` einen Ort (Einheit-ID einer Station, Mythos-Karte oder eines Exponats; ein Name ohne Art meint die Station), und ist das Werkzeug offen und der Ort geschafft, zeigt die Station am Ende einen Satz „Dein Werkzeug „X“ passt hier.“ mit dem Knopf „Eingesetzt“.
+  Der Knopf meldet `geschafft` am Ort mit `mit: [werkzeug/…]`; der Kern reicht es an das Werkzeug durch (Stufe 2).
+- **Begründung:** G2 verlangt eine Bestätigung. Eine automatische Meldung („du hast das Werkzeug, also hast du es eingesetzt“) wäre eine Behauptung des Museums, der Knopf ist die Entscheidung des Menschen. Der Knopf erscheint erst, wenn der Ort geschafft ist, damit niemand ein Werkzeug „einsetzt“, ohne den Ort gesehen zu haben.
+- **Grenze:** Ein Werkzeug ohne gültigen `einsatz` bleibt auf Stufe 0 (`check-pack` warnt). Beim Werkzeug, das auf seiner eigenen Station aufgeht, ist der erste Einsatz ein Klick am Ende der Station; das ist gewollt klein.
+
+### M6 · Teilen: ein Knopf „Link kopieren“
+- **Stelle:** Abgleich („Link kopiert = geteilt“), 6.1 (`geteilt`).
+- **Lücke:** Das Museum hatte keine Teilen-Funktion; nichts „kopiert“ einen Link.
+- **Auslegung:** Mit Spielplan zeigt jede Station am Ende einen stillen Knopf „Link kopieren“ (Adresse der Station mit `#/station/<id>`). Er benutzt die Zwischenablage, wo es sie gibt, sonst `execCommand`; geht auch das nicht (ein Browser unter `file://`), erscheint der Link in einem Feld zum Markieren. `geteilt` wird nur gemeldet, wenn das Kopieren gelungen ist.
+- **Begründung:** Ohne den Knopf gäbe es das Ereignis nie. Gesendet wird nichts: Die Zwischenablage gehört dem Menschen, die Seite sieht sie nie.
+
+### M7 · Übernahme alter Besuche und Stempel (`herkunft: migration`)
+- **Stelle:** 6.2 (Ereignisse), 1 (nichts geht verloren, Grundsatz 3).
+- **Lücke:** Wer das Museum vor dem Spielplan benutzt hat, hat Besuche (`gm:visited`, eine Liste ohne Zeiten) und Stempel (`gm:stamps`, dazu das Datum aus `gm:stampdates`). Der Standard kennt kein Ereignis ohne echten Zeitpunkt.
+- **Auslegung:** Beim ersten Start mit Spielplan (Marke `gm:sp:<plan>:migration`) werden die Besuche einmal als Ereignisse eingetragen: `erkundet` je besuchter Station; für Reisen **mit Stempel** zählen ihre besuchten Stationen als `geschafft` (ein Stempel hieß bisher: alle Stationen besucht), und der Stempel ist
+  `geschafft` an der Episode mit seinem Datum (sonst jetzt). Alle tragen das Feld `herkunft: "migration"` (die Brücke speichert unbekannte Felder; der Kern liest sie nicht). Besuchte Stationen ohne Einheit und der Stempel der Großen Rundreise werden übersprungen. `gm:visited` und `gm:stamps` bleiben unverändert (das Museum benutzt sie weiter).
+  Die Übernahme löst **keine Enthüllungen** aus: Was sich dabei öffnet, gilt als gesehen (M9).
+- **Begründung:** Zeitpunkt der Übernahme statt erfundener Zeiten: Takt und Wiederkehr beginnen bei null, nichts wird rückwirkend fällig. Der Stempel bleibt der Beleg der Reise; ohne die Stationen als geschafft stünden die Regeln („zwei Stationen geschafft“) vor einer Reise, die als abgeschlossen im Pass klebt.
+- **Befund BM6:** siehe unten (`herkunft` fehlt im Standard).
+
+### M8 · Freier Zugang
+- **Stelle:** 2 (Grundsatz 4: Vorschläge statt Pflichten), 5.1 (`wartezeit`), A20 (`ohneWartezeit`), B15.
+- **Auslegung:** Der Schalter `gm:sp:frei` (`MUSEUM.spiel.frei`, `setFrei(b)`) wirkt auf **Zugang und Pausen**: Jede Einheit ist offen und sichtbar (auch Verborgenes), Wartezeiten sind vorbei (der Spielstand wird mit `ohneWartezeit` gerechnet). Er wirkt **nicht** auf Ereignisse und Regeln: Es wird weiter gezählt,
+  Stufen und Freischaltungen kommen weiter zustande (und zeigen weiter ihre Enthüllung, M9), die nächste Aufgabe bleibt ein Vorschlag. Der Schalter steht im Eingang und auf jedem Hinweisbild (M10); ein Klick dort lädt die Adresse neu, sodass das Hinweisbild dem Inhalt weicht. Der Eingang zeigt ihn nur, wenn der Plan überhaupt etwas sperrt (sonst täte er nichts); `setFrei()` und `gm:sp:frei` gelten immer.
+  Er hat keine Pflicht und keine Folgen: Man kann ihn jederzeit ausschalten, nichts geht verloren.
+- **Begründung:** Für Sprachenlernen und aufmerksamkeitssensible Themen kann Freischalten Druck sein; deshalb ist der Weg ohne Sperre ein Schalter, kein Zugeständnis in den Einstellungen. Er gilt für diese App und dieses Gerät (lokal gespeichert).
+- **Vorbelegung (Erfindung der Anbindung):** `pack.json` kennt das Feld `"spielFrei": true`. Es schaltet den Freien Zugang für alle ein, die den Schalter noch nie bedient haben; wer ihn je an- oder ausgeschaltet hat, behält seine Wahl (sie steht in `gm:sp:frei`).
+  Der Plan trägt dazu nichts, weil der Standard keinen Freien Zugang kennt (BM5); das Feld gehört ins Paket, nicht in den Spielplan.
+- **Offen:** Ob die beiden Testthemen den Freien Zugang als Standard brauchen, entscheidet der Test mit Menschen; `spielFrei` macht beide Fassungen (mit und ohne Vorbelegung) zu einer Zeile im Paket.
+
+### M9 · Der Moment: eine Karte, nicht blockierend
+- **Stelle:** 2 (Grundsatz 6: der Moment zählt), 8 (`freigeschaltet[].enthuellung`), A16 (`gesehen`).
+- **Auslegung:** Sobald etwas aufgeht, erscheint **dort, wo man handelt**, eine Karte mit Art („Neu geöffnet: Reise“), Name und dem `enthuellung`-Text der Regel, dazu die Schaltflächen „Ansehen“ (öffnet die Adresse der Einheit) und „Weiter“. Sie blockiert nichts: kein Dunkelfeld, keine Fokusfalle, kein `inert`, der Hintergrund bleibt bedienbar.
+  Sie wird mit `aria-live` angesagt (`#gm-live`, höflich), trägt `role="region"` mit Überschrift und stiehlt den Fokus nur, wenn gerade nichts Bestimmtes den Fokus hat; Escape in der Karte schließt sie. Bewegung (Einblenden, ein Ring um das Symbol) gibt es nur ohne `prefers-reduced-motion`.
+  Mehrere Momente stehen in einer Schlange (die Karte nennt „Dazu geht noch etwas auf“); je Einheit einmal, gemerkt unter `gm:sp:<plan>:enthuellt`, auch über das Neuladen. Die Karte lebt in der obersten Ebene (Suche, Reise-Modus oder Stationspanel), damit die Tastatur sie erreicht; neben dem Stationspanel (breit genug) steht sie links auf dem abgedunkelten Grund, sonst unten rechts über der Fußleiste.
+  Zeit-Freischaltungen, die geschahen, während der Tab zu war, zeigen sich beim nächsten Öffnen. **Stille Fälle:** der erste Start (nichts davon war „neu“) und die Übernahme alter Besuche (M7).
+  Dieselbe Karte trägt noch drei Momente: **Fähigkeiten** (bei Stufe 2, der höchsten im Museum: „Du kannst jetzt mehr“ mit dem „Ich kann …“-Satz, G6; auf dem Weg dahin sagt jede Station, die sie übt, am Ende „Das übt: Ich kann …“), **Abschluss** einer Reise oder eines Gebiets bei Stufe 2 (der `abschluss`-Text; nicht, wenn gerade der Stempel der Reise im Reise-Modus erscheint, der ihn selbst erzählt) und **Auftakt** eines Gebiets, wenn man zum ersten Mal eine seiner Reisen betritt.
+- **Begründung:** Die Karte sitzt neben dem Handeln, nicht in einem Reiter; sie ist Belohnung, kein Hindernis. Schließen heißt „Weiter“, nicht „bestätigen“. Sie verschwindet nicht von selbst: Wer eine Enthüllung liest, soll nicht gehetzt werden (Grundsatz 4), und wer sie wegklickt, hat sie gesehen.
+- **Grenze:** Die Karte deckt, wo sie steht, einen Teil des Inhalts ab. Sie ist klein, weicht dem Panel aus, wo es geht, und lässt sich mit einem Klick (oder Escape) schließen; auf dem Handy liegt sie über dem Fuß. Ob die Position stört, zeigt nur ein Test mit Menschen.
+
+### M10 · Gesperrtes ist angedeutet, Verborgenes bleibt ungenannt (Karten, Suche, Reise-Modus, Adresse)
+- **Stelle:** 2 (Grundsatz 5), 5 (`sichtbar`), 8 (`bedingung`), A3 (Vererbung), A15.
+- **Auslegung:** **Angedeutet** heißt: Titel, Symbol und ein Satz mit der `bedingung`, kein Inhalt. Reise-Karten (Eingang und Reiseliste) zeigen ein Schloss, den Satz statt der Tagline, keine Stationsleiste und den Knopf „Was fehlt noch?“, der zum Hinweisbild führt (keine Sackgasse). Die Suche zeigt eine gesperrte Station oder Reise
+  nur dann, wenn ihr **Titel** trifft (nie über den Text), mit dem Satz statt des Auszugs; „Überrasch mich“ wählt nur Offenes. Die Kreuzungsliste einer Station nennt eine gesperrte Reise mit der Bedingung statt ihrem Kreuzungssatz. Im Reise-Modus bleiben gesperrte Haltestellen im Linienplan (gestrichelt, kursiv, „Noch verschlossen“ für den Screenreader),
+  die Station zeigt das Hinweisbild, „Weiter“ geht einfach weiter (die Große Rundreise erklärt es ebenso); „Nächster Halt“ und die Fußleiste nennen nur den Titel. **Adresse:** `#/station/<id>` und `#/reise/<id>` einer gesperrten Einheit zeigen das **Hinweisbild** (im Stationspanel, auch für Reisen): Schloss, „Noch verschlossen“, Titel, die Bedingung, die nächste Aufgabe mit Knopf (heißt sie genau diese Einheit zu öffnen, „Der Weg dorthin“),
+  der Freie Zugang als Schalter. Vor und zurück sind dort aus. **Verborgen** (`sichtbar: verborgen`, auch geerbt) heißt: keine Karte, kein Suchtreffer, keine Kreuzung, in Listen nur „etwas Verborgenes“; unter der Adresse steht „Noch verborgen“ ohne Namen und ohne Bedingung. Die Zahlen im Eingang („Drei Reisen“) zählen Verborgenes mit; das ist bekannt und klein.
+- **Begründung:** Die Sperre ist ein Versprechen („hier wartet etwas“), keine Mauer. Das Hinweisbild ist nie eine Sackgasse: Es sagt, was fehlt, und führt zu genau einer Aufgabe oder zum Schalter. Die Suche darf den Text einer gesperrten Station nicht verraten, auch nicht über Treffer.
+
+### M11 · Der Eingang: genau eine nächste Aufgabe
+- **Stelle:** 5.6 (genau eine Aufgabe), A10, 5.5 (Rhythmus), Befund BE2 des Generators („Noch 2 Schritte“ für eine unberührte Station).
+- **Auslegung:** Unter den Knöpfen des Eingangs steht eine kleine Karte: Art („Dein Einstieg“ beim ersten Besuch, „Als Nächstes“, „Ein Wiedersehen“ bei einer fälligen Wiederkehr), der Satz der Aufgabe, ein Satz, **was sie bringt**, und ein Knopf zur Adresse der Aufgabe. Dazu, wenn eine Pause läuft, ein Satz mit dem Zeitpunkt
+  („… geht in 2 Std. auf“; kein Zähler, kein Balken) und der Schalter für den Freien Zugang. Keine Zahlen über den Fortschritt, kein Reiter, keine Liste. Gibt es nichts zu tun, steht dort ein ruhiger Satz. Der Satz „was sie bringt“ stammt vom Kern; nur eine Zeile schreibt die Anbindung um: Der Kern zählt Stufen („Noch 2 Schritte“ für eine Station,
+  die ein einziger Besuch von 0 auf 2 hebt); im Museum ist eine Einheit ein Schritt, der Satz heißt dann „Danach geht … auf.“ (`noch_einheiten`).
+- **Fällige Wiederkehr** erscheint als Wiedersehen-Aufgabe, ohne Pflicht (A9: eine einzige, keine Liste). **Verwitterung** zeigt sich so: eine Reise-Karte mit gepunktetem Symbol und „Wartet auf ein Wiedersehen“; in der Station ein Satz „Schön, dass du wieder da bist“ und nach dem Lesen „Aufgefrischt.“. Es gibt keine Serien und nichts, was reißt, kein „verpasst“, keinen Rückstand, keine Punkte.
+- **Rückmeldung am Ort:** Eine gelesene Station trägt „Geschafft“ im Kopf und am Ende einen Satz, was sie der Reise bringt („Noch 3 Schritte, dann ist die Reise „X“ geschafft.“, gerechnet auf Stufe 2 und mit den Gewichten des Plans); nach Mythos-Karte und Exponat steht die Rückmeldung gleich dort.
+
+### M12 · Geschichte: Auftakt, Abschluss, Etappe
+- **Stelle:** 3 (`auftakt`, `abschluss`, `etappe`), 3.3.
+- **Auslegung:** Das `auftakt` der Episode steht in der Einführung der Reise (Reise-Modus) als eigene Karte; die `etappe` gibt der Einführung ihre Überschrift („Dein Einstieg“, „Entdecken“, „Vertiefen“, „Finale“). Der `abschluss` steht auf der Abschlusskarte (Stempel), sobald die Reise geschafft ist (Stempel **oder** Stufe 2 nach der Sammelregel), und als Moment (M9).
+  Wiederholt ein Text, was die Reise-Daten schon sagen (der Generator leitet Auftakt und Abschluss aus Tagline, Einleitung und Ausblick ab), zeigt die Anbindung ihn nicht noch einmal.
+- **Begründung:** Eine Geschichte, die doppelt dasteht, ist keine. Mit handgeschriebenem Auftakt kommt er vor der Einleitung; bei abgeleitetem sieht man nur, was schon dasteht.
+
+### M13 · Zeit: UTC, 30 Sekunden, `__SP_HEUTE`
+- **Stelle:** A1 (Zeit ist UTC), 5.2.
+- **Auslegung:** Die Uhr ist die des Geräts in UTC (A1); jede halbe Minute (und beim Zurückkommen in den Tab) rechnet die Anbindung neu, damit Pausen und Takt sich zeigen, ohne dass man etwas tut. Zum Testen überschreibt `window.__SP_HEUTE` (Text, Zahl oder Funktion) die Uhr; `window.__SP_VERWEIL` (Faktor) kürzt die Lesezeiten.
+  Beides ist wirkungslos, wenn es nicht gesetzt ist, und sendet nichts.
+- **Grenze:** Der Tag beginnt für Lernende in Deutschland um 1 oder 2 Uhr; ein „Wiedersehen am dritten Tag“ ist also nach Mitternacht UTC fällig. `zeitzone` im Plan fehlt (A1).
+
+### M14 · Speicher und Datenschutz
+- **Stelle:** 7.2, A16.
+- **Auslegung:** Nur lokal, Präfix `gm:sp:`, jeder Zugriff in `try/catch`, ohne Speicher läuft alles im Arbeitsspeicher weiter: `gm:sp:<plan>:ereignisse`, `…:wer`, `…:enthuellt`, `…:migration` und `gm:sp:frei`. Die Seite sendet nichts (getestet: alle Anfragen sind `file:` oder `data:`); der Adapter für xAPI und SCORM wird vom Build nie eingebunden.
+  Ein zweiter Tab teilt den Stand über das `storage`-Ereignis. Das Zurücksetzen im Reisepass (`MUSEUM.store.reset()`) setzt auch den Spielstand zurück (neue Kennung, alle Marken weg).
+
+### M15 · Prüfung im Paket
+- **Auslegung:** `node tools/check-pack.mjs <paket>` prüft `spielplan.json`, wenn sie da ist (Regeln und Erreichbarkeit wie `check-spielplan`) und gleicht sie mit dem Paket ab: Einheiten, die nichts im Paket meinen, Stationen und Reisen ohne Einheit, `stufen.bis` (M2), Werkzeuge ohne gültigen `einsatz` (M5).
+  Ein Rauchtest (`tools/smoke.mjs`) schaltet den Freien Zugang ein, damit er jede Station öffnen kann; die Sperren prüft `tools/spiel-test.mjs`.
+
+### Befunde zum Standard (aus der Anbindung an das Museum)
+Je Befund: Abschnitt, Problem, Vorschlag. Nummern BM1 bis BM8 gehören zu diesem Abschnitt und setzen die Tabellen B und BE oben fort.
+
+| Nr | Abschnitt | Problem | Vorschlag |
+|---|---|---|---|
+| BM1 | 4, 6.1 | `geschafft` heißt „Grundverständnis“, ein Museum kann nur „gelesen“ messen. Ohne Wort für das, was eine App wirklich weiß, behauptet jede App etwas anderes (M3: Scroll plus Zeit; M4: Bedienung plus Zeit; ein Quiz würde `bestanden` melden). | Je Ereignis eine Angabe, **wie** es zustande kam (`quelle` oder eine Belegart `lesen`/`bedienen`), damit Stufe 2 aus Lesen und Stufe 2 aus Prüfung unterscheidbar bleiben, und in 4 sagen, dass Stufe 2 auch „gelesen“ sein darf. |
+| BM2 | 5.5, A9 | Wiederkehr wird durch ein **neues Ereignis** eingelöst. Der Standard sagt nicht, dass eine App jedes Wiedersehen melden muss; meldet sie nur den Erstbesuch, bleibt die Wiederkehr für immer fällig. Das Museum meldet jeden Besuch, der M3 erfüllt, höchstens alle zehn Minuten. | In 5.5 sagen, welche Ereignisse als Wiedersehen zählen (jedes `geschafft`/`erkundet` nach dem Abstand) und dass Apps sie melden müssen. |
+| BM3 | 3.1, 5, A3 | Eine Station in einer offenen Reise kann einzeln gesperrt sein. Ein Reise-Modus, der Stationen der Reihe nach zeigt (hier der Kern des Museums), braucht eine Aussage, ob er überspringt oder erklärt; der Standard kennt keine Reihenfolge der Darstellung. | In 8 oder 11 aufnehmen: gesperrte Einheiten einer Folge bleiben sichtbar (angedeutet) und werden nicht übersprungen; „Weiter“ geht weiter. |
+| BM4 | 2 (Grundsatz 5), 8 | Verborgenes darf nicht beim Namen genannt werden, aber Zähler der App („Drei Reisen“, Titel der Seite, Länge eines Balkens) verraten es doch. | In 11 sagen, dass Zahlen und Fortschrittsanzeigen nur sichtbare Einheiten zählen, oder `verborgen` als „nicht in Zahlen“ führen. |
+| BM5 | 5.1, B15, A20 | Ein Freier Zugang ist in jeder Lernumgebung nötig (Sprachen, aufmerksamkeitssensible Themen), steht aber nirgends als App-Funktion. Seine Bedeutung (Zugang ja, Ereignisse und Regeln nein, Pausen aus) ist hier erfunden. | `freier_zugang` als Funktion der App festschreiben: öffnet alles, überspringt Pausen, zählt weiter; und dass die nächste Aufgabe ein Vorschlag bleibt. |
+| BM6 | 6.2 | Ereignisse **ohne wahren Zeitpunkt** (Übernahme alter Besuche) haben kein Kennzeichen. Eine App, die Besuche aus einer Zeit vor dem Spielplan hat, kann nur erfundene Zeiten eintragen. | Ein Feld `herkunft` (`messung`, `migration`, `import`) in der Kurzform, damit Auswertungen sie unterscheiden; Wiederkehr und Takt dürfen Ereignisse mit `herkunft` ignorieren. |
+| BM7 | 8, A16 | Das „Gesehen“ der Enthüllung (der Moment wurde gezeigt) ist Zustand der App, nicht der Ereignisse. Jede App muss es erfinden; zwei Geräte zeigen denselben Moment doppelt. | In 7 oder 8 ein abgeleitetes Verb `enthuellt` oder einen Merkzettel `gesehen` im Standard führen, mit Synchronisation über die Brücke. |
+| BM8 | 4.2, 3.1 | Werkzeug-Ereignisse über `mit` sind in der App eine Entscheidung des Menschen (M5), im Standard nur ein Durchreichen. Dass ein Werkzeug einen Einsatzort **hat**, steht im Entwurf nicht (G2); ohne diesen bleibt jedes Werkzeug eines Museums auf Stufe 0. | `einsatz` (Orte, an denen ein Werkzeug zählt) als Feld des Werkzeugs aufnehmen, mit der Bedingung „bestätigt von der Lernenden“. |

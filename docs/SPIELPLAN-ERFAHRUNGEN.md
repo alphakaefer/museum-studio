@@ -175,3 +175,62 @@ Der Kern entstand in einem privaten Prototyp und wurde in dieses öffentliche Re
 - **Texte sind Entwürfe.** Enthüllungen, Auftakte und Abschlüsse des Beispielpakets sind aus den Stationstexten geschrieben, nicht gegen Quellen geprüft; die zur Traumareise und zum Grounding gehören vor einer Veröffentlichung fachlich gelesen.
 - **Die Automatik ist an synthetischen Paketen mit Werkzeug-Reise getestet, an keinem echten.** Ob die Sorte-Abbildung (konzept, methode, instrument) trägt, zeigt das erste Paket mit einer Werkzeug-Reise.
 - **Verriegelte Stationen und der Rauchtest:** Ein Rauchtest, der jede Station mit Exponat öffnet, findet keine Start-Schaltfläche, wo die Station gesperrt ist (im Beispielpaket die beiden Exponate der gesperrten Reise). Der Test muss zuerst den Freien Zugang einschalten.
+
+
+## Museum-Anbindung A: der Spielplan im Museum (Kern, Stationen, Reise-Modus, Eingang)
+
+*Dateien:* `engine/js/spiel.js` (906 Zeilen), `engine/css/spiel.css` (182), kleine Eingriffe in `engine/js/core.js`, `journey.js`, `app.js`, `search.js` (zusammen rund 200 neue Zeilen, alle hinter `if (MUSEUM.spiel && MUSEUM.spiel.aktiv)`), `tools/check-pack.mjs` (Prüfung des Spielplans im Paket),
+`tools/smoke.mjs` (Freier Zugang an), `tools/spiel-test.mjs` (Browser-Test der Anbindung, 21 Prüfungen), `tools/spiel-vergleich.mjs` (alt gegen neu für Pakete ohne Spielplan). Entscheidungen: M1 bis M15 und BM1 bis BM8 in `docs/spielplan-auslegung.md`.
+Der Build (`tools/build.mjs`) band `data/spielplan.js`, `js/spielplan.js`, `js/spiel.js` und `css/spiel.css` nur mit `spielplan.json` ein, nie den Adapter; das war schon vorbereitet und ist unverändert.
+
+### Was geht
+- **Ein Paket mit `spielplan.json` spielt:** Der Eingang zeigt genau eine nächste Aufgabe (mit dem Satz, was sie bringt, und dem Schalter für den Freien Zugang), gesperrte Reisen stehen angedeutet (Schloss, Satz mit der Bedingung, „Was fehlt noch?“),
+  eine gesperrte Station oder Reise unter ihrer Adresse zeigt ein ruhiges Hinweisbild mit der Bedingung und dem Weg zur Aufgabe, die Suche verrät nichts über Gesperrtes, und im Reise-Modus erklärt eine gesperrte Haltestelle sich selbst. Station, Mythos-Karte, Exponat, Einsatz eines Werkzeugs,
+  „Weiter“, Reise öffnen, Stempel und Link kopieren melden Ereignisse (nur Kennungen). Sobald etwas aufgeht, kommt am Ort eine Karte mit dem `enthuellung`-Text (Ansehen oder Weiter, aria-live, Bewegung nur ohne `prefers-reduced-motion`); dieselbe Karte erzählt Fähigkeiten („Du kannst jetzt mehr“),
+  den Auftakt eines Gebiets und den Abschluss einer Reise. Auftakt, Etappe und Abschluss der Episode stehen in der Einführung und auf der Abschlusskarte. Wiedersehen, Verwitterung und Takt zeigen sich freundlich (Aufgabe „Ein Wiedersehen“, „Wartet auf ein Wiedersehen“, „Aufgefrischt“), nie als Strafe oder Serie.
+- **Ein Paket ohne `spielplan.json` ist unverändert.** Der Vergleich (`tools/spiel-vergleich.mjs`) baut Spieltheorie, die Vorlage und das Beispielpaket (dieses vor dem Spielplan) mit der Engine vor und nach der Anbindung und vergleicht alle Dateien außer `js/*.js` (gleich) und elf Zustände der Seite
+  (Eingang, Station, Mythos-Karte, Exponat, Reise-Modus an drei Stellen, Rundreise, Netzplan, Reisepass, Suche) Zeichen für Zeichen: **kein Unterschied**, keine Konsolenfehler. `MUSEUM.spiel` ist dort nicht definiert, `localStorage` bekommt keinen Schlüssel `gm:sp:`.
+- **Freier Zugang** als Schalter im Eingang und auf jedem Hinweisbild (und als Vorbelegung `"spielFrei": true` in `pack.json`): öffnet alles, überspringt Pausen, zählt weiter.
+
+### Zahlen
+- **Tests:** 21 Prüfungen im Browser (`node tools/spiel-test.mjs`, gut drei Minuten mit allen Skins; `--schnell` nur mit `halle`), darunter die Darstellung in vier Skins × hell/dunkel × Handy/Desktop (Kontrast aller Texte der Spielplan-Blöcke gegen den gemischten Hintergrund, kein seitliches Scrollen).
+  `tools/spielplan-test.mjs` bleibt grün (149 Tests), `tools/smoke.mjs` läuft für das Beispielpaket mit Spielplan sauber durch (mit Freiem Zugang, sonst fände es die Exponate gesperrter Stationen nicht).
+- **Spielverlauf im Museum:** Wer im Beispielpaket (kuratierte Schicht, 91 Einheiten) jeweils der einen Aufgabe folgt (Stationen lesen, Mythos-Karten drehen, Exponate bedienen, Werkzeuge einsetzen), bekommt den ersten Moment nach **einem** Schritt (die erste Station schenkt das Pre-Mortem);
+  die acht Freischaltungen kommen bei Schritt 1, 3, 5, 8, 10, 13, 15 und 15, danach tragen sechs Fähigkeiten (Schritt 15, 28, 29, 41, 47, 50) und fünf Abschlüsse (drei Reisen, zwei Gebiete) die Momente, zusammen 19 Karten; nach **71 Aufgaben** gibt es keine mehr und alle 91 Einheiten stehen auf Stufe 2.
+  Das ist die Rechnung des Kerns (`check-spielplan --bericht`: Anzahl der Schritte), durch das echte Museum gespielt: Kern und Anbindung sind sich einig. Ob acht Momente in den ersten fünfzehn Schritten Spielgefühl oder Lärm sind, zeigt nur ein Test mit Menschen (Grenzen).
+- **Größe und Kosten:** `spiel.js` rechnet den Spielstand je Sekunde und Änderung höchstens einmal (Kern 5 bis 10 ms bei 364 Einheiten), alles andere sind kleine DOM-Änderungen. Je Station läuft ein Zähler, solange sie offen ist (alle 500 ms eine Rechnung).
+
+### Was sich beim Bau gezeigt hat
+- **Das Beispielpaket durchzuspielen fand, was kein Test fand:** Die Aufgabe „Geh den Bestätigungsfehler ganz durch“ kam nie zum Ende. Die Marke am Ende des Lesestoffs lag vor dem Exponat; wer ans Ende der Seite scrollte, scrollte an ihr vorbei, und sie wurde nie als „im Bild“ gesehen (ein hohes Exponat schiebt sie nach oben aus dem Bild).
+  Jetzt gilt sie als erreicht, sobald sie im Bild war **oder schon darüber hinaus** liegt. Das Muster: Wer „gelesen“ misst, muss die Seite beschreiben, die er nicht kennt (Exponate, Abbildungen, hohe Karten).
+- **Der Zähler zählte bei der ersten Runde null** (die Zeit seit der Anlage wurde erst im zweiten Takt gerechnet); ein Exponat ohne Aufräumfunktion meldete nie sein Ende (die Seite meldet jetzt Start und Ende selbst, nicht über die Aufräumfunktion des Exponats).
+- **Der Fokus ging verloren, wenn der Eingang sich neu zeichnete.** Der Stand wird jede halbe Minute neu gerechnet; zeichnete der Eingang dabei seinen Schalter neu, verlor jemand, der gerade mit der Tastatur umschaltete, die Stelle. Jetzt wird nur der Teil erneuert, dessen Inhalt sich ändert, der Schalter nie, der Satz mit der Pause an Ort und Stelle.
+- **Ein verstecktes Panel behält seinen Inhalt.** Das Hinweisbild einer gesperrten Reise blieb im geschlossenen Stationspanel stehen; Tests, die nach dem Hinweisbild fragen, müssen die Sichtbarkeit prüfen, nicht das Vorhandensein.
+- **Kontrast gegen die Skins:** Der Knopf `gm-btn-primary` hat im dunklen Skin „ma“ nur 2,49:1 (Text des Knopfes gegen seine Fläche; `themes/` gehört der Anbindung nicht). Die Anbindung benutzt deshalb `gm-btn-warm`, das in allen vier Skins besteht, und meldet es hier; derselbe Knopf steht an anderer Stelle des Museums („Reise beginnen“).
+- **Die langen Bedingungen:** Bei drei Wegen schreibt der Kern einen langen Satz („Zum Öffnen: … oder (… und … Pause, nachdem …)“). Im Hinweisbild ist Platz dafür, auf einer Reise-Karte nicht; dort sind fünf Zeilen erlaubt, der volle Satz steht im `title`.
+- **„Noch 2 Schritte“ für eine unberührte Station** (BE2 des Generators) liest sich im Museum falsch; die Anbindung schreibt den Satz für eine einzelne Einheit um („Danach geht … auf.“, M11).
+- **Der Rauchtest und gesperrte Stationen:** Er findet keine Start-Schaltfläche des Exponats, wo die Station gesperrt ist (so schrieb es auch der Generator). Er schaltet jetzt den Freien Zugang ein; die Sperren prüft der neue Test.
+
+### Was der Standard trägt, was nicht
+- **Trägt:** Die Sätze des Kerns sind als Text der Oberfläche brauchbar, so wie sie sind: `bedingung` auf Karten und im Hinweisbild, `aufgabe` und `bringt` im Eingang, `enthuellung` in der Karte, `kann` bei Fähigkeiten. Die Regel „es gibt kein Nicht“ (5.2) ist genau das, was einen Moment möglich macht:
+  Was aufgeht, bleibt offen, also kann eine Karte es einmal zeigen. Die Vererbung über `in` (A3) macht die Kreuzungen des Museums ohne Zusatz spielbar.
+- **Trägt nicht:** Lesen ist kein Verstehen (BM1), Wiedersehen braucht jedes Mal ein Ereignis (BM2), der Reise-Modus ist eine Darstellung mit Reihenfolge, die der Standard nicht kennt (BM3), Zähler verraten Verborgenes (BM4), der Freie Zugang ist unbeschrieben (BM5), Ereignisse ohne wahren Zeitpunkt haben kein Kennzeichen (BM6),
+  das „Gesehen“ der Enthüllung ist Zustand der App (BM7), und Werkzeuge haben keinen Ort (BM8).
+
+### Das Spielgefühl gegen den Maßstab
+Karls Diagnose eines früheren Versuchs: ein Dashboard über ein Spiel, kein Spiel. Gegen die vier Dinge, die ein Spielplan im Museum braucht:
+1. **Geschichte:** Auftakt (Einführung der Reise, Etappe als Überschrift), Abschluss (Karte beim Schaffen, Abschlusskarte), Auftakt und Abschluss der Gebiete (Karte), „Dein Einstieg“ im Eingang. Die Texte sind die der Spielplan-Datei; die Anbindung erfindet keine.
+2. **Der Moment:** Die Karte mit Enthüllung erscheint dort, wo man gerade handelt, im Panel, im Reise-Modus oder in der Suche. Sie ist nicht blockierend, wird angesagt und hat nur zwei Schaltflächen. Erster Moment nach einem Schritt, acht in den ersten fünfzehn, danach etwa alle sieben Schritte einer.
+3. **Rhythmus:** Wiedersehen als eine Aufgabe, Verwitterung als freundlicher Satz, Takt über Regeln, Pausen über `wartezeit`, nirgends eine Serie, die reißt, nirgends ein Zähler der Tage.
+4. **Rückmeldung am Ort:** „Geschafft“ im Kopf der Station, ein Satz am Ende, was sie der Reise bringt, eine Zeile an Mythos-Karte und Exponat, der Einsatz-Knopf am Werkzeug. Es gibt keinen Reiter mit Statistik; das Einzige, was der Anbindung hinzugefügt wurde, ist die kleine Karte im Eingang.
+- **Wo die Gefahr eines Dashboards bleibt:** Der Eingang trägt jetzt einen zweiten Block unter den Knöpfen; er soll leise bleiben (eine Zeile Aufgabe, eine Zeile Folge). Der Reisepass und der Netzplan (andere Anbindung) sind der Ort für Freischaltungen und Stufen; zeigen sie Zahlen statt Orte, kippt es.
+
+### Grenzen
+- **Alle Zahlen sind Annahmen, keine Messung:** ein knappes Drittel der Lesezeit (5 bis 45 Sekunden), vier Sekunden für „Weiter“, sechs Sekunden und eine Bedienung für das Exponat, zehn Minuten bis zur nächsten Meldung derselben Station, 30 Sekunden für die Uhr. Sie stehen als Konstanten am Anfang von `spiel.js`; ein Test mit Menschen sagt, ob sie zu streng oder zu locker sind.
+- **Stufe 3 und 4 gibt es im Museum nicht** (M2). „Gemeistert“ bleibt leer.
+- **Kein Wochenrückblick:** Der Takt zeigt sich nur über Regeln („ab Woche 2“); die `rueckblick`-Felder des Spielstands zeigt das Museum nicht (sonst entstünde ein Statistik-Block im Eingang). Wer ihn will, setzt eine eigene Ansicht auf `MUSEUM.spiel.stand().rueckblick`.
+- **Verborgenes zählt in den Zahlen** („Drei Reisen“, Seitentitel) mit (BM4).
+- **Die Karte deckt etwas ab.** Neben dem Panel liegt sie links auf dem abgedunkelten Grund (ab 1240 Pixel Breite), sonst unten rechts oder, auf dem Handy, über der Fußleiste; sie schließt sich nicht von selbst.
+- **Zwischenablage unter `file://`:** Ohne sicheren Kontext fällt „Link kopieren“ auf `execCommand` zurück; geht auch das nicht, zeigt es den Link zum Markieren. Das Ereignis `geteilt` gibt es nur, wenn das Kopieren gelang.
+- **Tab-Kommunikation:** Zwei Tabs teilen den Stand über `storage`; die Enthüllung zeigt dort der Tab, in dem etwas geschah, der andere zeigt sie, wenn er sie nicht schon gesehen hat. Das Merken (`gm:sp:<plan>:enthuellt`) ist ein Schlüssel ohne Zeitstempel; ein Tab, der gleichzeitig schreibt, kann ihn überschreiben (der Moment kann dann doppelt erscheinen).
+- **Reisepass, Netzplan und Zeitstrahl** kennen den Spielplan noch nicht (Aufgabe der zweiten Anbindung); `MUSEUM.spiel.zugang()`, `stand()` und `bei()` sind dafür gedacht.
