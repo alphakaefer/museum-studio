@@ -213,9 +213,10 @@ export function berichtZeilen(plan, SP, { wege = false, minuten = 4 } = {}) {
   if (rb.ziele.length) z.push(`Wege: ${rb.ziele.length} gesperrte ${rb.ziele.length === 1 ? 'Episode' : 'Episoden'}, Regeln je Episode ${rb.ziele.map(x => x.regeln).join('/')} (Minimum ${rb.minimum})`);
   const sz = spielzeit(plan, SP, { minuten });
   const erste = sz.momente[0];
-  z.push(`Spielzeit (der Aufgabe folgen, ein Schritt = eine Einheit, ${minuten} Min. je Schritt gerechnet): erste Freischaltung nach ${sz.erste === null ? '–' : sz.erste + ' Schritten'}${erste ? ` („${erste.name}“)` : ''}, `
-    + `alles offen nach ${sz.alleOffen === null ? '–' : sz.alleOffen + ' Schritten (' + stundenText(sz.alleOffen * minuten) + ')'}, `
-    + `keine Aufgabe mehr nach ${sz.fertig === null ? '–' : sz.fertig + ' Schritten (' + stundenText(sz.fertig * minuten) + ')'}${sz.wochen ? `, dazu ${sz.wochen} Woche(n) Warten` : ''}${sz.haengt ? ' – HÄNGT' : ''}`);
+  const schritte = n => (n === null ? '–' : `${n} ${n === 1 ? 'Schritt' : 'Schritten'}`);
+  z.push(`Spielzeit (der Aufgabe folgen, ein Schritt = eine Einheit, ${minuten} Min. je Schritt gerechnet): erste Freischaltung nach ${schritte(sz.erste)}${erste ? ` („${erste.name}“)` : ''}, `
+    + `alles offen nach ${sz.alleOffen === null ? '–' : schritte(sz.alleOffen) + ' (' + stundenText(sz.alleOffen * minuten) + ')'}, `
+    + `keine Aufgabe mehr nach ${sz.fertig === null ? '–' : schritte(sz.fertig) + ' (' + stundenText(sz.fertig * minuten) + ')'}${sz.wochen ? `, dazu ${sz.wochen} Woche(n) Warten` : ''}${sz.haengt ? ' – HÄNGT' : ''}`);
   const epMomente = sz.momente.filter(m => m.art === 'episode' || m.art === 'gebiet');
   if (epMomente.length) z.push(`Momente (Episoden und Gebiete): ${epMomente.map(m => `${m.schritt} ${m.name}`).join(' · ')}`);
   if (wege) {
