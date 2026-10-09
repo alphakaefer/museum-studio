@@ -72,6 +72,8 @@ async function run() {
     const tag = `${skin || 'ohne-skin'}-${vpName}-${theme}`;
     const ctx = await browser.newContext({ viewport: VIEWPORTS[vpName], colorScheme: theme, deviceScaleFactor: 1, hasTouch: vpName !== 'desktop', isMobile: vpName === 'phone' });
     if (skin) await ctx.addInitScript(id => { try { localStorage.setItem('gm:skin', JSON.stringify(id)); } catch (e) { /* egal */ } }, skin);
+    // Pakete mit Spielplan: Freier Zugang an, damit der Rundgang jede Station öffnen kann (ohne Spielplan wirkungslos); Sperren prüft tools/spiel-test.mjs
+    await ctx.addInitScript(() => { try { localStorage.setItem('gm:sp:frei', '1'); } catch (e) { /* egal */ } });
     const page = await ctx.newPage();
     let where = 'Start';
     const report = (kind, text) => problems.push({ tag, where, kind, text: String(text).slice(0, 400) });

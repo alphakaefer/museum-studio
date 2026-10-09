@@ -8,6 +8,7 @@ import { VISUAL_KINDS, newReport, loadPackJson, loadPlan, loadJourneysJs, loadSt
 import { checkPlan } from './check-plan.mjs';
 import { checkData } from './check-data.mjs';
 import { checkMaterial } from './check-material.mjs';
+import { pruefeDatei } from './check-spielplan.mjs';
 
 const HEX = /^#[0-9A-Fa-f]{6}$/;
 const BG_LIGHT = '#F6F2EA', BG_DARK = '#0E1420';
@@ -15,6 +16,50 @@ const BG_LIGHT = '#F6F2EA', BG_DARK = '#0E1420';
 function syntaxOnly(file, rel, R, what) {
   try { new vm.Script(fs.readFileSync(file, 'utf8'), { filename: rel }); return true; }
   catch (e) { R.err(`${rel}: ${what} nicht lesbar (Syntaxfehler: ${e.message}).`); return false; }
+}
+
+/**
+ * Spielplan des Pakets (packs/<id>/spielplan.json) prüfen: die Regeln des Spielplans (Spielplan.pruefe, wie tools/check-spielplan.mjs)
+ * und der Abgleich mit dem Museum (jede Einheit gehört zu etwas, das das Museum melden kann; die Obergrenze Stufe 2). Gibt null zurück, wenn es keinen gibt.
+ */
+function pruefeSpielplan(P, R, { plan, stations, journeysInPlan }) {
+  const file = path.join(P.dir, 'spielplan.json');
+  if (!fs.existsSync(file)) return null;
+  const rel = P.rel('spielplan.json');
+  let sp, erg;
+  try { ({ plan: sp, ergebnis: erg } = pruefeDatei(file)); }
+  catch (e) { R.err(`${rel}: nicht lesbar (${String(e.message).split('\n')[0]}).`); return null; }
+  erg.fehler.forEach(m => R.err(`${rel}: ${m}`));
+  erg.warnungen.forEach(m => R.warn(`${rel}: ${m}`));
+  if (!sp || !Array.isArray(sp.einheiten)) return null;
+  const cap = (l, n = 6) => l.slice(0, n).join(', ') + (l.length > n ? ` … (${l.length} insgesamt)` : '');
+  const ps = (plan && Array.isArray(plan.stations)) ? plan.stations.filter(s => s && typeof s.id === 'string') : [];
+  const sids = new Set(ps.map(s => s.id)), jids = new Set(journeysInPlan.map(j => j.id));
+  const exhibits = new Set(ps.map(s => s.exhibit).filter(Boolean));
+  const mythen = new Set(ps.filter(s => ((stations[s.id] && stations[s.id].kind) || s.kind) === 'mythos').map(s => s.id));
+  const ids = new Set(sp.einheiten.map(u => u && u.id));
+  // jede Einheit der Arten, die das Museum meldet, muss etwas im Paket meinen
+  const tot = [];
+  for (const u of sp.einheiten) {
+    if (!u || typeof u.id !== 'string') continue;
+    const [art, ...r] = u.id.split('/'), rest = r.join('/');
+    if (art === 'inhalt' && !sids.has(rest)) tot.push(u.id);
+    else if (art === 'episode' && !jids.has(rest)) tot.push(u.id);
+    else if (art === 'quest' && !(/-mythos$/.test(rest) && mythen.has(rest.replace(/-mythos$/, '')))) tot.push(u.id);
+    else if (art === 'erlebnis' && !exhibits.has(rest)) tot.push(u.id);
+  }
+  if (tot.length) R.warn(`${rel}: ${tot.length} Einheit(en) gehören zu nichts im Paket (inhalt/<Station>, episode/<Reise>, quest/<Mythos-Station>-mythos, erlebnis/<Exponat>); das Museum meldet sie nie: ${cap(tot)}.`);
+  const ohne = ps.filter(s => !ids.has('inhalt/' + s.id)).map(s => s.id);
+  if (ohne.length) R.warn(`${rel}: ${ohne.length} Station(en) ohne Einheit inhalt/<id>; sie zählen nie und sind immer offen: ${cap(ohne)}.`);
+  const ohneReise = journeysInPlan.filter(j => !ids.has('episode/' + j.id)).map(j => j.id);
+  if (ohneReise.length) R.warn(`${rel}: ${ohneReise.length} Reise(n) ohne Einheit episode/<id>; sie sind immer offen und ohne Stempel-Meldung: ${cap(ohneReise)}.`);
+  // Obergrenze: Beleg und Transfer kann das Museum nicht prüfen (Auslegung M2 in docs/spielplan-auslegung.md)
+  const bis = sp.stufen && sp.stufen.bis;
+  if (bis !== 2) R.warn(`${rel}: stufen.bis ist ${bis === undefined ? 'nicht gesetzt (gilt 4)' : bis}; das Museum vergibt höchstens Stufe 2 und rechnet immer mit 2. Setze stufen: { bis: 2 }, damit die Prüfung dasselbe annimmt.`);
+  // Werkzeuge bekommen im Museum nur über einsatz (Orte, an denen sie zählen) Ereignisse
+  const ohneEinsatz = sp.einheiten.filter(u => u && u.art === 'werkzeug' && !(Array.isArray(u.einsatz) ? u.einsatz : u.einsatz ? [u.einsatz] : []).some(o => ids.has(String(o).includes('/') ? o : 'inhalt/' + o))).map(u => u.id);
+  if (ohneEinsatz.length) R.warn(`${rel}: Werkzeug(e) ohne einsatz auf eine Einheit des Spielplans: ${cap(ohneEinsatz)}. Im Museum bekommen Werkzeuge ihre Ereignisse nur dort (Auslegung G2); sie blieben auf Stufe 0.`);
+  return { einheiten: sp.einheiten.length, regeln: Array.isArray(sp.regeln) ? sp.regeln.length : 0 };
 }
 
 export function checkPack(P, opts = {}) {
@@ -66,6 +111,7 @@ export function checkPack(P, opts = {}) {
         else { const { min, max } = limitsOf(pack); if (min > max) R.err(`${packRel}: limits.min (${min}) ist größer als limits.max (${max}).`); if (min < 2) R.err(`${packRel}: limits.min muss mindestens 2 sein.`); }
       }
       if (pack.limits && pack.limits.visualShare !== undefined && !(typeof pack.limits.visualShare === 'number' && pack.limits.visualShare >= 0 && pack.limits.visualShare <= 1)) R.err(`${packRel}: limits.visualShare muss eine Zahl von 0 bis 1 sein (Standard 0,3 = 30 % der Stationen mit Abbildung oder Exponat).`);
+      if (pack.spielFrei !== undefined && typeof pack.spielFrei !== 'boolean') R.err(`${packRel}: "spielFrei" muss true oder false sein (Freier Zugang vorbelegt; wirkt nur mit spielplan.json).`);
       if (pack.requireVisualPlan !== undefined && typeof pack.requireVisualPlan !== 'boolean') R.err(`${packRel}: "requireVisualPlan" muss true oder false sein.`);
       if (pack.kinds !== undefined) {
         if (!pack.kinds || typeof pack.kinds !== 'object') R.err(`${packRel}: "kinds" muss ein Objekt {art: Beschriftung} sein.`);
@@ -269,11 +315,14 @@ export function checkPack(P, opts = {}) {
     } catch (e) { R.err(`${P.rel('layout.js')}: Ladefehler (${e.message}).`); }
   }
 
+  // ---- spielplan.json (optional): nur wenn die Datei da ist; ohne sie ändert sich nichts
+  const spielplan = pruefeSpielplan(P, R, { plan, stations, journeysInPlan });
+
   // ---- Zusammenfassung
   const pi = rp.info;
   R.info = {
     reisen: pi.reisen, stationen: pi.stationen, kreuzungen: pi.kreuzungen, exponate: exhibitsOf(pack).length,
-    materialLinks: rm.info.links || 0, anschauung
+    materialLinks: rm.info.links || 0, anschauung, spielplan
   };
   return R;
 }
@@ -285,6 +334,7 @@ if (isMain(import.meta.url)) {
   console.log(`Paket „${P.name}“: ${i.reisen ?? '?'} Reisen, ${i.stationen ?? '?'} Stationen, ${i.kreuzungen ?? '?'} Kreuzungen, ${i.exponate} Exponate, ${i.materialLinks} Material-Links`);
   const A = i.anschauung;
   if (A && A.anteilGebaut !== null) console.log(`Anschauung: ${A.geplant} geplant, ${A.gebaut} gebaut (${A.anteilGeplant === null ? 'kein Plan' : Math.round(A.anteilGeplant * 100) + ' % geplant'}, ${Math.round(A.anteilGebaut * 100)} % der Stationen mit Abbildung oder Exponat)`);
+  if (i.spielplan) console.log(`Spielplan: ${i.spielplan.einheiten} Einheiten, ${i.spielplan.regeln} Regeln (spielplan.json)`);
   for (const w of R.warnings) console.log('! Warnung: ' + w);
   if (A && A.hinweise.length) { for (const h of A.hinweise) console.log('i Hinweis: ' + h); if (A.hinweiseMehr) console.log(`i Hinweis: … und ${A.hinweiseMehr} weitere Stationen mit Zahlen- oder Strukturlast ohne Abbildung.`); }
   for (const e of R.errors) console.log('✗ ' + e);
