@@ -1,0 +1,32 @@
+format: spielplan/0
+id: museum-kaffee
+name: Kaffee-Museum
+basis: https://zukunftsgut.org/spielplan/museum-kaffee/
+einheiten:
+  - { id: gebiet/anbau,      art: gebiet,  name: Anbau }
+  - { id: gebiet/handel,     art: gebiet,  name: Handel, sichtbar: angedeutet }
+  - { id: episode/tasse,     art: episode, name: Von der Pflanze zur Tasse, in: gebiet/anbau, etappe: onboarding,
+      auftakt: "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse." }
+  - { id: inhalt/kaldi,      art: inhalt,  name: Kaldi und die Ziegen, in: episode/tasse, reihenfolge: 1 }
+  - { id: quest/kaldi-mythos, art: quest,  name: "Mythos oder Geschichte?", in: episode/tasse, staerke: 1,
+      gewicht: kritisch, uebt: [skill/quellen], reihenfolge: 2 }
+  - { id: erlebnis/roestung, art: erlebnis, name: Die Röstung am Exponat, in: episode/tasse,
+      braucht: [werkzeug/roestkurve], uebt: [skill/roesten], reihenfolge: 3 }
+  - { id: inhalt/bohnensorten, art: inhalt, name: Arabica und Robusta, in: episode/tasse, gewicht: optional }
+  - { id: werkzeug/roestkurve, art: werkzeug, sorte: modell, name: Röstkurve }
+  - { id: skill/quellen,     art: skill,   name: Quellen prüfen, kann: "Ich kann eine Legende von einer belegten Quelle unterscheiden." }
+  - { id: skill/roesten,     art: skill,   name: Röstung lesen, kann: "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird." }
+  - { id: episode/weltmarkt, art: episode, name: Der Weltmarkt, in: gebiet/handel, nach: episode/tasse, etappe: scaffolding }
+regeln:
+  - id: roestkurve
+    schaltet: [werkzeug/roestkurve]
+    wenn: { einheit: quest/kaldi-mythos, stufe: 2 }
+    enthuellung: Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi.
+  - id: handel
+    schaltet: [gebiet/handel]
+    wenn: { einheit: episode/tasse, stufe: 2 }
+    enthuellung: Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen.
+rhythmus:
+  takt: { laenge: woche, beginn: erstes-ereignis }
+  wiederkehr: { abstand_tage: [2, 7, 21], fuer: { art: skill } }
+  verfall_tage: 35

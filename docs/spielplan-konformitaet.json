@@ -1,0 +1,2337 @@
+{
+ "format": "spielplan-konformitaet/0",
+ "hinweis": "Erzeugt von tools/spielplan-test.mjs --schreibe-konformitaet. Jede Umsetzung des Standards, die für plan, ereignisse, jetzt und optionen dieselben Stufen, Zugänge, Takte und Freischaltungen (mit Zeitpunkt) rechnet, setzt die Auslegungen aus docs/spielplan-auslegung.md gleich um. Zeiten sind UTC. Stufe, Zugang, Takt und Freischaltungen hat zusätzlich ein unabhängig geschriebenes Orakel bestätigt; „verwittert“ und „faellig“ (4.3, 5.5; Auslegungen A9 und A11) kommen nur aus dem Kern. Sätze und nächste Aufgabe gehören nicht dazu.",
+ "faelle": [
+  {
+   "name": "kaffee-anfang",
+   "beschreibung": "Der Anhang des Standards ohne Ereignisse: Röstkurve, Röstung, Handel, Weltmarkt gesperrt.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "museum-kaffee",
+    "name": "Kaffee-Museum",
+    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "einheiten": [
+     {
+      "id": "gebiet/anbau",
+      "art": "gebiet",
+      "name": "Anbau"
+     },
+     {
+      "id": "gebiet/handel",
+      "art": "gebiet",
+      "name": "Handel",
+      "sichtbar": "angedeutet"
+     },
+     {
+      "id": "episode/tasse",
+      "art": "episode",
+      "name": "Von der Pflanze zur Tasse",
+      "in": "gebiet/anbau",
+      "etappe": "onboarding",
+      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+     },
+     {
+      "id": "inhalt/kaldi",
+      "art": "inhalt",
+      "name": "Kaldi und die Ziegen",
+      "in": "episode/tasse",
+      "reihenfolge": 1
+     },
+     {
+      "id": "quest/kaldi-mythos",
+      "art": "quest",
+      "name": "Mythos oder Geschichte?",
+      "in": "episode/tasse",
+      "staerke": 1,
+      "gewicht": "kritisch",
+      "uebt": [
+       "skill/quellen"
+      ],
+      "reihenfolge": 2
+     },
+     {
+      "id": "erlebnis/roestung",
+      "art": "erlebnis",
+      "name": "Die Röstung am Exponat",
+      "in": "episode/tasse",
+      "braucht": [
+       "werkzeug/roestkurve"
+      ],
+      "uebt": [
+       "skill/roesten"
+      ],
+      "reihenfolge": 3
+     },
+     {
+      "id": "inhalt/bohnensorten",
+      "art": "inhalt",
+      "name": "Arabica und Robusta",
+      "in": "episode/tasse",
+      "gewicht": "optional"
+     },
+     {
+      "id": "werkzeug/roestkurve",
+      "art": "werkzeug",
+      "sorte": "modell",
+      "name": "Röstkurve"
+     },
+     {
+      "id": "skill/quellen",
+      "art": "skill",
+      "name": "Quellen prüfen",
+      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+     },
+     {
+      "id": "skill/roesten",
+      "art": "skill",
+      "name": "Röstung lesen",
+      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+     },
+     {
+      "id": "episode/weltmarkt",
+      "art": "episode",
+      "name": "Der Weltmarkt",
+      "in": "gebiet/handel",
+      "nach": "episode/tasse",
+      "etappe": "scaffolding"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "roestkurve",
+      "schaltet": [
+       "werkzeug/roestkurve"
+      ],
+      "wenn": {
+       "einheit": "quest/kaldi-mythos",
+       "stufe": 2
+      },
+      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+     },
+     {
+      "id": "handel",
+      "schaltet": [
+       "gebiet/handel"
+      ],
+      "wenn": {
+       "einheit": "episode/tasse",
+       "stufe": 2
+      },
+      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+     }
+    ],
+    "rhythmus": {
+     "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+     },
+     "wiederkehr": {
+      "abstand_tage": [
+       2,
+       7,
+       21
+      ],
+      "fuer": {
+       "art": "skill"
+      }
+     },
+     "verfall_tage": 35
+    }
+   },
+   "ereignisse": [],
+   "jetzt": "2026-10-09T10:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "episode/tasse": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "episode/weltmarkt": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "erlebnis/roestung": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/anbau": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/handel": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/bohnensorten": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/kaldi": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/kaldi-mythos": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/quellen": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/roesten": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/roestkurve": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "kaffee-mythos",
+   "beschreibung": "Die kritische Mythos-Quest schaltet die Röstkurve frei (Regel), das Werkzeug ist noch nicht benutzt, also bleibt die Röstung gesperrt (braucht).",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "museum-kaffee",
+    "name": "Kaffee-Museum",
+    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "einheiten": [
+     {
+      "id": "gebiet/anbau",
+      "art": "gebiet",
+      "name": "Anbau"
+     },
+     {
+      "id": "gebiet/handel",
+      "art": "gebiet",
+      "name": "Handel",
+      "sichtbar": "angedeutet"
+     },
+     {
+      "id": "episode/tasse",
+      "art": "episode",
+      "name": "Von der Pflanze zur Tasse",
+      "in": "gebiet/anbau",
+      "etappe": "onboarding",
+      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+     },
+     {
+      "id": "inhalt/kaldi",
+      "art": "inhalt",
+      "name": "Kaldi und die Ziegen",
+      "in": "episode/tasse",
+      "reihenfolge": 1
+     },
+     {
+      "id": "quest/kaldi-mythos",
+      "art": "quest",
+      "name": "Mythos oder Geschichte?",
+      "in": "episode/tasse",
+      "staerke": 1,
+      "gewicht": "kritisch",
+      "uebt": [
+       "skill/quellen"
+      ],
+      "reihenfolge": 2
+     },
+     {
+      "id": "erlebnis/roestung",
+      "art": "erlebnis",
+      "name": "Die Röstung am Exponat",
+      "in": "episode/tasse",
+      "braucht": [
+       "werkzeug/roestkurve"
+      ],
+      "uebt": [
+       "skill/roesten"
+      ],
+      "reihenfolge": 3
+     },
+     {
+      "id": "inhalt/bohnensorten",
+      "art": "inhalt",
+      "name": "Arabica und Robusta",
+      "in": "episode/tasse",
+      "gewicht": "optional"
+     },
+     {
+      "id": "werkzeug/roestkurve",
+      "art": "werkzeug",
+      "sorte": "modell",
+      "name": "Röstkurve"
+     },
+     {
+      "id": "skill/quellen",
+      "art": "skill",
+      "name": "Quellen prüfen",
+      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+     },
+     {
+      "id": "skill/roesten",
+      "art": "skill",
+      "name": "Röstung lesen",
+      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+     },
+     {
+      "id": "episode/weltmarkt",
+      "art": "episode",
+      "name": "Der Weltmarkt",
+      "in": "gebiet/handel",
+      "nach": "episode/tasse",
+      "etappe": "scaffolding"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "roestkurve",
+      "schaltet": [
+       "werkzeug/roestkurve"
+      ],
+      "wenn": {
+       "einheit": "quest/kaldi-mythos",
+       "stufe": 2
+      },
+      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+     },
+     {
+      "id": "handel",
+      "schaltet": [
+       "gebiet/handel"
+      ],
+      "wenn": {
+       "einheit": "episode/tasse",
+       "stufe": 2
+      },
+      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+     }
+    ],
+    "rhythmus": {
+     "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+     },
+     "wiederkehr": {
+      "abstand_tage": [
+       2,
+       7,
+       21
+      ],
+      "fuer": {
+       "art": "skill"
+      }
+     },
+     "verfall_tage": 35
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/kaldi-mythos",
+     "zeit": "2026-10-09T10:12:00Z",
+     "app": "museum/kaffee"
+    }
+   ],
+   "jetzt": "2026-10-09T11:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 1,
+    "einheiten": {
+     "episode/tasse": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "episode/weltmarkt": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "erlebnis/roestung": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/anbau": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/handel": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/bohnensorten": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/kaldi": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/kaldi-mythos": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/quellen": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/roesten": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/roestkurve": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "werkzeug/roestkurve",
+      "regel": "roestkurve",
+      "am": "2026-10-09T10:12:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "kaffee-episode-geuebt",
+   "beschreibung": "Mythos, Kaldi, Röstkurve benutzt, Röstung geschafft: Episode geübt (zwei Drittel von zwei wesentlichen sind zwei), Handel und Weltmarkt gehen im selben Augenblick auf.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "museum-kaffee",
+    "name": "Kaffee-Museum",
+    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "einheiten": [
+     {
+      "id": "gebiet/anbau",
+      "art": "gebiet",
+      "name": "Anbau"
+     },
+     {
+      "id": "gebiet/handel",
+      "art": "gebiet",
+      "name": "Handel",
+      "sichtbar": "angedeutet"
+     },
+     {
+      "id": "episode/tasse",
+      "art": "episode",
+      "name": "Von der Pflanze zur Tasse",
+      "in": "gebiet/anbau",
+      "etappe": "onboarding",
+      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+     },
+     {
+      "id": "inhalt/kaldi",
+      "art": "inhalt",
+      "name": "Kaldi und die Ziegen",
+      "in": "episode/tasse",
+      "reihenfolge": 1
+     },
+     {
+      "id": "quest/kaldi-mythos",
+      "art": "quest",
+      "name": "Mythos oder Geschichte?",
+      "in": "episode/tasse",
+      "staerke": 1,
+      "gewicht": "kritisch",
+      "uebt": [
+       "skill/quellen"
+      ],
+      "reihenfolge": 2
+     },
+     {
+      "id": "erlebnis/roestung",
+      "art": "erlebnis",
+      "name": "Die Röstung am Exponat",
+      "in": "episode/tasse",
+      "braucht": [
+       "werkzeug/roestkurve"
+      ],
+      "uebt": [
+       "skill/roesten"
+      ],
+      "reihenfolge": 3
+     },
+     {
+      "id": "inhalt/bohnensorten",
+      "art": "inhalt",
+      "name": "Arabica und Robusta",
+      "in": "episode/tasse",
+      "gewicht": "optional"
+     },
+     {
+      "id": "werkzeug/roestkurve",
+      "art": "werkzeug",
+      "sorte": "modell",
+      "name": "Röstkurve"
+     },
+     {
+      "id": "skill/quellen",
+      "art": "skill",
+      "name": "Quellen prüfen",
+      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+     },
+     {
+      "id": "skill/roesten",
+      "art": "skill",
+      "name": "Röstung lesen",
+      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+     },
+     {
+      "id": "episode/weltmarkt",
+      "art": "episode",
+      "name": "Der Weltmarkt",
+      "in": "gebiet/handel",
+      "nach": "episode/tasse",
+      "etappe": "scaffolding"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "roestkurve",
+      "schaltet": [
+       "werkzeug/roestkurve"
+      ],
+      "wenn": {
+       "einheit": "quest/kaldi-mythos",
+       "stufe": 2
+      },
+      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+     },
+     {
+      "id": "handel",
+      "schaltet": [
+       "gebiet/handel"
+      ],
+      "wenn": {
+       "einheit": "episode/tasse",
+       "stufe": 2
+      },
+      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+     }
+    ],
+    "rhythmus": {
+     "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+     },
+     "wiederkehr": {
+      "abstand_tage": [
+       2,
+       7,
+       21
+      ],
+      "fuer": {
+       "art": "skill"
+      }
+     },
+     "verfall_tage": 35
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/kaldi-mythos",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "museum/kaffee"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/kaldi",
+     "zeit": "2026-10-09T10:05:00Z",
+     "app": "museum/kaffee"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "werkzeug/roestkurve",
+     "zeit": "2026-10-09T10:06:00Z",
+     "app": "museum/kaffee"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "erlebnis/roestung",
+     "zeit": "2026-10-09T10:10:00Z",
+     "app": "museum/kaffee"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 1,
+    "einheiten": {
+     "episode/tasse": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "episode/weltmarkt": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "erlebnis/roestung": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/anbau": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/handel": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/bohnensorten": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/kaldi": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/kaldi-mythos": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/quellen": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/roesten": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/roestkurve": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "werkzeug/roestkurve",
+      "regel": "roestkurve",
+      "am": "2026-10-09T10:00:00Z"
+     },
+     {
+      "einheit": "erlebnis/roestung",
+      "regel": "kurz/erlebnis/roestung",
+      "am": "2026-10-09T10:06:00Z"
+     },
+     {
+      "einheit": "episode/weltmarkt",
+      "regel": "kurz/episode/weltmarkt",
+      "am": "2026-10-09T10:10:00Z"
+     },
+     {
+      "einheit": "gebiet/handel",
+      "regel": "handel",
+      "am": "2026-10-09T10:10:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "sammeln-kritisch-wesentlich-optional",
+   "beschreibung": "Eine kritische, vier wesentliche, zwei optionale Einheiten: die Episode braucht die kritische und drei von vier wesentlichen (zwei Drittel, aufgerundet); Optionales zählt nicht.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "gebiet/g",
+      "art": "gebiet",
+      "name": "g"
+     },
+     {
+      "id": "episode/e",
+      "art": "episode",
+      "name": "e",
+      "in": "gebiet/g"
+     },
+     {
+      "id": "inhalt/x0",
+      "art": "inhalt",
+      "name": "x0",
+      "in": "episode/e",
+      "gewicht": "kritisch"
+     },
+     {
+      "id": "inhalt/x1",
+      "art": "inhalt",
+      "name": "x1",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x2",
+      "art": "inhalt",
+      "name": "x2",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x3",
+      "art": "inhalt",
+      "name": "x3",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x4",
+      "art": "inhalt",
+      "name": "x4",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x5",
+      "art": "inhalt",
+      "name": "x5",
+      "in": "episode/e",
+      "gewicht": "optional"
+     },
+     {
+      "id": "inhalt/x6",
+      "art": "inhalt",
+      "name": "x6",
+      "in": "episode/e",
+      "gewicht": "optional"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x0",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x1",
+     "zeit": "2026-10-09T10:01:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x2",
+     "zeit": "2026-10-09T10:02:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x3",
+     "zeit": "2026-10-09T10:03:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x5",
+     "zeit": "2026-10-09T10:04:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x6",
+     "zeit": "2026-10-09T10:05:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "episode/e": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/g": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x0": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x1": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x2": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x3": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x4": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x5": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x6": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "sammeln-zwei-drittel-von-drei",
+   "beschreibung": "Drei wesentliche, zwei geschafft: zwei Drittel von drei sind zwei.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "gebiet/g",
+      "art": "gebiet",
+      "name": "g"
+     },
+     {
+      "id": "episode/e",
+      "art": "episode",
+      "name": "e",
+      "in": "gebiet/g"
+     },
+     {
+      "id": "inhalt/x0",
+      "art": "inhalt",
+      "name": "x0",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x1",
+      "art": "inhalt",
+      "name": "x1",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x2",
+      "art": "inhalt",
+      "name": "x2",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x0",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x1",
+     "zeit": "2026-10-09T10:01:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "episode/e": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/g": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x0": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x1": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x2": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "sammeln-anteil-067",
+   "beschreibung": "Mit stufen.anteil 0.67 verlangen drei wesentliche Einheiten alle drei (Befund B2).",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "gebiet/g",
+      "art": "gebiet",
+      "name": "g"
+     },
+     {
+      "id": "episode/e",
+      "art": "episode",
+      "name": "e",
+      "in": "gebiet/g"
+     },
+     {
+      "id": "inhalt/x0",
+      "art": "inhalt",
+      "name": "x0",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x1",
+      "art": "inhalt",
+      "name": "x1",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     },
+     {
+      "id": "inhalt/x2",
+      "art": "inhalt",
+      "name": "x2",
+      "in": "episode/e",
+      "gewicht": "wesentlich"
+     }
+    ],
+    "regeln": [],
+    "stufen": {
+     "anteil": 0.67
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x0",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "inhalt/x1",
+     "zeit": "2026-10-09T10:01:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "episode/e": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "gebiet/g": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x0": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x1": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/x2": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "stufen-treppe",
+   "beschreibung": "Begonnen 1, geschafft 2, angewendet ohne Beleg 2, angewendet mit Beleg 3.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T09:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "eigen",
+      "fall": "a"
+     }
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 3,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "transfer-zwei-faelle",
+   "beschreibung": "Zwei verschiedene Fälle (ohne Groß- und Kleinschreibung verglichen) ergeben Stufe 4.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "messung",
+      "fall": "Akademie"
+     }
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "eigen",
+      "fall": "dorf"
+     }
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 4,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "transfer-derselbe-fall",
+   "beschreibung": "Derselbe Fall zweimal bleibt bei Stufe 3.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "messung",
+      "fall": "a"
+     }
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "eigen",
+      "fall": "A"
+     }
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 3,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "transfer-geteilt",
+   "beschreibung": "Angewendet mit Beleg und geteilt: Stufe 4; geteilt allein nur Stufe 1.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q"
+     },
+     {
+      "id": "quest/r",
+      "art": "quest",
+      "name": "r"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test",
+     "beleg": {
+      "art": "messung",
+      "fall": "a"
+     }
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geteilt",
+     "objekt": "quest/q",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geteilt",
+     "objekt": "quest/r",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 4,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/r": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "werkzeug-ueber-mit",
+   "beschreibung": "Geschafft und angewendet mit Beleg werden über mit ans Werkzeug gereicht; begonnen nicht.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     },
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "quest/b",
+      "art": "quest",
+      "name": "b"
+     },
+     {
+      "id": "quest/c",
+      "art": "quest",
+      "name": "c"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "quest/c",
+     "zeit": "2026-10-09T09:00:00Z",
+     "app": "test",
+     "mit": [
+      "werkzeug/w"
+     ]
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test",
+     "mit": [
+      "werkzeug/w"
+     ],
+     "beleg": {
+      "art": "messung",
+      "fall": "f1"
+     }
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "angewendet",
+     "objekt": "quest/b",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test",
+     "mit": [
+      "werkzeug/w"
+     ],
+     "beleg": {
+      "art": "messung",
+      "fall": "f2"
+     }
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 3,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/b": {
+      "stufe": 3,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/c": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 4,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "wartezeit-davor",
+   "beschreibung": "Drei Stunden nach dem Erreichen der Stufe 2: zwei Stunden 59 danach noch gesperrt.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "w",
+      "schaltet": [
+       "werkzeug/w"
+      ],
+      "wenn": {
+       "wartezeit": {
+        "einheit": "quest/a",
+        "stufe": 2,
+        "stunden": 3
+       }
+      },
+      "enthuellung": "Pause vorbei."
+     }
+    ]
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:59:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "wartezeit-danach",
+   "beschreibung": "Genau drei Stunden danach offen, „am“ ist der Zeitpunkt der Freigabe.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "w",
+      "schaltet": [
+       "werkzeug/w"
+      ],
+      "wenn": {
+       "wartezeit": {
+        "einheit": "quest/a",
+        "stufe": 2,
+        "stunden": 3
+       }
+      },
+      "enthuellung": "Pause vorbei."
+     }
+    ]
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T13:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "werkzeug/w",
+      "regel": "w",
+      "am": "2026-10-09T13:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "wartezeit-uebersprungen",
+   "beschreibung": "Mit der Option ohneWartezeit zählt die Pause als vorbei.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "w",
+      "schaltet": [
+       "werkzeug/w"
+      ],
+      "wenn": {
+       "wartezeit": {
+        "einheit": "quest/a",
+        "stufe": 2,
+        "stunden": 3
+       }
+      },
+      "enthuellung": "Pause vorbei."
+     }
+    ]
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T10:01:00Z",
+   "optionen": {
+    "ohneWartezeit": true
+   },
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "werkzeug/w",
+      "regel": "w",
+      "am": "2026-10-09T10:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "takt-erstes-ereignis",
+   "beschreibung": "Der Takt beginnt am UTC-Kalendertag des ersten Ereignisses; Woche 3 beginnt 14 Tage später um 00:00.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "quest/b",
+      "art": "quest",
+      "name": "b"
+     },
+     {
+      "id": "quest/c",
+      "art": "quest",
+      "name": "c"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "t3",
+      "schaltet": [
+       "quest/b"
+      ],
+      "wenn": {
+       "takt": 3
+      },
+      "enthuellung": "x"
+     },
+     {
+      "id": "ab",
+      "schaltet": [
+       "quest/c"
+      ],
+      "wenn": {
+       "ab": "2026-10-20"
+      },
+      "enthuellung": "x"
+     }
+    ],
+    "rhythmus": {
+     "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+     }
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T15:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-22T23:59:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 2,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/b": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/c": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "quest/c",
+      "regel": "ab",
+      "am": "2026-10-20T00:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "takt-und-datum",
+   "beschreibung": "Dasselbe zwei Minuten später: Takt 3, und das Datum 20.10. ist erreicht.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "quest/b",
+      "art": "quest",
+      "name": "b"
+     },
+     {
+      "id": "quest/c",
+      "art": "quest",
+      "name": "c"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "t3",
+      "schaltet": [
+       "quest/b"
+      ],
+      "wenn": {
+       "takt": 3
+      },
+      "enthuellung": "x"
+     },
+     {
+      "id": "ab",
+      "schaltet": [
+       "quest/c"
+      ],
+      "wenn": {
+       "ab": "2026-10-20"
+      },
+      "enthuellung": "x"
+     }
+    ],
+    "rhythmus": {
+     "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+     }
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T15:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-23T00:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 3,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/b": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/c": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "quest/c",
+      "regel": "ab",
+      "am": "2026-10-20T00:00:00Z"
+     },
+     {
+      "einheit": "quest/b",
+      "regel": "t3",
+      "am": "2026-10-23T00:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "vererbung-eltern",
+   "beschreibung": "Gesperrte Eltern sperren ihre Einheiten; eine Einheit mit zwei Eltern ist offen, sobald einer offen ist (Befund B1).",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "episode/e1",
+      "art": "episode",
+      "name": "e1"
+     },
+     {
+      "id": "episode/e2",
+      "art": "episode",
+      "name": "e2"
+     },
+     {
+      "id": "inhalt/s",
+      "art": "inhalt",
+      "name": "s",
+      "in": [
+       "episode/e1",
+       "episode/e2"
+      ]
+     },
+     {
+      "id": "inhalt/t",
+      "art": "inhalt",
+      "name": "t",
+      "in": "episode/e1"
+     },
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     }
+    ],
+    "regeln": [
+     {
+      "id": "1",
+      "schaltet": [
+       "episode/e1"
+      ],
+      "wenn": {
+       "einheit": "quest/a"
+      },
+      "enthuellung": "x"
+     },
+     {
+      "id": "2",
+      "schaltet": [
+       "episode/e2"
+      ],
+      "wenn": {
+       "einheit": "quest/a",
+       "stufe": 3
+      },
+      "enthuellung": "x"
+     }
+    ]
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "episode/e1": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "episode/e2": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/s": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "inhalt/t": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "episode/e1",
+      "regel": "1",
+      "am": "2026-10-09T10:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "nach-und-braucht-zusammen",
+   "beschreibung": "nach und braucht an derselben Einheit gelten zusammen (Befund B3); braucht verlangt das Werkzeug offen und benutzt.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     },
+     {
+      "id": "quest/z",
+      "art": "quest",
+      "name": "z",
+      "nach": "quest/a",
+      "braucht": [
+       "werkzeug/w"
+      ]
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/z": {
+      "stufe": 0,
+      "zugang": "gesperrt",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "nach-und-braucht-erfuellt",
+   "beschreibung": "Mit benutztem Werkzeug geht die Quest auf.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/a",
+      "art": "quest",
+      "name": "a"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     },
+     {
+      "id": "quest/z",
+      "art": "quest",
+      "name": "z",
+      "nach": "quest/a",
+      "braucht": [
+       "werkzeug/w"
+      ]
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/a",
+     "zeit": "2026-10-09T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "begonnen",
+     "objekt": "werkzeug/w",
+     "zeit": "2026-10-09T11:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/a": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "quest/z": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 1,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": [
+     {
+      "einheit": "quest/z",
+      "regel": "kurz/quest/z",
+      "am": "2026-10-09T11:00:00Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "wiederkehr-faellig",
+   "beschreibung": "Zwei Tage nach dem Erreichen der Stufe 2 ist die erste Wiederkehr des Skills fällig.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "skill/s",
+      "art": "skill",
+      "name": "s",
+      "kann": "Ich kann es."
+     },
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q",
+      "uebt": [
+       "skill/s"
+      ]
+     }
+    ],
+    "regeln": [],
+    "rhythmus": {
+     "wiederkehr": {
+      "abstand_tage": [
+       2,
+       7
+      ],
+      "fuer": {
+       "art": "skill"
+      }
+     },
+     "verfall_tage": 20
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/q",
+     "zeit": "2026-10-01T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-03T10:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "skill/s": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": true
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "wiederkehr-eingeloest",
+   "beschreibung": "Ein Ereignis nach dem ersten Abstand löst ihn ein; der zweite Abstand (sieben Tage) beginnt dann neu; nach 20 Tagen ohne Ereignis ist die Einheit verwittert.",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "skill/s",
+      "art": "skill",
+      "name": "s",
+      "kann": "Ich kann es."
+     },
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q",
+      "uebt": [
+       "skill/s"
+      ]
+     }
+    ],
+    "regeln": [],
+    "rhythmus": {
+     "wiederkehr": {
+      "abstand_tage": [
+       2,
+       7
+      ],
+      "fuer": {
+       "art": "skill"
+      }
+     },
+     "verfall_tage": 20
+    }
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/q",
+     "zeit": "2026-10-01T10:00:00Z",
+     "app": "test"
+    },
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/q",
+     "zeit": "2026-10-04T10:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-25T00:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": true,
+      "faellig": false
+     },
+     "skill/s": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": true,
+      "faellig": true
+     }
+    },
+    "freigeschaltet": []
+   }
+  },
+  {
+   "name": "zukunft-gekappt",
+   "beschreibung": "Ein Ereignis nach jetzt (falsche Uhr) zählt, mit dem Zeitpunkt jetzt (Auslegung A13).",
+   "plan": {
+    "format": "spielplan/0",
+    "id": "test",
+    "name": "Test",
+    "basis": "https://example.org/sp/test/",
+    "einheiten": [
+     {
+      "id": "quest/q",
+      "art": "quest",
+      "name": "q"
+     },
+     {
+      "id": "werkzeug/w",
+      "art": "werkzeug",
+      "name": "w"
+     }
+    ],
+    "regeln": []
+   },
+   "ereignisse": [
+    {
+     "wer": "lokal:test",
+     "verb": "geschafft",
+     "objekt": "quest/q",
+     "zeit": "2030-01-01T00:00:00Z",
+     "app": "test"
+    }
+   ],
+   "jetzt": "2026-10-09T12:00:00Z",
+   "optionen": {},
+   "erwartet": {
+    "takt": 0,
+    "einheiten": {
+     "quest/q": {
+      "stufe": 2,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     },
+     "werkzeug/w": {
+      "stufe": 0,
+      "zugang": "offen",
+      "verwittert": false,
+      "faellig": false
+     }
+    },
+    "freigeschaltet": []
+   }
+  }
+ ]
+}

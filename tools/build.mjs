@@ -17,6 +17,9 @@
 //   data/skins.js        MUSEUM.skins (aus den theme.json)
 //   data/orders.js       MUSEUM.data.orders (aus plan.json)
 //   data/journeys.js, data/stationen/*.js, data/material.js, data/layout.js, data/exhibits/*.js, data/visuals/*.js   (Paketdateien)
+//   Nur mit packs/<id>/spielplan.json (Spielplan, docs/spielplan-standard.md; erzeugt von tools/spielplan-aus-plan.mjs):
+//   data/spielplan.js (MUSEUM.data.spielplan), js/spielplan.js (Kern), js/spiel.js (Anbindung), css/spiel.css. Der Adapter
+//   (js/spielplan-adapter.js, xAPI und SCORM) wird nie eingebunden. Ohne spielplan.json bleibt die Ausgabe unverändert.
 // Nur Node-Standardbibliothek.
 import fs from 'fs';
 import path from 'path';
@@ -159,6 +162,16 @@ if (skins.length && !skins.some(s => s.id === defaultSkin)) {
 }
 if (!skins.length) defaultSkin = '';
 
+/* ---------------------------------------------------------------- Spielplan (optional) */
+
+const spielplanFile = path.join(PACK_DIR, 'spielplan.json');
+let spielplan = null;
+if (exists(spielplanFile)) {
+  spielplan = readJSON(spielplanFile);
+  if (!spielplan || typeof spielplan !== 'object' || Array.isArray(spielplan) || !Array.isArray(spielplan.einheiten)) die(`${path.relative(ROOT, spielplanFile)}: kein Spielplan (erwartet ein Objekt mit "einheiten"). Erzeugen: node tools/spielplan-aus-plan.mjs ${PACK_ID}`);
+  if (!String(spielplan.format || '').startsWith('spielplan/')) console.warn(`! ${path.relative(ROOT, spielplanFile)}: format ist "${spielplan.format}", erwartet "spielplan/0".`);
+}
+
 /* ---------------------------------------------------------------- Ausgabe */
 
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -170,6 +183,11 @@ for (const n of ENGINE_JS) { const f = path.join(ENGINE, 'js', n + '.js'); if (!
 copyFile(path.join(ENGINE, 'css', 'engine.css'), path.join(OUT, 'css', 'engine.css'));
 copyFile(path.join(ENGINE, 'css', 'exhibits.css'), path.join(OUT, 'css', 'exhibits.css'));
 fs.writeFileSync(path.join(OUT, 'css', 'journey-colors.css'), journeyColorsCss);
+if (spielplan) {   // nur mit Spielplan: Kern, Anbindung und Stile (nie der Adapter spielplan-adapter.js)
+  for (const n of ['spielplan', 'spiel']) { const f = path.join(ENGINE, 'js', n + '.js'); if (!exists(f)) die(`engine/js/${n}.js fehlt`); copyFile(f, path.join(OUT, 'js', n + '.js')); }
+  if (!exists(path.join(ENGINE, 'css', 'spiel.css'))) die('engine/css/spiel.css fehlt');
+  copyFile(path.join(ENGINE, 'css', 'spiel.css'), path.join(OUT, 'css', 'spiel.css'));
+}
 
 // Skins
 for (const s of skins) copyDir(path.join(THEMES, s.id), path.join(OUT, 'skins', s.id));
@@ -188,6 +206,10 @@ const stationFiles = orderBy(listJs(path.join(PACK_DIR, 'stationen')), pack.stat
 for (const f of stationFiles) { copyFile(path.join(PACK_DIR, 'stationen', f), path.join(dataDir, 'stationen', f)); dataScripts.push('data/stationen/' + f); }
 for (const f of ['material.js', 'layout.js']) if (exists(path.join(PACK_DIR, f))) { copyFile(path.join(PACK_DIR, f), path.join(dataDir, f)); dataScripts.push('data/' + f); }
 dataScripts.push('data/orders.js');
+if (spielplan) {
+  fs.writeFileSync(path.join(dataDir, 'spielplan.js'), wrap(`MUSEUM.data=MUSEUM.data||{};\nMUSEUM.data.spielplan=${JSON.stringify(spielplan)};`));
+  dataScripts.push('data/spielplan.js');
+}
 const exhibitFiles = orderBy(listJs(path.join(PACK_DIR, 'exhibits')), pack.exhibits);
 for (const f of exhibitFiles) { copyFile(path.join(PACK_DIR, 'exhibits', f), path.join(dataDir, 'exhibits', f)); dataScripts.push('data/exhibits/' + f); }
 const visualFiles = listJs(path.join(PACK_DIR, 'visuals'));
@@ -196,9 +218,9 @@ for (const f of visualFiles) { copyFile(path.join(PACK_DIR, 'visuals', f), path.
 // index.html
 const tpl = path.join(ENGINE, 'index.template.html');
 if (!exists(tpl)) die('engine/index.template.html fehlt');
-const styles = ['css/engine.css', 'css/exhibits.css', 'css/journey-colors.css', ...skins.map(s => `skins/${s.id}/theme.css`)]
+const styles = ['css/engine.css', 'css/exhibits.css', ...(spielplan ? ['css/spiel.css'] : []), 'css/journey-colors.css', ...skins.map(s => `skins/${s.id}/theme.css`)]
   .map(h => `<link rel="stylesheet" href="${h}">`).join('\n');
-const scripts = ['data/pack.js', 'data/skins.js', 'js/core.js', 'js/icons.js', 'js/viz.js', ...dataScripts, 'js/hero.js', 'js/map.js', 'js/journey.js', 'js/timeline.js', 'js/passport.js', 'js/search.js', 'js/app.js']
+const scripts = ['data/pack.js', 'data/skins.js', 'js/core.js', 'js/icons.js', 'js/viz.js', ...dataScripts, ...(spielplan ? ['js/spielplan.js', 'js/spiel.js'] : []), 'js/hero.js', 'js/map.js', 'js/journey.js', 'js/timeline.js', 'js/passport.js', 'js/search.js', 'js/app.js']
   .map(s => `<script src="${s}"></script>`).join('\n');
 const favColors = [0, 2, 4].map(i => journeys[i % journeys.length]._c.dark.replace('#', '%23'));
 const favicon = `data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%230E1420'/%3E%3Cg%20fill='none'%20stroke-width='2.2'%20stroke-linecap='round'%3E%3Cpath%20d='M4%209C13%209%2012%2016%2016%2016S21%2023%2028%2023'%20stroke='${favColors[0]}'/%3E%3Cpath%20d='M4%2023C13%2023%2012%2016%2016%2016S21%209%2028%209'%20stroke='${favColors[1]}'/%3E%3Cpath%20d='M4%2016H28'%20stroke='${favColors[2]}'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='4.6'%20fill='%230E1420'%20stroke='%23FCB300'%20stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E`;
@@ -227,4 +249,5 @@ const count = {}; Object.values(plan.orders).forEach(o => new Set(o).forEach(s =
 const crossings = Object.values(count).filter(n => n > 1).length;
 const jWithStations = journeys.filter(j => (plan.orders[j.id] || []).length).length;
 console.log(`✓ ${path.relative(ROOT, OUT) || '.'}/index.html  (Paket ${PACK_ID}: ${plan.stations.length} Stationen, ${jWithStations} Reisen, ${crossings} Kreuzungen)`);
+if (spielplan) console.log(`  Spielplan: ${spielplan.einheiten.length} Einheiten, ${(spielplan.regeln || []).length} Regeln (data/spielplan.js, js/spielplan.js, js/spiel.js, css/spiel.css)`);
 console.log(`  Skins: ${skins.length ? skins.map(s => s.id + (s.id === defaultSkin ? '*' : '')).join(', ') : '(keine)'}  Stationsdateien: ${stationFiles.length}, Exponate: ${exhibitFiles.length}, Abbildungen: ${visualFiles.length}`);
