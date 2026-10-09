@@ -39,7 +39,7 @@ export function resolvePack(arg) {
 export function packFromArgv(scriptName, extra) {
   const pos = process.argv.slice(2).filter(a => !a.startsWith('--'));
   if (!pos.length) {
-    console.error(`Aufruf: node tools/${scriptName} <paket>${extra || ''}\n  <paket> ist der Ordnername unter packs/, z. B. gehirn.`);
+    console.error(`Aufruf: node tools/${scriptName} <paket>${extra || ''}\n  <paket> ist der Ordnername unter packs/, z. B. beispiel-gehirn.`);
     process.exit(2);
   }
   const P = resolvePack(pos[0]);
@@ -154,7 +154,7 @@ export function loadJourneysJs(P, report) {
 /** quellen.txt -> Set erlaubter URLs oder null, wenn die Datei fehlt. Zeilen mit # sind Kommentare. */
 export function loadSources(P) {
   let f = path.join(P.dir, 'quellen.txt');
-  if (!fs.existsSync(f)) f = path.join(P.dir, 'blog-urls.txt'); // älterer Name (Gehirnmuseum)
+  if (!fs.existsSync(f)) f = path.join(P.dir, 'blog-urls.txt'); // älterer Name
   if (!fs.existsSync(f)) return null;
   return new Set(fs.readFileSync(f, 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#')));
 }

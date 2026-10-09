@@ -1,7 +1,7 @@
 // Prüft packs/<paket>/material.js (Verweise auf weiterführende Quellen je Station; nur Titel + Link).
 // Aufruf: node tools/check-material.mjs <paket> [--register=pfad/register.json]
 // Ohne material.js: ok (optional). Links: wohlgeformte https-URLs; mit quellen.txt zusätzlich nur dort gelistete.
-// Mit --register (oder Umgebungsvariable WISSENSREGISTER) zusätzlich die strengen Regeln des Gehirnmuseums gegen das Wissensregister
+// Mit --register (oder Umgebungsvariable WISSENSREGISTER) zusätzlich strengere Regeln gegen ein Wissensregister (Quellenliste)
 // (Titel, Thema, rechte=oeffentlich, stand=gesammelt, typ=beitrag, nur der eigenen Domain, MATERIAL_HOST).
 import fs from 'fs';
 import vm from 'vm';
