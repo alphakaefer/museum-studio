@@ -58,7 +58,7 @@
     var stops = js.map(function (j, i) { return 'var(--j-' + j.id + ') ' + (i / js.length * 100).toFixed(2) + '% ' + ((i + 1) / js.length * 100).toFixed(2) + '%'; });
     return 'linear-gradient(90deg,' + stops.join(',') + ')';
   }
-  function isRealJourney(id) { var j = journeyOf(id); return !!j && !j.virtual; }
+  function isRealJourney(id) { var j = journeyOf(id); return !!j && !j.virtual && (!spielAn() || M.spiel.zugang('episode/' + id).sichtbar); }   // Spielplan: Verborgenes wird nicht genannt
   function homeOf(st) {
     var js = (st.journeys || []).filter(isRealJourney);
     return js.length ? js[0] : null;
@@ -298,6 +298,13 @@
     /* Spielplan: noch Verschlossenes erscheint nur angedeutet (Titel und Hinweis), und nur, wenn der Titel selbst trifft;
        Verborgenes gar nicht. Der Text einer verschlossenen Station wird nie durchsucht gezeigt. */
     if (spielAn()) {
+      if (toks.length) items = items.filter(function (it) {   // ein Treffer allein über den Namen einer verborgenen Reise (er steckt im Meta-Text) gilt nicht
+        var alle = (it.st.journeys || []).filter(function (j) { var jj = journeyOf(j); return jj && !jj.virtual; });
+        var sichtbar = alle.filter(isRealJourney);
+        if (sichtbar.length === alle.length) return true;
+        var meta = nrm([kindOf(it.st).label, yearText(it.st)].concat(sichtbar.map(function (j) { var jj = journeyOf(j); return jj.name + ' ' + (jj.kurz || ''); })).join(' '));
+        return toks.some(function (t) { return it.e.nTitle.indexOf(t) >= 0 || it.e.nTeaser.indexOf(t) >= 0 || it.e.nBody.indexOf(t) >= 0 || meta.indexOf(t) >= 0; });
+      });
       items = items.filter(function (it) {
         var a = M.spiel.anzeige('inhalt/' + it.id);
         if (!a.gesperrt) return true;

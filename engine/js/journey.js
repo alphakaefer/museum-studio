@@ -549,7 +549,7 @@
   function episodeSichtbar(jid) { if (!spielAn()) return true; var z = M.spiel.zugang('episode/' + jid); return !z || z.sichtbar; }
   function jColor(id) { return 'var(--j-' + id + ')'; }
   function nameOf(id) { var j = jOf(id); return j ? j.name : id; }
-  function realJ(st) { return (st.journeys || []).filter(function (j) { var x = jOf(j); return x && !x.virtual; }); }
+  function realJ(st) { return (st.journeys || []).filter(function (j) { var x = jOf(j); return x && !x.virtual && episodeSichtbar(j); }); }
   function shortTitle(t) {
     t = String(t || '');
     var i = t.indexOf(': ');

@@ -64,6 +64,7 @@ function baueTestpaket() {
   const [e0, e1, e2] = eps.map(u => u.id);
   const s0 = inEp(e0);
   if (s0.length < 4) throw new Error('Die erste Reise hat weniger als vier Stationen.');
+  if (e2) eps[2].sichtbar = 'verborgen';                  // die dritte Reise bleibt ungenannt, bis sie aufgeht
   eps[0].etappe = 'onboarding';
   eps[0].auftakt = 'Du betrittst die erste Reise. Es ist ruhig hier, und niemand hetzt dich.';
   eps[0].abschluss = 'Die erste Reise liegt hinter dir. Die Türen nebenan stehen jetzt offen.';
@@ -96,6 +97,7 @@ function baueTestpaket() {
     dst, out, e0, e1, e2: e2 || null, j0: e0.split('/')[1], j1: e1.split('/')[1], j2: e2 ? e2.split('/')[1] : null,
     s0: s0.map(stationOf), erste: stationOf(s0[0]), zweite: stationOf(s0[1]), dritte: stationOf(s0[2]), sperr: quest ? stationOf(sperr) : null,
     quest: quest ? quest.id : null, myth, erlebnis: erl ? erl.id : null, exStation: erl ? (stations.find(s => s.exhibit === erl.id.split('/')[1]) || {}).id : null,
+    kreuzung: e2 ? (plan.stations.find(st => (st.journeys || []).includes(e0.split('/')[1]) && (st.journeys || []).includes(e2.split('/')[1])) || {}).id || null : null,
     jids, kindOf, skins: fs.readdirSync(path.join(out, 'skins')).sort()
   };
 }
@@ -267,6 +269,33 @@ await t('5 Adresse einer gesperrten Station: Hinweisbild statt Inhalt, Nachbarn 
   wahr(!s.text.includes(body), 'Text der Station im Hinweis');
   wahr(s.text.includes('Zum Öffnen'), 'Bedingung fehlt');
   void titel;
+  await ctx.close();
+});
+
+await t('5b Verborgenes bleibt ungenannt: keine Karte, kein Suchtreffer, Hinweisbild ohne Namen und Bedingung', async () => {
+  if (!F.e2) return 'skip';
+  const { ctx, page } = await seite(DIST);
+  const name = await page.evaluate(id => MUSEUM.data.journeyById[id].name, F.j2);
+  gleich(await page.evaluate(id => document.querySelector(`.gm-card[data-journey="${id}"]`).hidden, F.j2), true, 'Karte der verborgenen Reise');
+  const a = await page.evaluate(id => MUSEUM.spiel.anzeige(id), F.e2);
+  wahr(a.gesperrt && a.verborgen && !a.titel.includes(name) && a.bedingung === '', 'anzeige verrät etwas: ' + JSON.stringify(a));
+  await page.evaluate(q => MUSEUM.search.open(q), name.slice(0, 8));
+  await page.waitForTimeout(600);
+  wahr(!(await page.evaluate(n => document.getElementById('suche-overlay').textContent.includes(n), name)), 'die Suche nennt die verborgene Reise');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(400);
+  if (F.kreuzung) {   // eine Station, die auf einer offenen und der verborgenen Reise liegt, nennt die verborgene nirgends
+    await geheZu(page, '#/station/' + F.kreuzung, 900);
+    wahr(!(await page.evaluate(n => document.querySelector('.gm-panel-scroll').textContent.includes(n), name)), 'die Station nennt die verborgene Reise (Chips, Kreuzung)');
+    await geheZu(page, '#/reise/' + F.j0 + '/' + F.kreuzung, 1000);
+    wahr(!(await page.evaluate(n => document.getElementById('reise').textContent.includes(n), name)), 'der Reise-Modus nennt die verborgene Reise (Linienplan, Kreuzung)');
+    await geheZu(page, '', 500);
+  }
+  await geheZu(page, '#/reise/' + F.j2, 900);
+  const text = await page.evaluate(() => document.querySelector('.gm-spiel-sperre').textContent);
+  wahr(/Noch verborgen/.test(text) && !text.includes(name) && !/Zum Öffnen/.test(text), 'das Hinweisbild verrät etwas: ' + text);
+  wahr(!(await page.evaluate(n => document.title.includes(n), name)), 'der Seitentitel nennt den Namen');
+  await page.evaluate(() => MUSEUM.spiel.setFrei(true));
+  gleich(await page.evaluate(id => document.querySelector(`.gm-card[data-journey="${id}"]`).hidden, F.j2), false, 'mit Freiem Zugang ist sie sichtbar');
   await ctx.close();
 });
 

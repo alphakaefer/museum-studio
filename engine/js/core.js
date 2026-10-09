@@ -1075,6 +1075,8 @@
     // Kopf
     var chips = el('ul', { class: 'gm-st-chips', 'aria-label': (M.t('journeys') + ' dieser ' + M.t('station')) });
     st.journeys.forEach(function (jid) {
+      var zj = zugangVon('episode/' + jid);
+      if (zj && !zj.sichtbar) return;   // Spielplan: eine verborgene Reise wird nicht genannt
       chips.appendChild(el('li', null, M.ui.journeyChip(jid, {
         active: jid === accent,
         onClick: typeof opts.onChip === 'function' ? function () { opts.onChip(jid, st); } : null
