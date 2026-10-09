@@ -1,8 +1,10 @@
 # Spielplan: Auslegung des Standards
 
-Zu `docs/spielplan-standard.md` (Format `spielplan/0`, Entwurf). Hier steht **je Entscheidung: Stelle, Lücke, Auslegung, Begründung**, wo nötig mit
+Zum Spielplan-Standard (Format `spielplan/0`, Entwurf). Der Entwurf gehört nicht zu diesem Repository; Abschnittsnummern wie „5.6“ meinen seine Gliederung,
+die Fassung dieser Umsetzung steht in `docs/SPIELPLAN-ARBEITSSTAND.md`. Hier steht **je Entscheidung: Stelle, Lücke, Auslegung, Begründung**, wo nötig mit
 Vorschlag für den Standard. Der Standard selbst wird nie geändert. Jede Umsetzung hängt ihren Abschnitt an; fremde Einträge werden nicht verändert.
-Wo der Standard dem Lernlog-Abgleich des Auftrags oder sich selbst widerspricht, gilt der Abgleich, und der Widerspruch steht als **Befund**.
+Wo der Standard dem Abgleich der Einheitenarten (Vorgabe des Auftrags: Arten, Stufen, Gewicht, Zeitbaustein) oder sich selbst widerspricht, gilt der Abgleich,
+und der Widerspruch steht als **Befund**.
 
 Kürzel: A = Auslegung, B = Befund zum Standard. Die Nummern gelten je Abschnitt.
 
@@ -35,12 +37,12 @@ rechnen auf Stunden genau, und jede Freischaltung hat ihr „seit“, ohne dass 
   Durchgang im freien Zugang alles auf, was die Regeln hergeben.
 
 ### A3 · Zugang wird über `in` vererbt; `in` darf eine Liste sein
-- **Stelle:** 3.1 (`in`: „die übergeordnete Einheit“), 5 („Jede Einheit ist offen, bis eine Regel sie als Ziel nennt“).
+- **Stelle:** 3.1 (`in` als übergeordnete Einheit), 5 (eine Einheit ist offen, solange keine Regel sie als Ziel nennt).
 - **Lücke:** Sind die Stationen einer gesperrten Reise offen? Und eine Station, die auf mehreren Reisen liegt (das Wesen des Museums), hat sie mehrere Eltern?
 - **Auslegung:** Eine Einheit ist offen, wenn (a) keine Regel sie nennt oder eine ihrer Regeln erfüllt ist, **und** (b) sie keine Eltern hat oder mindestens ein Elter offen ist.
   `in` darf ein Text oder eine Liste von Texten sein. Alle Eltern zählen die Einheit als Mitglied (4.1). `freigeschaltet` nennt nur Einheiten, die eine Regel nennt,
-  nicht die geerbten. `bedingung` sagt bei geerbter Sperre: „Zum Öffnen: „Trauma“ muss offen sein („Verzerrung“ geschafft).“ Verborgen (`sichtbar`) vererbt sich ebenso.
-- **Begründung:** Ohne Vererbung bräuchte jede der 205 Stationen eine eigene Regel. Mit nur einem Elter würde eine Kreuzungsstation nur für ihre Heimat-Reise zählen.
+  nicht die geerbten. `bedingung` sagt bei geerbter Sperre: „Zum Öffnen: „Handel“ muss offen sein („Von der Pflanze zur Tasse“ geschafft).“ (Beispiel: Kaffee-Beispiel, eine Einheit im gesperrten Gebiet Handel.) Verborgen (`sichtbar`) vererbt sich ebenso.
+- **Begründung:** Ohne Vererbung bräuchte jede Station eine eigene Regel. Mit nur einem Elter würde eine Kreuzungsstation nur für ihre Heimat-Reise zählen.
 - **Vorschlag für den Standard:** In 3.1 `in` als „Einheit oder Liste“ führen und in 5 den Satz zur Vererbung ergänzen (B1).
 
 ### A4 · Sammel-Einheiten: Randfälle
@@ -55,14 +57,14 @@ rechnen auf Stunden genau, und jede Freischaltung hat ihr „seit“, ohne dass 
   (`ceil(2.01)`). `check-spielplan` warnt davor. Vorschlag: im Beispiel `anteil: 2/3` oder `0.66`.
 
 ### A5 · `nach` und `braucht` an derselben Einheit
-- **Stelle:** 5.4 („Kurzform für eine Regel“), 5 („Nennen mehrere Regeln dieselbe Einheit, genügt eine davon“).
-- **Lücke:** Eine Quest mit `nach: episode/a` und `braucht: [werkzeug/w]` ergäbe wörtlich zwei Regeln, von denen eine genügt (ODER). Das Zelda-Prinzip meint UND.
+- **Stelle:** 5.4 (die Kurzformen stehen für je eine Regel), 5 (mehrere Regeln am selben Ziel sind Alternativen).
+- **Lücke:** Eine Quest mit `nach: episode/a` und `braucht: [werkzeug/w]` ergäbe wörtlich zwei Regeln, von denen eine genügt (ODER), weil Regeln am selben Ziel Alternativen sind (5). Das Zelda-Prinzip meint UND.
 - **Auslegung:** Die Kurzformen derselben Einheit werden zu **einer** Regel mit „alle“ verbunden (`kurz/<id>`). Erst mehrere Regeln (`regeln:` oder Kurzform plus Regel) sind Alternativen.
 - **Begründung:** Wer `nach` und `braucht` an eine Einheit schreibt, will beides.
 - **Befund B3:** 5.4 und 5 widersprechen sich für diesen Fall. Vorschlag: in 5.4 „mehrere Kurzformen an einer Einheit gelten zusammen“.
 
 ### A6 · Stufe 3 und 4: Beleg, Fall, Transfer
-- **Stelle:** 4 (Tabelle), 6.2 (`beleg.fall`), Lernlog-Abgleich („zwei verschiedene Fälle oder weitergegeben (geteilt)“).
+- **Stelle:** 4 (Tabelle), 6.2 (`beleg.fall`), Abgleich der Einheitenarten (Stufe 4: zwei verschiedene Fälle, alternativ Weitergeben, also `geteilt`).
 - **Lücke:** Was ist ein „Fall“? Reicht `geteilt` allein? Zählt `angewendet` ohne Beleg?
 - **Auslegung:** Ein **Fall** ist `beleg.fall` (Kennung), verglichen ohne Leerzeichen am Rand und ohne Groß-/Kleinschreibung. Stufe 4 braucht zwei verschiedene Fälle **oder**
   `angewendet` (mit Beleg) **und** `geteilt`, in beliebiger Reihenfolge. Ein Beleg ohne `fall` zählt für Stufe 3, aber nie als einer der zwei Fälle.
@@ -70,11 +72,11 @@ rechnen auf Stunden genau, und jede Freischaltung hat ihr „seit“, ohne dass 
   Höhere Stufen schließen niedrigere ein (angewendet ohne vorheriges `geschafft` ist Stufe 3).
 - **Begründung:** Der Abgleich sagt „oder geteilt“, der Standard „angewendet **und** geteilt“; die Treppe der Stufen (4 setzt 3 voraus) verlangt das Zweite.
   Ohne feste Bedeutung von „Fall“ ließe sich Stufe 4 durch denselben Beleg doppelt melden.
-- **Befund B4:** Abgleich und Standard (4) sagen nicht dasselbe über `geteilt`. Und das Lernlog nennt „weitergeben“ nicht als Merkmal von Transfer
-  (siehe `docs/spielplan-lernlog-notizen.md`, B4).
+- **Befund B4:** Abgleich und Standard (4) sagen nicht dasselbe über `geteilt`. Auch inhaltlich ist offen, ob Weitergeben ein Merkmal von Transfer ist
+  oder nur ein Zeichen für Anwendung; der Kern folgt der strengeren Lesart des Standards (Anwendung und Weitergeben).
 
 ### A7 · Werkzeug-Ereignisse über `mit`
-- **Stelle:** 4.2 („Meldet eine Quest `geschafft` mit `mit: [werkzeug/…]`, zählt das für das Werkzeug als `geschafft`“).
+- **Stelle:** 4.2 (was eine Quest als `geschafft` meldet und dabei mit einem Werkzeug verbindet, zählt auch für dieses Werkzeug).
 - **Lücke:** Gilt das auch für `bestanden` und `angewendet`? Wie kommt ein Werkzeug auf Stufe 3 und 4 (Ausrüstung = Anwendung auf **neue Fälle**)?
 - **Auslegung:** `geschafft`, `bestanden` und `angewendet` (samt Beleg und Fall) werden an jedes genannte **Werkzeug** durchgereicht; `begonnen`, `erkundet`, `geteilt` nicht.
   `mit` nennt nur Werkzeuge; anderes wird ignoriert.
@@ -87,7 +89,7 @@ rechnen auf Stunden genau, und jede Freischaltung hat ihr „seit“, ohne dass 
 - **Vorschlag:** `offen` als Feld in 5.1 aufnehmen.
 
 ### A9 · Wiederkehr
-- **Stelle:** 5.5 („fällig, wenn seit ihrem letzten Ereignis der nächste Abstand vergangen ist; erfüllt, wenn alle Abstände je mit einem neuen Ereignis eingelöst sind“).
+- **Stelle:** 5.5 (Wiederkehr: fällig nach dem nächsten Abstand seit dem letzten Ereignis; erfüllt, wenn jeder Abstand mit einem neuen Ereignis eingelöst wurde).
 - **Lücke:** Von wann an? Was ist ein „neues Ereignis“? Zählen zu frühe Ereignisse?
 - **Auslegung:** Wiedersehen kann man, was man geübt hat: Die Folge beginnt, wenn die Einheit Stufe 2 erreicht (`t0`). Jedes spätere Ereignis an der Einheit (bei Sammel-Einheiten:
   an ihren Mitgliedern) setzt „das letzte Ereignis“ neu; liegt es mindestens den nächsten Abstand nach dem vorigen, ist dieser Abstand eingelöst. Fällig ist die Einheit,
@@ -97,7 +99,7 @@ rechnen auf Stunden genau, und jede Freischaltung hat ihr „seit“, ohne dass 
 
 ### A10 · Nächste Aufgabe (5.6)
 - **Stelle:** 5.6.
-- **Lücke:** Was heißt „deren nächste Stufe eine Regel erfüllt oder ihr am nächsten bringt“? Wie vergleicht man `reihenfolge` über Eltern hinweg? Wie kommt der Satz zustande?
+- **Lücke:** Was heißt „am nächsten bringen“ an einer Regel, die noch nicht erfüllt ist (ein Entfernungsmaß fehlt)? Wie vergleicht man `reihenfolge` über Eltern hinweg? Wie kommt der Satz zustande?
 - **Auslegung:** (1) Fällig ist die längst fällige Wiederkehr; bei Sammel-Einheiten ist die Aufgabe das am längsten nicht berührte Mitglied. (2) Für jede unerfüllte Regel mit gesperrtem Ziel
   wird gerechnet, wie viele **Schritte** (Stufen an offenen, aktionsfähigen Einheiten) sie noch braucht; die Regel mit den wenigsten gewinnt, die Aufgabe ist ein Schritt darin.
   Wo eine Regel eine Auswahl lässt (zwei von sechzehn Reisen, zwei Drittel der Stationen einer Reise), gilt: Erledigtes zuerst, dann Angefangenes (das Nächstliegende zuerst), dann Unberührtes in der Reihenfolge der
@@ -150,23 +152,23 @@ die `spielplan-adapter.js` selbst einbinden.
 
 ### A17 · xAPI-Übersetzung
 `nachXapi(ereignis, plan, opts)`: `object.id` = `basis` + `objekt`; ohne `basis` ersatzweise `urn:spielplan:<id>:`. `actor.account.homePage` = `basis`; `verb.display` = {de: Verb}; `result` aus `ergebnis`
-(`completion` bei geschafft und bestanden, `success` bei bestanden, `duration` als ISO-8601-Dauer, `score`); `beleg` und `mit` als Erweiterungen unter `https://zukunftsgut.org/spielplan/ext/…`;
+(`completion` bei geschafft und bestanden, `success` bei bestanden, `duration` als ISO-8601-Dauer, `score`); `beleg` und `mit` als Erweiterungen unter `<vokabular>ext/…` (Wurzel `<vokabular>`: siehe H1);
 `app` als `grouping`-Aktivität (= `basis` oder `opts.activityId`) und als Erweiterung; zusätzlich `parent` (die erste Eltern-Einheit). Die Statement-`id` ist ein UUID-förmiger Hash des Inhalts,
 damit Nachreichen nichts doppelt anlegt.
 
 ### A18 · `sorte: baustein`
-Der Standard nennt `baustein` als Sorte (Absatz unter der Artentabelle in 3), der Lernlog-Abgleich nicht. Die Prüfung warnt bei jeder Sorte außerhalb von modell, methode, heuristik, technik, app
-(Fehler wäre zu streng: „Die Sorte ändert nichts an der Rechnung“). **Befund B5:** Widerspruch zwischen Abgleich und Standard; im Unternehmens-Zwilling ist „Baustein“ das häufigste Werkzeug.
+Der Standard nennt `baustein` als Sorte (Absatz unter der Artentabelle in 3), der Abgleich der Einheitenarten nicht. Die Prüfung warnt bei jeder Sorte außerhalb von modell, methode, heuristik, technik, app
+(ein Fehler wäre zu streng, denn an der Rechnung ändert die Sorte nichts). **Befund B5:** Widerspruch zwischen Abgleich und Standard. Anwendungen, die Werkzeuge als zusammensetzbare Bausteine verstehen, brauchen die Sorte.
 
 ### A19 · Prüfung (Erreichbarkeit)
 Die Prüfung spielt in einer Simulation alles bis `stufen.bis` durch, was offen ist, und wartet beliebig lange; Einheiten, die dabei nie aufgehen, sind Fehler (mit Ursache: unbekannt,
 Stufe über `bis`, Takt fehlt, hängt von etwas Unerreichbarem ab, **Zyklus ohne Einstieg**). Eine zweite, vorsichtige Simulation gibt Sammel-Einheiten mit Inhalt keine direkten Ereignisse;
 was nur in der ersten aufgeht, ist eine Warnung („geht nur auf, wenn direkt an einer Sammel-Einheit gemeldet wird“). Kritische Einheiten, die nie aufgehen, blockieren ihre Sammlungen
-für immer und werden eigens genannt (Befund B2 der Lernlog-Notizen).
+für immer und werden eigens genannt (eine Sperre durch eine einzige unerreichbare Einheit ist der schlimmste Fall der Erreichbarkeit).
 
 ### A20 · Wartezeit überspringen
 `spielstand(…, { ohneWartezeit: true })` rechnet Pausen als vorbei, sobald die Stufe erreicht ist. Das ist der Haken für „Freier Zugang“, damit die Zwangspause ein Vorschlag bleibt
-(Grundsatz 4; Lernlog-Notizen, B7).
+(Grundsatz 4; Befund B15).
 
 ### A21 · YAML-Leser
 `tools/yaml-lite.mjs` liest die Teilmenge, die die Beispiele brauchen. Bekannte Unterschiede zu YAML 1.2: Zahlen mit führenden Nullen sind Zahlen (`007` → 7); `yes`/`no`/`on`/`off` sind Text;
@@ -185,11 +187,11 @@ ein Kommentar; Adressen mit `#` brauchen Anführungszeichen. Aufwand siehe `docs
 | `Spielplan.verbinde` | `lager`, `praefix`, `jetzt` | Speicherobjekt statt `localStorage` (Tests), anderes Präfix, Uhr | A16 |
 
 ### A23 · SCORM: Wiederaufnahme aus `suspend_data`
-- **Stelle:** 7.1 („Ereignisse knapp in `suspend_data`; unter SCORM 1.2 nur 4096 Zeichen – dann nur Freischaltungen und Stufen“).
+- **Stelle:** 7.1 (SCORM: Ereignisse knapp in `suspend_data`; unter 1.2 reichen 4096 Zeichen nur für Freischaltungen und Stufen).
 - **Lücke:** Der Spielstand ist eine Funktion der Ereignisse (Abschnitt 1). Aus „Stufen und Freischaltungen“ allein lässt er sich nicht berechnen.
 - **Auslegung:** `suspend_data` hat drei Formen, die kürzeste, die in die Grenze passt (1.2: 4096, 2004: 64000 Zeichen), gewinnt. **E**: Ereignisse mit Tabelle der benutzten Einheiten-ids (lesbar
   auch nach einer Planänderung). **X**: dieselben Ereignisse mit Einheiten als Nummer in id-Reihenfolge und einem Hash der Einheiten (nur lesbar, solange die Einheiten dieselben sind). Je Ereignis Verb, Einheit,
-  Minuten seit dem vorigen, `mit`, Belegart und Fall; kein `ergebnis`, keine Quelle. Gemessen an 205 Einheiten mit ids von 24 Zeichen: E braucht etwa 31 Zeichen je Ereignis (bis etwa 100 Ereignisse in 4096),
+  Minuten seit dem vorigen, `mit`, Belegart und Fall; kein `ergebnis`, keine Quelle. Gemessen an Einheiten-ids von 24 Zeichen: E braucht etwa 31 Zeichen je Ereignis (bis etwa 100 Ereignisse in 4096),
   X etwa 7 (bis etwa 550). **S**: eine Ziffer je Einheit, dazu die Freischaltungen und der Hash; Aus S entstehen **Ersatzereignisse** an den Blatt-Einheiten (Stufe 1 begonnen, 2 geschafft, 3 angewendet mit
   Fall `scorm-1`, 4 mit zwei Fällen), gestempelt mit dem Zeitpunkt der Wiederaufnahme. `completed` setzt der Adapter, wenn die Wurzel Stufe 2 erreicht (mehrere Wurzeln: Sammel-Regel über sie).
   Bei Unterbrechung setzt er `cmi.core.exit` bzw. `cmi.exit` auf `suspend`, sonst verwerfen manche Lernsysteme die Daten.
@@ -203,13 +205,13 @@ bleibt sie stehen und wird nachgereicht (auch beim Ereignis `online`), in Stapel
 Nicht umgesetzt: `abandoned`, `waived`, `satisfied`, MoveOn-Kriterien, `returnURL`, `masteryScore`, Wiederholung nach Zeit (nur beim nächsten Ereignis oder Aufruf von `nachreichen()`). Nur gegen einen Mock-LRS getestet.
 
 ### A25 · Spielplan-Beispiel Kaffee (Anhang des Standards)
-`docs/spielplan-beispiel-kaffee.yaml` ist wörtlich der Anhang, **unverändert**; der Test benutzt ihn so. Er genügt den Regeln des Standards bis auf zwei Stellen, die die Prüfung als Warnung meldet:
+`docs/spielplan-beispiel-kaffee.yaml` folgt dem kleinen Beispiel am Ende des Standards (Kaffee-Museum); geändert ist nur die `basis` (neutrale Adresse, siehe H1). Der Test benutzt es so. Es genügt den Regeln des Standards bis auf zwei Stellen, die die Prüfung als Warnung meldet:
 `erlebnis/roestung` trägt `braucht` (3.1: nur für `quest`), und `episode/weltmarkt` hat keinen Inhalt (4.1 sagt nichts über leere Sammel-Einheiten; ihre Stufe käme nur aus direkten Ereignissen).
 Dazu die Frage, ob `in` für alle Arten außer `gebiet` Pflicht ist (3.1, Spalte „Für“): `werkzeug/roestkurve`, `skill/quellen` und `skill/roesten` haben keines; die Prüfung nimmt `in` als freiwillig.
 
 ### A26 · Konformitätsset
-`docs/spielplan-konformitaet.json` enthält 22 Fälle (Plan, Ereignisse, `jetzt`, Optionen, erwartete Stufen, Zugänge, Takt, Freischaltungen mit Zeitpunkt, `verwittert`, `faellig`). Eine zweite Umsetzung des Standards
-(Zwilling, Augenspiel, LearnDash-Brücke) rechnet sie nach; weicht sie ab, hat sie an einer der Stellen A1 bis A13 anders ausgelegt. Stufe, Zugang, Takt und Freischaltungen hat ein unabhängig geschriebenes
+`docs/spielplan-konformitaet.json` enthält 22 Fälle (Plan, Ereignisse, `jetzt`, Optionen, erwartete Stufen, Zugänge, Takt, Freischaltungen mit Zeitpunkt, `verwittert`, `faellig`). Eine zweite, unabhängige Umsetzung des Standards
+(eine andere App, ein Lernsystem-Plugin) rechnet sie nach; weicht sie ab, hat sie an einer der Stellen A1 bis A13 anders ausgelegt. Stufe, Zugang, Takt und Freischaltungen hat ein unabhängig geschriebenes
 Orakel im Test bestätigt, `verwittert` und `faellig` nur der Kern. Erzeugt und auf Aktualität geprüft von `tools/spielplan-test.mjs` (`--schreibe-konformitaet`).
 
 ### Befunde zum Standard (aus dem Bau des Kerns)
@@ -217,9 +219,9 @@ Je Befund: Abschnitt, Problem, Beleg, Vorschlag. Reihenfolge nach Gewicht für d
 
 | Nr | Abschnitt | Problem | Beleg | Vorschlag |
 |---|---|---|---|---|
-| B1 | 3.1 `in`, 5 | Eine Station auf mehreren Reisen (das Wesen des Museums) hat mehrere Eltern; der Zugang gesperrter Eltern erbt nicht. Wörtlich bräuchte jede der 205 Stationen eine eigene Regel. | `docs/AGENTEN.md` („dieselbe Station liegt auf mehreren Reisen“); Test „Zugang wird über in vererbt“ | `in` als Einheit oder Liste; in 5 den Satz zur Vererbung (A3) |
+| B1 | 3.1 `in`, 5 | Eine Station auf mehreren Reisen (das Wesen des Museums) hat mehrere Eltern; der Zugang gesperrter Eltern erbt nicht. Wörtlich bräuchte jede Station eine eigene Regel. | `docs/AGENTEN.md` („dieselbe Station liegt auf mehreren Reisen“); Test „Zugang wird über in vererbt“ | `in` als Einheit oder Liste; in 5 den Satz zur Vererbung (A3) |
 | B2 | 10 (Kopf) und 4.1 | `anteil: 0.67` ist nicht „zwei Drittel“: bei drei wesentlichen Einheiten verlangt 0.67 alle drei, zwei Drittel nur zwei. Auch die Rundung („zwei Drittel von zwei“) ist nicht gesagt. | Test „stufen.anteil … 0.67“ | `anteil: 2/3` im Beispiel, Rundung nach oben in 4.1 sagen |
-| B3 | 5 und 5.4 | „Nennen mehrere Regeln dieselbe Einheit, genügt eine“ gegen „`nach` und `braucht` sind Kurzformen für Regeln“: Eine Quest mit beiden ergäbe ODER, gemeint ist UND (Zelda-Prinzip). | Test „braucht und nach an derselben Einheit“ | in 5.4 „mehrere Kurzformen an einer Einheit gelten zusammen“ (A5) |
+| B3 | 5 und 5.4 | Mehrere Regeln am selben Ziel sind Alternativen (5), `nach` und `braucht` sind Kurzformen für Regeln (5.4): Eine Quest mit beiden ergäbe ODER, gemeint ist UND (Zelda-Prinzip). | Test „braucht und nach an derselben Einheit“ | in 5.4 „mehrere Kurzformen an einer Einheit gelten zusammen“ (A5) |
 | B4 | 4 und Abgleich, 4.2 | Der Abgleich sagt „zwei Fälle **oder** geteilt“, 4 sagt „angewendet **und** geteilt“. 4.2 reicht nur `geschafft` an Werkzeuge durch, dann sind Stufe 3 und 4 am Werkzeug (Ausrüstung = Anwendung auf neue Fälle) nur über direkte Meldungen am Werkzeug erreichbar. | A6, A7; Test „Werkzeug: Ereignisse über mit“ | 4 und 4.2 angleichen; `angewendet` mit Beleg und Fall ebenfalls durchreichen |
 | B5 | 3 | `sorte: baustein` steht im Standard, nicht im Abgleich. | A18 | eine Liste für beide |
 | B6 | 3.1 `adresse`, 3 | Beispiel `#/station/kaldi` ist in YAML ein Kommentar (Anführungszeichen nötig); Text sagt „einen `namen`“, das Feld heißt `name`. | `tools/yaml-lite.mjs` (Kommentar-Regel) | Beispiel in Anführungszeichen setzen |
@@ -230,60 +232,94 @@ Je Befund: Abschnitt, Problem, Beleg, Vorschlag. Reihenfolge nach Gewicht für d
 | B11 | 5.6, 5.5 | „…oder ihr am nächsten bringt“ braucht ein Entfernungsmaß; „je Takt eine Aufgabe“ (5.5) und „genau eine Aufgabe“ (5.6) meinen zwei Dinge; woher der Satz „was sie bringt“ kommt, steht nirgends. | A10 | Entfernung = Zahl der Schritte; Sätze aus Vorlagen mit Überschreiben je Einheit |
 | B12 | 5.4 und 6.1 | `braucht` verlangt „offen“, 6.1 sagt „Regeln lesen `freigeschaltet` nicht“. Wörtlich widerspricht sich das. Dazu: Stufe 1 heißt nur „angesehen“, nicht „benutzt“. | A8 | `offen` als Baustein-Feld; `braucht` mit Stufe 2? |
 | B13 | 3.2, 4.1 | `gewicht` hängt an der Einheit, nicht an der Mitgliedschaft: Dieselbe Station kann in Reise A kritisch, in Reise B Nebensache sein. | Museum-Kreuzungen | `in: [{ id, gewicht }]` |
-| B14 | 4, 9 | Das Museum kann Beleg und Transfer nicht prüfen; seine Sammel-Einheiten bleiben bei Stufe 2, „gemeistert“ ist unerreichbar. Der Standard kennt keine Obergrenze je App (nur in 11 für das Augenspiel als Randbemerkung). | A10, A19 | `stufen.bis` (umgesetzt) |
-| B15 | 2 (Grundsatz 4), 5.1 | Eine erzwungene Wartezeit nimmt Autonomie; Grundsatz 4 will Vorschläge. | Lernlog-Notizen B7; A20 | Wartezeit als Empfehlung mit Überspringen (`ohneWartezeit`) |
+| B14 | 4, 9 | Das Museum kann Beleg und Transfer nicht prüfen; seine Sammel-Einheiten bleiben bei Stufe 2, „gemeistert“ ist unerreichbar. Der Standard kennt keine Obergrenze je App (nur in 11 als Randbemerkung zu einer anderen App). | A10, A19 | `stufen.bis` (umgesetzt) |
+| B15 | 2 (Grundsatz 4), 5.1 | Eine erzwungene Wartezeit nimmt Autonomie; Grundsatz 4 will Vorschläge. | A20 | Wartezeit als Empfehlung mit Überspringen (`ohneWartezeit`) |
 | B16 | 8 | Beispiele nennen „3 Reisen“, der Standard hat kein Feld für die Wörter einer App („Reise“ für `episode`). | A15, A22 | `begriffe` (umgesetzt) |
-| B17 | 5.3 | „Eine Einheit, die nie aufgehen kann, meldet die Prüfung als Fehler“ hängt davon ab, welche Stufen die App vergibt und ob Sammel-Einheiten direkte Ereignisse bekommen. | A19 | beides in der Prüfung benennen |
+| B17 | 5.3 | Die Regel, dass die Prüfung Einheiten, die nie aufgehen können, als Fehler meldet, hängt davon ab, welche Stufen die App vergibt und ob Sammel-Einheiten direkte Ereignisse bekommen. | A19 | beides in der Prüfung benennen |
 | B18 | 6.3, 10 | Verben (`…/spielplan/verben/…`), Erweiterungen (`…/ext/…`) und Arten liegen unter derselben Wurzel wie die Objekt-Adressen `basis + objekt`; ein Plan mit der id `ext` oder `verben` würde kollidieren. | A17 | Namensräume reservieren |
 | B19 | 12 | Nicht beschrieben: mehrere Personen an einem Gerät (Klassenzimmer). `wer` ist ein Browser-Profil; `zuruecksetzen()` vergibt eine neue Kennung. | A16 | in 12 aufnehmen |
 
 
 ---
 
-## Gehirnmuseum (kuratierte Schicht: `packs/gehirn/spielplan-kern.yaml`, Begründung und Zahlen: `docs/spielplan-gehirn.md`)
+## Kuratierte Schicht eines großen Museums (Gestaltungsentscheidungen, verallgemeinert)
 
-Kürzel: G = Gestaltung des Gehirnmuseums. „G-Befund n“ ist Befund n in `docs/spielplan-gehirn.md`, Abschnitt 14 (dort mit Beleg und Vorschlag).
+Kürzel: G = Gestaltungsentscheidung. Diese Einträge stammen aus dem Prototyp eines großen Museums mit handgepflegtem Spielplan. Die Daten dieses Prototyps liegen nicht in diesem Repository;
+hier steht nur, was sich daraus für jeden Spielplan ableiten lässt. Die Felder `aus`, `herkunft`, `einsatz` und `kurz` sind Felder der Plan-Datei für den Generator (`tools/spielplan-aus-plan.mjs`), der Kern liest sie nicht.
 
-### G1 · Station und Werkzeug sind dieselbe Sache
-- **Stelle:** 3 (Arten `inhalt` und `werkzeug`), Lernlog-Abgleich.
-- **Lücke:** 16 der 17 Werkzeuge sind der Stoff einer Station (ABC-Modell, Grounding, Hebb-Regel …). Inhalt („Modelle, Theorien“) und Ausrüstung („Modelle, Methoden, Heuristiken“) überschneiden sich; der Standard sagt nicht, wie das Paar gebildet wird.
-- **Auslegung:** Die Station bleibt `inhalt` („ich kenne es“); das `werkzeug` ist die Anwendungsseite („ich habe es und setze es ein“) und geht **nach** der Station auf (eigene Regel mit `enthuellung`, nicht die Kurzform `nach`). Werkzeuge liegen in keinem Flügel (kein `in`). Das Feld `aus` hält die Herkunft fest.
-- **Begründung:** Sonst zählte dieselbe Sache doppelt in den Sammelstufen. (G-Befund 1)
+### G1 · Station und Werkzeug sind oft dieselbe Sache
+- **Stelle:** 3 (Arten `inhalt` und `werkzeug`), Abgleich der Einheitenarten.
+- **Lücke:** In einem Museum mit vielen Modellen und Methoden ist fast jedes Werkzeug zugleich der Stoff einer Station. Inhalt („Modelle, Theorien“) und Ausrüstung („Modelle, Methoden, Heuristiken“) überschneiden sich; der Standard sagt nicht, wie das Paar gebildet wird.
+- **Auslegung:** Die Station bleibt `inhalt` („ich kenne es“); das `werkzeug` ist die Anwendungsseite („ich habe es und setze es ein“) und geht **nach** der Station auf (eigene Regel mit `enthuellung`, nicht die Kurzform `nach`). Werkzeuge liegen in keinem Gebiet (kein `in`). Das Feld `aus` hält die Herkunft fest.
+- **Begründung:** Sonst zählte dieselbe Sache doppelt in den Sammelstufen.
 
 ### G2 · Stufe 2 am Werkzeug heißt: an einem Ort eingesetzt
 - **Stelle:** 4.2, A7.
-- **Lücke:** Ausrüstung ist „Anwendung auf neue Fälle“; das Museum kann das nicht belegen (`stufen.bis: 2`). Was hebt ein Werkzeug auf Stufe 2?
-- **Auslegung:** Jedes Werkzeug nennt `einsatz`: Orte (Exponat, Mythos-Karte, in einem Fall eine Station), an denen es zählt. Wer einen Ort `geschafft` meldet, das Werkzeug hat und den Einsatz **bestätigt**, meldet `mit: [werkzeug/…]`. Jedes Werkzeug hat mindestens einen Ort, damit der Kern nie eine unerfüllbare Aufgabe („Setze X ein“) nennt; vier Orte sind dafür erfunden (G-Befund 7).
+- **Lücke:** Ausrüstung ist „Anwendung auf neue Fälle“; ein Museum kann das nicht belegen (`stufen.bis: 2`). Was hebt ein Werkzeug auf Stufe 2?
+- **Auslegung:** Jedes Werkzeug nennt `einsatz`: Orte (Exponat, Mythos-Karte, in Ausnahmen eine Station), an denen es zählt. Wer einen Ort `geschafft` meldet, das Werkzeug hat und den Einsatz **bestätigt**, meldet `mit: [werkzeug/…]`. Jedes Werkzeug hat mindestens einen Ort, damit der Kern nie eine unerfüllbare Aufgabe („Setze X ein“) nennt; wo es keinen natürlichen Ort gab, musste einer erfunden werden. Das ist eine Stelle, an der der Kern mehr verlangt als der Standard: Er hält jedes Werkzeug für aktionsfähig.
 - **Begründung:** Stufe 2 bleibt „geübt“; ohne bestätigten Einsatz wäre sie eine Behauptung des Spielplans.
 
 ### G3 · „Unabhängige Regeln“ heißt: zwei Wege ohne gemeinsame Einheit
 - **Stelle:** 5, 5.3 (der Standard definiert den Begriff nicht).
-- **Auslegung:** Zwei Regeln eines Ziels sind unabhängig, wenn es zwei Wege gibt, deren Einheiten sich nicht schneiden müssen. Geprüft mit dem Kern als Spieler: (1) Einheiten, ohne die eine Regel nie aufgeht („Engpässe“), und (2) konstruktiv: eine minimale Stützmenge der einen Regel verboten, die andere muss trotzdem aufgehen. Ergebnis: alle 11 gesperrten Ziele haben zwei disjunkte Wege; zwei Paare (Endgame-Reisen) teilen Kreuzungsstationen, ihr dritter Weg ist von beiden unabhängig. Reisen eines gesperrten Flügels erben dessen Sperre.
-- **Begründung:** Ein einzelner nicht erreichbarer Schlüssel soll nie eine Reise für immer sperren. (G-Befund 13)
+- **Auslegung:** Zwei Regeln eines Ziels sind unabhängig, wenn es zwei Wege gibt, deren Einheiten sich nicht schneiden müssen. Geprüft mit dem Kern als Spieler: (1) Einheiten, ohne die eine Regel nie aufgeht („Engpässe“), und (2) konstruktiv: eine minimale Stützmenge der einen Regel verboten, die andere muss trotzdem aufgehen. Teilen sich zwei Wege Kreuzungsstationen, ist der dritte Weg der unabhängige. Einheiten eines gesperrten Gebiets erben dessen Sperre.
+- **Begründung:** Ein einzelner nicht erreichbarer Schlüssel soll nie eine Reise für immer sperren. Die Prüfung `check-spielplan` meldet Engpässe nicht selbst; das wäre eine sinnvolle Erweiterung.
 
-### G4 · Mythos-Karten sind nie kritisch
+### G4 · Quests sind nie kritisch
 - **Stelle:** 3.2, 4.1, B13.
-- **Lücke:** Gewicht gilt je Einheit; eine Mythos-Karte auf drei Reisen wäre in allen kritisch und koppelte Reisen, die sich nicht bedingen sollen (Beleg: zwei Endgame-Wege teilten die Karten „Phrenologie“ und „Herz“).
-- **Auslegung:** Alle Mythos-Karten sind wesentlich. Bei den übrigen kritischen Kreuzungsstationen bleibt die Kopplung bestehen. (G-Befund 12)
+- **Lücke:** Gewicht gilt je Einheit; eine Quest (Mythos-Karte) auf mehreren Reisen wäre in allen kritisch und koppelte Reisen, die sich nicht bedingen sollen (zwei Endgame-Wege teilten sich dann dieselben Karten).
+- **Auslegung:** Alle Quests sind wesentlich. Bei den übrigen kritischen Kreuzungsstationen bleibt die Kopplung bestehen; sie ist ein Preis des Gewichts je Einheit (B13).
 
 ### G5 · Die Schlüssel der Onboarding-Reise liegen auf kritischen Stationen
 - **Stelle:** 3.3 (Onboarding), 5.6.
-- **Lücke:** Die Aufgabe sortiert bei gleichem Abstand nach Gewicht, dann nach der Reihenfolge der Autorin. Ohne Eingriff springt sie nach zwei Stationen in eine andere Reise.
-- **Auslegung:** Die vier ersten Schlüssel (Müller-Lyer, Kahneman und Tversky, Ankereffekt, Bestätigungsfehler) sind die kritischen Stationen der ersten Reise und stehen an der ersten, fünften, siebten und zehnten Stelle. Vier Momente in 12 bis 14 Minuten, in einer Reise. (G-Befund 3, 15)
+- **Lücke:** Die Aufgabe sortiert bei gleichem Abstand nach Gewicht, dann nach der Reihenfolge der Autorin. Ohne Eingriff springt sie nach wenigen Stationen in eine andere Reise.
+- **Auslegung:** Die ersten Schlüssel (Stationen, die die ersten Freischaltungen öffnen) sind die kritischen Stationen der ersten Reise und stehen früh in deren Reihenfolge. So liegen die ersten Momente in wenigen Minuten und in einer Reise.
 
 ### G6 · Fähigkeiten sind nie gesperrt
 - **Stelle:** 5 (Grundsatz 5), 8.
 - **Lücke:** Der Auftrag will Fähigkeiten als graue Flecken mit Bedingungssatz; eine Fähigkeit wird von keiner Regel genannt, `bedingung` gibt es nur für gesperrte Einheiten.
-- **Auslegung:** Stufe 0 („Nebel“) mit dem `kann`-Satz und `fortschritt` (A14) ist der graue Fleck; das Wachsen der Stufe ist der Moment („Ich kann …“). (G-Befund 5)
+- **Auslegung:** Stufe 0 („Nebel“) mit dem `kann`-Satz und `fortschritt` (A14) ist der graue Fleck; das Wachsen der Stufe ist der Moment („Ich kann …“).
 
 ### G7 · Eine Regel mit mehreren Alternativen hat eine Enthüllung
 - **Stelle:** 5, 5.1.
-- **Auslegung:** Bei `eine: [Station, Exponat]` ist der Text so gefasst, dass er für beide Wege stimmt. (G-Befund 6)
+- **Auslegung:** Bei `eine: [Station, Exponat]` ist der Text so gefasst, dass er für beide Wege stimmt.
 
 ### G8 · Die Zwangspause kommt einmal und nur als Alternative
-- **Stelle:** 5.1 (`wartezeit`), Grundsatz 4, Lernlog-Notizen B7.
-- **Auslegung:** `erbe-pause` (3 Stunden nach der Reise Trauma **oder** „Grounding“ eingesetzt) neben einem wartezeitfreien zweiten Weg (`erbe-umsteigen`); „Freier Zugang“ überspringt sie (A20). (G-Befund 9)
+- **Stelle:** 5.1 (`wartezeit`), Grundsatz 4, Befund B15.
+- **Auslegung:** Eine Regel mit `wartezeit` steht immer neben einem zweiten, wartezeitfreien Weg zum selben Ziel; „Freier Zugang“ überspringt die Pause (A20).
 
 ### G9 · `art: werkzeug` zählt alle Werkzeuge
 - **Stelle:** 5.1 (Baustein `art`).
-- **Auslegung:** Weil jedes Werkzeug einen Einsatzort hat (G2), zählen `{ art: werkzeug, stufe: 2, mindestens: n }` in `ki-koffer` und `geist-mythen` ohne Sackgasse; das verborgene Werkzeug zählt mit, sobald es offen ist.
+- **Auslegung:** Weil jedes Werkzeug einen Einsatzort hat (G2), zählt `{ art: werkzeug, stufe: 2, mindestens: n }` ohne Sackgasse; ein verborgenes Werkzeug zählt mit, sobald es offen ist.
+
+
+---
+
+## Basis und Hygiene (öffentliche Fassung des Kerns)
+
+Kürzel: H = Entscheidung beim Übernehmen des Kerns in dieses öffentliche Repository. Die Nummern gelten für diesen Abschnitt.
+
+### H1 · Wurzel des xAPI-Vokabulars: neutral und einstellbar
+- **Stelle:** 6.1 und 6.3 (eigene Verben, Erweiterungen und Arten liegen unter einer festen Adresse einer bestimmten Domain), 10 (Kopf der Datei).
+- **Lücke:** Der Entwurf legt die Adressen der eigenen Verben (`angewendet`, `freigeschaltet`), der Erweiterungen und der Arten unter eine feste Domain. Eine Umsetzung, die für alle gilt, kann diese Domain nicht voraussetzen; zugleich muss sie jede Domain erlauben, die ihr Vokabular wirklich veröffentlicht.
+- **Auslegung:** Der Kern benutzt ohne weitere Angabe die neutrale Wurzel `urn:spielplan:` (also `urn:spielplan:verben/angewendet`, `urn:spielplan:ext/mit`, `urn:spielplan:arten/quest`; eine URN muss nicht erreichbar sein). Das Plan-Feld `vokabular` (Adresse, endet auf `/` oder `:`) ersetzt sie, `opts.vokabular` bei `Spielplan.nachXapi` geht vor dem Plan; die Prüfung meldet ein ungültiges `vokabular` als Fehler. Die ADL-Verben (attempted, experienced, completed, passed, shared) bleiben unberührt. Die Objekt-Adressen (`basis` + `objekt`) gehören dem Plan und ändern sich nicht.
+- **Begründung:** Sonst enthielte jedes veröffentlichte Statement eine Adresse, die nicht dem Betreiber gehört. Die Statement-Ids ändern sich mit der Wurzel nicht (sie hängen nur an Ereignis, Zeit und App).
+- **Vorschlag für den Standard:** In 6.1/6.3 die Wurzel als Plan-Feld (`vokabular`) führen und eine neutrale Vorgabe nennen; das Beispiel in 10 mit einer Beispieladresse (etwa `https://example.org/…`) schreiben statt mit einer echten Domain. Ergänzt Befund B18 (Namensräume).
+
+### H2 · Der Entwurf des Standards ist keine Voraussetzung der Prüfung
+- **Stelle:** 10 (Prüfung), Testgruppe 1.
+- **Lücke:** Ein Test las die YAML-Beispiele direkt aus dem Entwurf; ohne ihn (öffentliches Repository) schlug er fehl.
+- **Auslegung:** Der Test läuft nur, wenn der Entwurf per Umgebungsvariable `SPIELPLAN_STANDARD` (oder als lokale, nicht eingecheckte `docs/spielplan-standard.md`) vorliegt, und wird sonst als **übersprungen** gezählt und ausgegeben; der Rest der Tests und die Prüfung brauchen den Entwurf nicht. Die YAML-Teilmenge selbst deckt der Rest der Gruppe ab (Lesen, Fehler mit Zeilennummer, Rundlauf mit Zufallsstrukturen, Kaffee-Beispiel).
+- **Begründung:** Ein Test, der still grün bleibt, wäre schlechter als einer, der sagt, was er nicht prüft.
+
+### H3 · „Der Build bindet den Adapter nicht ein“ ist eine Aussage über den Code und über die Ausgabe
+- **Stelle:** 7.2 (die Seite sendet nichts), Auslegung A16.
+- **Lücke:** Der Test las den Quelltext von `tools/build.mjs` und suchte das Wort „spielplan-adapter“; ein Kommentar, der erklärt, dass der Adapter nie eingebunden wird, ließ ihn scheitern.
+- **Auslegung:** Der Test prüft den Code **ohne Kommentare** und baut zusätzlich echte Pakete: ohne `spielplan.json` darf die Ausgabe keine Datei und keinen Verweis des Spielplans enthalten (Kern, Anbindung, Stile, Daten); mit `spielplan.json` kommen Kern, Anbindung, Stile und Daten, nie der Adapter, und die Spielplan-Skripte enthalten keinen Netzwerkzugriff. Der zweite Fall wird übersprungen, solange `engine/js/spiel.js` noch fehlt.
+- **Begründung:** Die Zusicherung („ein Paket ohne Spielplan verhält sich wie bisher; die Seite sendet nichts“) gehört an die Ausgabe, nicht an ein Stichwort im Quelltext.
+
+### H4 · Das Kaffee-Beispiel: Gerüst bleibt, Freitexte sind neu
+- **Stelle:** 10 (kleines Beispiel am Ende des Standards), A25.
+- **Lücke:** `docs/spielplan-beispiel-kaffee.yaml` war das Beispiel des Entwurfs, Zeile für Zeile übernommen, nur mit anderer `basis` (so steht es in A25). Das ist eine wörtliche Passage des nicht öffentlichen Entwurfs.
+- **Auslegung:** Das Gerüst bleibt: Ids, Arten, Namen der Einheiten, Regeln und Rhythmus. Konformitätsset, Tests und die Beispiele in den Auslegungen hängen daran, und ein Beispiel für ein Format mit festen Feldern kann sich ohnehin nur wenig unterscheiden. Alle Freitexte (Auftakt, beide `kann`-Sätze, beide Enthüllungen) sind neu formuliert, das Konformitätsset ist neu erzeugt (`node tools/spielplan-test.mjs --schreibe-konformitaet`). Seit dieser Änderung stimmt in A25 nur noch der erste Teil („folgt dem kleinen Beispiel“), nicht mehr „geändert ist nur die `basis`“.
+- **Begründung:** Der Entwurf bleibt privat; ein öffentliches Beispiel darf seine Gestalt zeigen, aber nicht seinen Text. Geprüft mit einem Wortvergleich (Reihen gleicher Wörter, ab sechs in Folge) über alle Spielplan-Dateien: Übrig sind Feldnamen, Ids und die Namen der Einheiten.
+- **Vorschlag für den Standard:** Das Beispiel im Standard und das öffentliche Beispiel getrennt halten; zum Standard gehört ein eigenes freies Beispiel samt Konformitätsset, an dem sich andere Umsetzungen messen können, ohne den Text des Entwurfs zu brauchen.
