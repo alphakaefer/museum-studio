@@ -1,0 +1,211 @@
+# Vorlage für packs/<paket>/spielplan-kern.yaml: die kuratierte Schicht eines Spielplans (Format spielplan/0).
+#
+# So benutzt du sie
+#   1. Lege den Spielplan an, ohne Handarbeit:      node tools/spielplan-aus-plan.mjs <paket> --auto
+#      Das ist schon spielbar: ein Drittel der Reisen offen, jede gesperrte Reise mit mindestens zwei Wegen, Enthüllungstexte, Rhythmus.
+#   2. Kopiere diese Datei nach packs/<paket>/spielplan-kern.yaml, lösche, was du nicht ändern willst, und schreibe deine Ids und Texte hinein.
+#      Was in deinem Kern steht, überschreibt die Automatik abschnittsweise; die Ausgabe nennt jede Ersetzung als „Hinweis“.
+#   3. Erzeuge neu:                                 node tools/spielplan-aus-plan.mjs <paket> --auto      (Automatik plus Kern)
+#      oder nur dein Kern ohne Automatik:           node tools/spielplan-aus-plan.mjs <paket>
+#   4. Prüfe:                                       node tools/check-spielplan.mjs <paket> --streng --bericht --wege
+#      Der Bericht sagt, was beim Start offen ist, wie viele Schritte es dauert, wenn man der nächsten Aufgabe folgt, und ob eine einzelne Einheit
+#      etwas für immer sperren könnte. Das ist Rechnung, keine Messung mit Menschen: Probiere den Spielplan im Browser aus.
+#
+# Was du nicht schreiben musst: Einheiten für Reisen (episode), Stationen (inhalt), Mythos-Karten (quest) und Exponate (erlebnis) entstehen aus
+# plan.json und journeys.js. Ihre Ids lauten episode/<reise-id>, inhalt/<stations-id>, quest/<stations-id>-mythos, erlebnis/<exponat-id>.
+# Werkzeuge entstehen je Station einer Werkzeug-Reise (journeys.js: tool: true) als werkzeug/<stations-id>.
+#
+# Regeln für die Datei (YAML-Teilmenge, siehe tools/yaml-lite.mjs)
+#   - Einrücken mit Leerzeichen, nie mit Tabulatoren. Texte, die einen Doppelpunkt, ein # oder Anführungszeichen enthalten, in "…" setzen.
+#   - Adressen mit # ("#/station/boden") immer in Anführungszeichen: sonst beginnt für YAML ein Kommentar.
+#   - Zahlen ohne Anführungszeichen; „2/3“ als Text. Ids bestehen aus Kleinbuchstaben, Ziffern, - und /.
+#   - Der Spielplan ist Deutsch mit Du-Ansprache. Schreibe ein bis zwei Sätze je Enthüllung, im Ton deines Museums.
+#
+# Das Beispiel unten spielt in einem neutralen Thema, einem kleinen Gemüsegarten. Ersetze Themen, Ids und Texte durch die deines Pakets.
+
+# ------------------------------------------------------------------------------------------------------------------------------ Kopf
+# id, name, basis: Kennung, Name und Adresse für die Übersetzung nach xAPI. Ohne Angabe: museum-<paket>, Titel des Pakets, eine Beispieladresse.
+id: museum-garten
+name: Gartenmuseum
+basis: https://example.org/spielplan/museum-garten/
+# nur_lokal: true heißt, dass nichts den Browser verlässt (Standard: true). Das Museum sendet ohnehin nichts.
+nur_lokal: true
+
+# stufen: Anteil der wesentlichen Einheiten, den eine Sammlung für die nächste Stufe braucht (Standard „2/3“, aufgerundet), und die höchste Stufe, die das
+# Angebot vergibt. Das Museum kann Beleg und Transfer nicht prüfen und vergibt höchstens Stufe 2 (Grundverständnis). Lass die Zeile stehen, wie sie ist.
+stufen: { anteil: "2/3", bis: 2 }
+
+# offen: Einheiten, die beim Start offen bleiben, auch wenn die Automatik (--auto) sie sperren würde. Alle Automatik-Regeln, die sie nennen, entfallen.
+# Bei sensiblen Themen sinnvoll: Lass die Reise, die Menschen am ehesten suchen, offen. (Beispiel: Die Reise „Ernte“ soll von Anfang an offen sein.)
+offen: [episode/ernte]
+
+# ------------------------------------------------------------------------------------------------------------------------------ Gebiete
+# gebiete: Gruppen von Reisen (ein Flügel des Museums). Ohne Angabe bildet die Automatik je Reisetyp eines (ab sechs Reisen eines Typs geteilt).
+# Mit Angabe ersetzt deine Liste die der Automatik. Auftakt und Abschluss erzählen: ein bis drei Sätze beim Betreten und beim Schaffen.
+gebiete:
+  - id: gebiet/anbau
+    name: Vom Samen zur Ernte
+    reihenfolge: 1
+    auftakt: "Hier beginnt alles mit einer Handvoll Erde und einem Korn. Du lernst, was ein Beet braucht, bevor etwas wächst."
+    abschluss: "Du weißt jetzt, warum ein Beet gelingt oder nicht. Der Rest ist Geduld."
+
+# ------------------------------------------------------------------------------------------------------------------------------ Reisen
+# episoden_zusatz: Ergänzungen je Reise. id = episode/<reise-id> (die kurze Form <reise-id> geht auch).
+#   gebiet       in welchem Gebiet die Reise liegt
+#   etappe       entdecken | onboarding | scaffolding | endgame
+#                onboarding = leichter Einstieg mit schneller Belohnung (braucht eine Mythos-Karte der Stärke 1 darin),
+#                scaffolding = steigende Schwierigkeit, endgame = das große Puzzle (braucht eine Mythos-Karte der Stärke 3 darin)
+#   reihenfolge  Zahl; bei Gleichstand entscheidet sie, welche Aufgabe vorgeschlagen wird
+#   auftakt, abschluss   Die Geschichte der Reise in ein bis drei Sätzen. Ohne Angabe nimmt die Automatik Tagline und Einleitung (Auftakt)
+#                bzw. den Ausblick (Abschluss) aus journeys.js.
+#   sichtbar     angedeutet (Standard: gesperrte Einheiten sind als graue Flecken zu sehen) | verborgen (nur für Überraschungen)
+episoden_zusatz:
+  - id: episode/saeen
+    gebiet: gebiet/anbau
+    etappe: onboarding
+    reihenfolge: 1
+    auftakt: "Ein Korn, ein Fingerhut Erde, ein Fensterbrett. Mehr brauchst du für den Anfang nicht. Du siehst, wie aus nichts etwas wird."
+    abschluss: "Das erste Grün hat dir gezeigt, dass Geduld sich lohnt. Wer weiß, was als Nächstes aufgeht."
+  - id: episode/pflege
+    gebiet: gebiet/anbau
+    etappe: scaffolding
+    reihenfolge: 2
+  - id: episode/ernte
+    gebiet: gebiet/anbau
+    etappe: scaffolding
+    reihenfolge: 3
+
+# ------------------------------------------------------------------------------------------------------------------------------ Gewicht und Stärke
+# gewichte: kritisch (Hauptquest: muss erreicht sein), wesentlich (Standard: zählt zu zwei Dritteln), optional (Nebenquest: zählt nicht, kann aber belohnen).
+# Das Gewicht gilt für die Einheit überall, wo sie liegt (auch auf mehreren Reisen). Mythos-Karten besser nicht kritisch machen, wenn sie auf mehreren Reisen liegen.
+# Die Automatik macht Kreuzungsstationen und die ersten beiden Stationen einer Reise kritisch und Stationen mit „Vertiefung“ im why-Feld optional.
+# Genauer geht es in spielplan-zuordnung/*.json (je Station), siehe unten.
+gewichte:
+  kritisch: [inhalt/boden]
+  optional: [inhalt/mondkalender]
+
+# quests: die Stärke einer Mythos-Karte, 1 bis 3 (1 = kurzer Einstieg, 3 = der große Gegner der Endgame-Reise).
+quests:
+  - { id: quest/mondkalender-mythos, staerke: 1 }
+
+# aufgaben: eigener Satz für die „nächste Aufgabe“ an einer Einheit, ein Text oder je Zielstufe ("1" angesehen, "2" geschafft). Ohne Angabe gibt es Standardsätze.
+aufgaben:
+  - id: inhalt/boden
+    aufgabe:
+      "1": "Nimm eine Handvoll Erde und sieh sie dir an."
+      "2": "Lies die Station zu Ende: Danach weißt du, was dein Boden braucht."
+
+# ------------------------------------------------------------------------------------------------------------------------------ Fähigkeiten
+# skills: das, was man danach kann. kann ist Pflicht und beginnt mit „Ich kann …“ (ein Satz, an dem sich Fortschritt messen lässt).
+# Eine Fähigkeit wird nie gesperrt; sie wächst mit den Einheiten, die sie üben. Wer sie übt, steht in der Zuordnung (uebt) oder hier unter geuebt_durch.
+# Die Automatik erzeugt keine Fähigkeiten: Den Satz schreibt ein Mensch.
+skills:
+  - id: skill/boden-lesen
+    name: Boden lesen
+    kann: "Ich kann an Farbe, Geruch und Krümeln erkennen, ob ein Boden locker und nährstoffreich ist."
+    geuebt_durch: [inhalt/boden, erlebnis/bodenprobe]
+
+# ------------------------------------------------------------------------------------------------------------------------------ Werkzeuge
+# werkzeuge: Ausrüstung (Methoden, Modelle, Heuristiken, Techniken, Apps), die man freischaltet und anwendet. Nimm echte Methoden deines Pakets,
+# keine Software, die das Museum nicht hat.
+#   sorte      modell | methode | heuristik | technik | app (ändert nichts an der Rechnung)
+#   adresse    wo das Museum es öffnet ("#/station/<id>")
+#   aus        die Einheit, aus der es stammt (Notiz); einsatz = Orte, an denen es zählt; kurz = ein Satz für den Reisepass (der Kern liest diese drei nicht)
+# Tipp: Die Id trägt den Namen der Station (werkzeug/<stations-id>), dann findet die Anbindung Station und Werkzeug zusammen.
+werkzeuge:
+  - id: werkzeug/pflanzplan
+    name: Pflanzplan
+    sorte: methode
+    adresse: "#/station/pflanzplan"
+    aus: inhalt/pflanzplan
+    einsatz: [inhalt/pflanzplan]
+    gewicht: optional
+    kurz: "Ein Beet auf dem Papier planen, bevor der erste Samen in die Erde kommt."
+
+# ------------------------------------------------------------------------------------------------------------------------------ Regeln
+# regeln: der Moment des Freischaltens. Jede Einheit, die eine Regel nennt (schaltet), ist gesperrt, bis die Bedingung (wenn) erfüllt ist.
+# Nennen mehrere Regeln dieselbe Einheit, genügt EINE: So entstehen alternative Wege. Gib jeder gesperrten Reise mindestens zwei Wege, die sich keine
+# Einheit teilen (zum Beispiel: die vorige Reise geschafft ODER eine Kreuzungsstation ODER ein Exponat). Dann sperrt kein einzelner Schlüssel für immer.
+# enthuellung: ein bis zwei Sätze, die genau dort erscheinen, wo man gerade handelt. Erzähle, was man jetzt kann oder sieht.
+#
+# Bedingungen (wenn):
+#   { einheit: inhalt/boden, stufe: 2 }                  eine Einheit hat die Stufe (Standard 2; im Museum: geschafft). einheit darf ein Muster mit * sein.
+#   { art: inhalt, in: episode/saeen, stufe: 2, mindestens: 3 }   mindestens 3 Stationen der Reise geschafft (mindestens: Zahl oder alle)
+#   { alle: [ … ] }  { eine: [ … ] }  { mindestens: 2, von: [ … ] }   verknüpfen: alle, eine davon, n davon
+#   { einheit: werkzeug/pflanzplan, stufe: 0, offen: true }          das Werkzeug ist offen (ohne dass man es benutzt haben muss)
+#   { takt: 3 }  { ab: 2026-11-02 }                      ab der dritten Woche; ab einem Datum (Freigabeplan für einen Durchgang)
+#   { wartezeit: { einheit: erlebnis/bodenprobe, stufe: 2, stunden: 18 } }   Pause nach einer Einheit. Nur als Alternative zu einem Weg ohne Pause.
+# Kurzformen an der Einheit (in einheiten): nach: <einheit> (erst danach), braucht: [werkzeug/…] (offen und einmal benutzt; die Anbindung muss dafür das Werkzeug melden).
+regeln:
+  # ein Werkzeug nach der ersten Station: kurzer Weg, schnelle Belohnung
+  - id: pflanzplan-erste
+    schaltet: [werkzeug/pflanzplan]
+    wenn: { einheit: inhalt/boden, stufe: 2 }
+    enthuellung: "Du weißt, was dein Boden braucht. Neu in deiner Ausrüstung: der Pflanzplan. Mit ihm ordnest du Beete, bevor du gräbst."
+  # eine gesperrte Reise mit zwei Wegen
+  - id: pflege-weiter
+    schaltet: [episode/pflege]
+    wenn: { einheit: episode/saeen, stufe: 2 }
+    enthuellung: "Das erste Grün steht. Jetzt geht es ums Pflegen: Die Reise „Pflege“ ist offen."
+  - id: pflege-exponat
+    schaltet: [episode/pflege]
+    wenn:
+      alle:
+        - { einheit: erlebnis/bodenprobe, stufe: 2 }
+        - { einheit: inhalt/boden, stufe: 2 }
+    enthuellung: "Dein Boden hat gesprochen. Wer ihn lesen kann, darf auch pflegen: Die Reise „Pflege“ steht dir offen."
+  # eine Pause als Alternative (höchstens eine im ganzen Spielplan; der Freie Zugang überspringt sie)
+  - id: pflanzplan-pause
+    schaltet: [werkzeug/pflanzplan]
+    wenn: { wartezeit: { einheit: erlebnis/bodenprobe, stufe: 2, stunden: 18 } }
+    enthuellung: "Eine Nacht nach der Bodenprobe: Dein Pflanzplan wartet. Er liegt jetzt in deiner Ausrüstung."
+
+# ------------------------------------------------------------------------------------------------------------------------------ Rhythmus
+# rhythmus: Wiedersehen, Takt und Verwitterung, ohne Serien, die reißen. Pausen kosten nichts: Wer lange weg war, bekommt eine Aufgabe, keine Bilanz.
+#   takt           tag | woche | monat; je Takt eine Aufgabe und ein kurzer Rückblick („diese Woche aufgegangen“); beginn: erstes-ereignis oder ein Datum
+#   wiederkehr     abstand_tage: nach wie vielen Tagen eine Einheit zum Wiedersehen vorgeschlagen wird; fuer: welche Einheiten ({ art: skill } oder { art: inhalt })
+#   verfall_tage   nach wie vielen Tagen ohne Berührung eine Einheit verwittert (Stufe und Freischaltung bleiben; sie darf wiederholt werden)
+# Standard der Automatik: Takt Woche, Wiederkehr nach 2, 7, 21 Tagen für Stationen, Verwitterung nach 35 Tagen.
+rhythmus:
+  takt: { laenge: woche, beginn: erstes-ereignis }
+  wiederkehr: { abstand_tage: [2, 7, 21], fuer: { art: skill } }
+  verfall_tage: 35
+
+# ------------------------------------------------------------------------------------------------------------------------------ Wörter und freie Einheiten
+# begriffe: die Wörter der Arten für die Sätze des Spielplans („Noch 3 Stationen, dann geht die Reise … auf“). Ohne Angabe nimmt der Generator die
+# Wörter aus pack.json (vocab); weicht ein Wort vom Standard ab, setze dort journeyArticle, stationArticle oder exhibitArticle (der, die, das).
+# Wortvorlage je Art: { art: das, sg: Gebiet, pl: Gebiete }. Ein Eintrag hier ersetzt die Wörter ganz.
+#begriffe:
+#  episode: { art: der, sg: Pfad, pl: Pfade }
+#
+# quest_vorsatz: Vorsatz vor dem Titel der Station im Namen einer Mythos-Karte (Standard „Mythos-Check: “). Einzelne Namen setzt die Zuordnung (name).
+#quest_vorsatz: "Mythos-Check: "
+#
+# einheiten: freie Einheiten, die die Ableitung nicht kennt (selten nötig; die Fähigkeiten gehören unter skills).
+#einheiten:
+#  - { id: inhalt/extra, art: inhalt, name: Ein Extra, in: episode/saeen }
+
+# ------------------------------------------------------------------------------------------------------------------------------ Zuordnung je Station
+# Gewicht, Fähigkeiten und Stärke je Station stehen besser in packs/<paket>/spielplan-zuordnung/*.json (eine Datei je Reise ist übersichtlich):
+#   { "boden": { "gewicht": "kritisch", "uebt": ["boden-lesen"] },
+#     "erlebnis/bodenprobe": { "uebt": ["boden-lesen"] },
+#     "quest/mondkalender-mythos": { "staerke": 1, "name": "Mythos-Check: Entscheidet der Mond?", "reihenfolge": 1 } }
+# Schlüssel ist eine Stations-id oder eine volle Einheiten-id. gewicht: kritisch | optional (sonst wesentlich); uebt: Fähigkeiten (Kurzname oder skill/…);
+# braucht: Werkzeuge einer Mythos-Karte; staerke: 1 bis 3; name: anderer Name der Einheit; reihenfolge: Zahl für die Reihenfolge der Aufgaben.
+
+# ------------------------------------------------------------------------------------------------------------------------------ Hinweise für bestimmte Themen
+# Sprachenlernen (zum Beispiel Niveau A1 bis A2)
+#   - Fähigkeiten sind die Kompetenzsätze nach Niveaustufen, je einer pro Handlung: „Ich kann mich vorstellen und nach dem Namen fragen.“,
+#     „Ich kann im Café etwas bestellen und nach dem Preis fragen.“ Ordne jede Station und jedes Exponat den Sätzen zu, die es übt (uebt).
+#   - Wiederkehr ist für Wortschatz gemacht: abstand_tage [1, 3, 7, 21] und fuer: { art: skill } bringt Wörter und Wendungen im Abstand zurück.
+#     Verwitterung (verfall_tage 21 bis 35) zeigt, was wieder aufzufrischen ist, ohne etwas wegzunehmen.
+#   - Der Takt Woche passt zu einem Lernrhythmus (eine Einheit je Woche); ein Takt Tag nur, wenn Menschen täglich üben wollen und das auch sollen.
+#   - Mythos-Karten für verbreitete Irrtümer („Man muss alle Vokabeln vorher lernen“) sind gute Einsteiger der Stärke 1.
+# Sensible Themen (zum Beispiel psychische Gesundheit, Aufmerksamkeit, Trauma)
+#   - Freier Zugang als Standard: Nenne den Schalter „Freier Zugang“ ausdrücklich im auftakt der ersten Reise, damit niemand durch Sperren ausgeschlossen wird,
+#     und halte die Sperren knapp: offen: [...] für alles, was Menschen am ehesten suchen. Gesperrt werden sollte eher Zusatz als Grundlage.
+#   - Keine Wartezeiten und kein Takt als Tor ({ takt: n }, { ab: … }, { wartezeit: … }): Eine Pause ist ein Vorschlag, nie eine Schranke.
+#   - Sicherheit vor Erinnerung: Mache Stationen, die Halt geben (Stabilisieren, Erden, Hilfe suchen), kritisch, damit eine Reise nicht „geschafft“ ist, bevor sie da waren.
+#   - Gib im abschluss schwerer Reisen einen Hinweis auf Hilfsangebote (stehen im Seitenende des Pakets) und lass die Wörter „Gegner“ und „Boss“ weg: Mythos-Karten der Stärke 3 sind
+#     anspruchsvoll, nicht feindlich. Lass Texte zu heiklen Themen fachlich lesen, bevor du veröffentlichst.
+# Aufmerksamkeit und ADHS: kurze Wege (die erste Freischaltung nach ein bis zwei Stationen), viele kleine Momente statt weniger großer, genau eine nächste Aufgabe, nie eine Liste.

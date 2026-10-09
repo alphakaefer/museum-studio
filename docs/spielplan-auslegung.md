@@ -323,3 +323,128 @@ Kürzel: H = Entscheidung beim Übernehmen des Kerns in dieses öffentliche Repo
 - **Auslegung:** Das Gerüst bleibt: Ids, Arten, Namen der Einheiten, Regeln und Rhythmus. Konformitätsset, Tests und die Beispiele in den Auslegungen hängen daran, und ein Beispiel für ein Format mit festen Feldern kann sich ohnehin nur wenig unterscheiden. Alle Freitexte (Auftakt, beide `kann`-Sätze, beide Enthüllungen) sind neu formuliert, das Konformitätsset ist neu erzeugt (`node tools/spielplan-test.mjs --schreibe-konformitaet`). Seit dieser Änderung stimmt in A25 nur noch der erste Teil („folgt dem kleinen Beispiel“), nicht mehr „geändert ist nur die `basis`“.
 - **Begründung:** Der Entwurf bleibt privat; ein öffentliches Beispiel darf seine Gestalt zeigen, aber nicht seinen Text. Geprüft mit einem Wortvergleich (Reihen gleicher Wörter, ab sechs in Folge) über alle Spielplan-Dateien: Übrig sind Feldnamen, Ids und die Namen der Einheiten.
 - **Vorschlag für den Standard:** Das Beispiel im Standard und das öffentliche Beispiel getrennt halten; zum Standard gehört ein eigenes freies Beispiel samt Konformitätsset, an dem sich andere Umsetzungen messen können, ohne den Text des Entwurfs zu brauchen.
+
+
+---
+
+## Generator: Spielplan aus dem Stationsplan (tools/spielplan-aus-plan.mjs)
+
+Kürzel: E = Entscheidung beim Erzeugen eines Spielplans aus den Daten eines Pakets, BE = Befund zum Standard, der dabei aufgefallen ist. Die Nummern gelten für diesen Abschnitt.
+Der Generator hat zwei Schichten: eine **Automatik** (`--auto`, ohne Handarbeit) und eine **kuratierte Schicht** (`packs/<paket>/spielplan-kern.yaml` plus `spielplan-zuordnung/*.json`, Vorlage:
+`docs/spielplan-vorlage-kern.yaml`). Die Automatik kennt keine Fachbegriffe; alle Texte entstehen aus Namen, Tagline, Einleitung, Ausblick und Stationstiteln des Pakets.
+
+### E1 · Ableitung: welche Quelle ist welche Einheit
+- **Stelle:** Abgleich der Einheitenarten (Zuordnung im Museum), 3.1 (`in`, `adresse`).
+- **Lücke:** Der Abgleich sagt „Reise = Episode, Station = Inhalt, Mythos-Karte = Quest, Exponat = Erlebnis, Werkzeug-Reise = Werkzeug“, aber nicht: Was ist eine Mythos-Karte, wenn nur ein Feld sie zeigt? Wie viele Einheiten ergibt ein Exponat, das an zwei Stationen hängt?
+  Sind alle Stationen einer Werkzeug-Reise Werkzeuge?
+- **Auslegung:** Je Reise eine Episode (`in` = Gebiet, `adresse` `#/reise/<id>`), je Station ein Inhalt (`in` = alle ihre Reisen, als Text bei einer, als Liste bei mehreren; `reihenfolge` = Platz in der ersten Reise),
+  je Station mit Mythos-Karte eine Quest `quest/<station>-mythos` (Mythos-Karte heißt: `kind` ist `mythos` **oder** die Station trägt ein Feld `myth` in `stationen/*.js`), je Exponat ein Erlebnis (steht es an mehreren Stationen, zählt die erste;
+  der Generator warnt). Eine Werkzeug-Reise (`tool: true`) ergibt je Station ein Werkzeug `werkzeug/<station>`, aber nur für die Arten `konzept` (Sorte `modell`), `methode` (`methode`) und `instrument` (`technik`);
+  eine Person oder ein Ereignis ist kein Werkzeug (Hinweis in der Ausgabe). Das Werkzeug trägt die Adresse seiner Station.
+- **Begründung:** Die Quellen liegen in `plan.json`, `journeys.js` und `stationen/*.js`; wer ein Paket baut, soll nichts doppelt eintragen. Die Id des Werkzeugs trägt den Namen der Station, damit die Anbindung beide zusammenfindet (G1).
+
+### E2 · Automatik: Gebiete aus den Reisetypen
+- **Stelle:** 3 (`gebiet`), Abgleich („Reisetypen oder Kartengruppen = Gebiet“).
+- **Lücke:** Wann ist ein Gebiet sinnvoll? Wie viele Reisen verträgt eines?
+- **Auslegung:** Je Reisetyp ein Gebiet, aber nur, wenn es mindestens zwei Reisen enthält (ein Gebiet mit einer Reise sagt nichts, was die Reise nicht schon sagt); bei einer einzigen Reise im Paket gibt es keines. Hat ein Typ mehr als fünf Reisen,
+  wird er in gleich große Teile zu höchstens fünf geteilt („Teil 1“, „Teil 2“; acht Reisen ergeben zwei Teile zu vier). Name aus `pack.journeyTypes`, Auftakt aus dessen Unterzeile und den Namen der Reisen, Abschluss ein Satz ohne Fachbezug.
+- **Begründung:** Gebiete tragen zwei Dinge: einen größeren Meilenstein („Gebiet geschafft“) und die Verteilung der offenen Reisen beim Start (E4).
+
+### E3 · Automatik: Etappen und Stärke der Mythos-Karten
+- **Stelle:** 3.3, 3.1 (`staerke`), Prüfung (Warnungen zu `onboarding` und `endgame`).
+- **Lücke:** Welche Reise ist Onboarding, welche Endgame? Woher kommt die Stärke?
+- **Auslegung:** Die erste Reise ist `onboarding`. Historische Reisen (Typ `historisch`) sind `entdecken`, alle übrigen `scaffolding`. Die letzte nicht historische Reise (nicht die erste) ist `endgame`, **aber nur, wenn eine Mythos-Karte bei ihr zu Hause ist**
+  (Heimat = erste Reise der Station); sonst bleibt sie `scaffolding`, und die Ausgabe sagt, warum. Die Stärke einer Mythos-Karte richtet sich nach der Etappe ihrer Heimat-Reise: onboarding und entdecken 1, scaffolding 2, endgame 3.
+  Hat die erste Reise keine Mythos-Karte zu Hause, bleibt sie trotzdem `onboarding`; die Prüfung warnt dann (siehe BE1), die Ausgabe nennt den Grund.
+- **Begründung:** Die Prüfung verlangt für `endgame` eine Quest der Stärke 3 und für `onboarding` eine der Stärke 1 in der Reise. Eine Etappe zu vergeben, die die Prüfung beim ersten Lauf bemängelt, wäre schlechter als sie wegzulassen. Das Onboarding ist dagegen
+  eine Eigenschaft der Reihenfolge im Museum (die erste Reise ist der Einstieg), nicht der Daten.
+
+### E4 · Automatik: der Start, ein Drittel der Reisen offen
+- **Stelle:** Grundsatz 5 (Gesperrtes ist angedeutet), 3.3 (`entdecken`, `onboarding`).
+- **Lücke:** Wie viel ist zu Beginn offen, und welche Reisen?
+- **Auslegung:** Offen sind `round(n / 3)` Reisen, mindestens eine, höchstens vier (n = Zahl der Reisen; bei n = 1 alle). Die erste Reise ist immer dabei. Die übrigen werden in drei Durchgängen über die Teile der Gebiete gezogen:
+  zuerst die erste Reise jedes Teils, dann die mittlere, dann die letzte, bis die Zahl erreicht ist. Bei acht Reisen in zwei Teilen sind das die Reisen 1, 5 und 3. Die übrigen Reisen sind angedeutet gesperrt, nichts ist verborgen.
+- **Begründung:** Wer neu ist, soll aus mehr als einer Tür wählen und zugleich sehen, dass es mehr gibt. Bei sechzehn Reisen bleiben vier offen: mehr Auswahl lähmt.
+
+### E5 · Automatik: „zwei unabhängige Regeln“ je gesperrter Reise
+- **Stelle:** 5, 5.3; Auslegung G3 („unabhängige Regeln“).
+- **Lücke:** G3 meint zwei Wege ohne gemeinsame Einheit. Eine Kreuzungsstation einer offenen Reise ist aber oft zugleich kritisch in der Reise, deren Stufe der andere Weg verlangt.
+- **Auslegung:** Jede gesperrte Reise bekommt Regeln (Alternativen, nach Kosten sortiert gebaut): **schnell**, nur für die erste gesperrte Reise: die zwei ersten Stationen der ersten Reise auf Stufe 2 (die erste Freischaltung nach zwei Stationen, Moment des Onboardings);
+  **weiter**: die vorige Reise auf Stufe 2 (entfällt, wo „schnell“ sie einschließt); **kreuzung**: eine Kreuzungsstation der Reise, deren andere Reise früher kommt oder zu Beginn offen ist (so entsteht nie ein Kreis);
+  **exponat**: ein Exponat einer solchen früheren oder offenen Reise. Bevorzugt werden Schlüssel, die noch keine andere Reise öffnen (sonst öffnete eine Station alles auf einmal), nicht in der Vorgänger-Reise liegen, nicht kritisch und nicht optional sind.
+  Hängen alle Wege an derselben Einheit oder gibt es nur einen, kommt eine **zweite Kreuzung**, zuletzt **takt**: `{ takt: n }`, die Zeit allein öffnet die Reise (niemand steht für immer vor einer Tür).
+  „Unabhängig“ heißt hier: **keine einzelne Einheit sperrt alle Wege** (Engpass-Analyse E10), nicht: die Wege teilen sich keinen Pfad. Das Fehlen eines gemeinsamen Pfades verlangt der Generator nicht, er vermeidet ihn nur, wo die Daten es erlauben.
+- **Begründung:** Der strenge Begriff (zwei Stützmengen ohne Schnitt) ist in kleinen Paketen nicht zu erfüllen: Bei zwei Reisen ist jede Kreuzungsstation Teil beider. Die schwächere, prüfbare Form schützt vor dem Fall, um den es G3 geht: Ein einzelner Schlüssel, der ausfällt, sperrt nichts für immer.
+- **Grenze:** Ein Schlüssel öffnet eine Reise nach einem oder zwei Schritten. Das ist Absicht (schnelle Momente), macht die Sperren aber dünn: In den drei Beispielpaketen geht alles, was die Automatik sperrt, nach höchstens zwei Schritten auf. Gewollt langsamere Dramaturgie
+  schreibt der Kern (Meilensteine mit `mindestens`, Ketten über Werkzeuge, siehe E13).
+
+### E6 · Automatik: Gewicht
+- **Stelle:** 3.2, 4.1, B13, G4.
+- **Auslegung:** Kritisch sind die beiden ersten Stationen jeder Reise und jede Station, die auf mehr als einer Reise liegt. Wesentlich sind Mythos-Karten und ihre Stationen (eine Quest ist nie kritisch, G4) und alles Übrige.
+  Optional sind Stationen, deren `why` das Wort „Vertiefung“ nennt; es geht den beiden anderen Regeln vor (eine Kreuzung, die sich als Vertiefung ausgibt, ist keine Hauptquest). Mit der Zuordnung (`gewicht`) und dem Kern (`gewichte`) lässt sich jedes Gewicht ändern.
+- **Begründung:** Die ersten Stationen tragen den Einstieg (G5), Kreuzungen sind die Stellen, die das Museum ausmachen. Die Kopplung durch Gewicht je Einheit nimmt die Automatik in Kauf (B13).
+
+### E7 · Automatik: Werkzeuge einer Werkzeug-Reise
+- **Stelle:** 3 (`werkzeug`), 4.2, G1, G2.
+- **Lücke:** Wie kommt ein Werkzeug auf Stufe 2, wenn das Museum keine Meldung „Werkzeug benutzt“ kennt? Soll es gesperrt sein?
+- **Auslegung:** Mit `--auto` geht jedes abgeleitete Werkzeug (E1) nach seiner Station auf (Regel `werkzeug-<station>`, `inhalt/<station>` Stufe 2, Enthüllung „Neu in deiner Ausrüstung: …“ mit dem Teaser der Station), ist **optional** (Nebenquest) und nie Bedingung einer anderen Regel. Ohne `--auto` bleibt es offen, bis der Kern es sperrt.
+  Die Automatik verlangt von keinem Werkzeug eine Stufe über 0; wo eine Regel ein Werkzeug braucht, schreibt der Kern `{ einheit: werkzeug/…, stufe: 0, offen: true }` (A8).
+- **Begründung:** Solange die Anbindung nicht zusichert, dass sie Werkzeuge meldet, darf kein Weg des Spiels davon abhängen. Als Nebenquest blockiert ein Werkzeug weder eine Sammlung noch eine Reise. Das Feld `einsatz` (Orte, an denen ein Werkzeug zählt, G2) steht an den Werkzeugen der kuratierten Schicht;
+  der Kern liest es nicht, die Anbindung darf es lesen und bei Station oder Exponat zugleich `mit: [werkzeug/…]` melden (A7).
+
+### E8 · Automatik: eine einzige Reise wird in drei Kapitel geteilt
+- **Stelle:** Grundsatz 6 (der Moment zählt), 3.3.
+- **Lücke:** Ein Paket mit einer Reise hat nichts, was sich sperren ließe: kein Moment, kein Spiel.
+- **Auslegung:** Hat das Paket genau eine Reise mit mindestens sechs Stationen, teilt der Generator ihre Stationen in drei gleiche Kapitel. Das erste ist offen. Kapitel 2 und 3 (samt Mythos-Karten und Exponaten ihrer Stationen) gehen auf, wenn zwei Stationen des
+  vorigen Kapitels geschafft sind **oder** ein Exponat des vorigen Kapitels (nie eines früheren: sonst öffnete ein Exponat alle Kapitel auf einmal) **oder** (ohne Exponat) die nächste Woche (`takt`). Die Enthüllung nennt Zahl und erste Station des neuen Kapitels.
+- **Begründung:** Eine Sperre in der einzigen Reise ist die einzige Quelle für Momente. Sie ist kurz (zwei Stationen) und hat immer einen zweiten Weg; der Freie Zugang öffnet alles. Bei mehr als einer Reise gibt es keine Kapitel: Dort sperren Reisen.
+
+### E9 · Kern über Automatik
+- **Stelle:** Abgleich („Zuordnung im Museum“), Auftrag („kuratierte Schicht überschreibt die Automatik, Konflikte melden“).
+- **Auslegung:** Mit `--auto` entsteht erst die Automatik, dann legt der Kern (`spielplan-kern.yaml` oder `--kern=datei`) sich abschnittsweise darüber. `id`, `name`, `basis`, `nur_lokal`, `stufen`, `begriffe`, `rhythmus`, `quest_vorsatz` und `gebiete` ersetzt der Kern ganz;
+  `episoden_zusatz`, `gewichte`, `quests`, `aufgaben`, `skills`, `werkzeuge` und `einheiten` mischen sich je Id (der Kern gewinnt je Feld). **Regeln:** Regeln des Kerns gehen vor; eine Regel der Automatik entfällt für jedes Ziel, das eine Regel des Kerns nennt,
+  und für jede Einheit, die der Kern unter `offen` führt; Regeln mit gleicher Id ersetzt der Kern. Jede Ersetzung steht als „Hinweis“ in der Ausgabe (nie als Warnung, damit `--streng` nicht daran scheitert). Ohne `--auto` gilt nur der Kern.
+  Die Zuordnung (`gewicht`, `uebt`, `braucht`, `staerke`, `name`, `reihenfolge`) wirkt in beiden Fällen zuletzt; ihre `uebt`-Einträge müssen Fähigkeiten nennen, die der Kern anlegt (sonst meldet die Prüfung unbekannte Einheiten).
+- **Begründung:** Wer einen Teil kuratiert, soll den Rest nicht neu schreiben müssen. Die Umkehrung (Automatik füllt nur Lücken) lässt Hinweise genau dort entstehen, wo der Kern die Automatik ablöst.
+
+### E10 · Engpass-Analyse (Umsetzung von G3)
+- **Stelle:** 5.3; G3 („check-spielplan meldet Engpässe nicht selbst“).
+- **Auslegung:** `check-spielplan --wege` (und der Bericht des Generators mit `--wege`) spielt den Kern als Spielerin: Für jede Einheit, an der man etwas tun kann, wird eine Spielerin gerechnet, die diese eine Einheit nie anfasst, alles andere Offene aber bis zur höchsten Stufe spielt und beliebig lange wartet.
+  Was dadurch nie aufgeht, hat diese Einheit als **Engpass**. Kandidaten sind kritische Einheiten, in Regeln genannte Einheiten und Mitglieder kleiner Sammlungen (bei höchstens zwei wesentlichen Mitgliedern braucht die Stufe alle). Gemeldet werden Engpässe nur bei gesperrten Einheiten mit mindestens zwei Regeln;
+  Einheiten mit genau einem Weg (Werkzeuge nach einer Station) stehen getrennt („Nur ein Weg“).
+- **Begründung:** Die Rechnung braucht nur den Kern, keine neue Logik. Sie ist einfach (Anzahl Einheiten mal ein Spielverlauf) und dauert bei 90 Einheiten unter einer Sekunde. Sie prüft die Robustheit gegen den Ausfall **einer** Einheit, nicht gegen zwei.
+
+### E11 · Spielzeit: Schritte, wenn man der Aufgabe folgt
+- **Stelle:** 5.6; Auftrag („rechne die Spielzeit“).
+- **Auslegung:** `spielzeit` lässt eine Spielerin jeweils der einen nächsten Aufgabe folgen. **Ein Schritt bringt eine Einheit** (Station, Mythos-Karte, Exponat) mit einem Ereignis `geschafft` auf Stufe 2 (Museum: höchste vergebene Stufe); zwischen zwei Schritten vergehen vier Minuten (`--minuten=` ändert das).
+  Gibt es nichts zu tun und ist noch etwas gesperrt, vergeht eine Woche. Gemessen werden: Schritte bis zur ersten Freischaltung, bis alles offen ist, bis keine Aufgabe mehr bleibt (alles auf Stufe 2), dazu die Momente (Freischaltung mit Schrittnummer).
+  Fällige Wiederkehr kommt in dieser Rechnung nicht vor, weil die Zeit nur Minuten läuft.
+- **Begründung:** Der Kern zählt „Schritte“ in Stufen („Noch 2 Schritte“ für eine unberührte Station, BE2); für Menschen ist eine Station ein Schritt. Die vier Minuten sind eine Annahme, keine Messung; die Zahlen taugen zum Vergleichen von Plänen, nicht zum Versprechen.
+
+### E12 · Vorgaben und Ausgabe
+- **Auslegung:** `nur_lokal` ist ohne Angabe **true** (das Museum sendet nichts; der Kern verweigert dann jeden anderen Speicher als lokal). Die Id des Spielplans ist `museum-` plus die Id des Pakets als Bezeichner (`_vorlage` wird `museum-vorlage`). Ohne `basis` steht eine Beispieladresse. Die Wörter der Sätze („Reise“, „Station“, „Exponat“)
+  kommen aus `pack.vocab`; weicht ein Wort vom Standard ab und fehlt `vocab.journeyArticle`, `stationArticle` oder `exhibitArticle`, nennt die Ausgabe es als Hinweis, denn der Generator kann den Artikel eines deutschen Wortes nicht raten. Die Ausgabe ist **kanonisch**: feste Reihenfolge der Schlüssel, Einheiten
+  in der Reihenfolge der Quellen, Regeln in der Reihenfolge der Reisen; zweimal erzeugt ist sie byte-gleich (getestet).
+
+### E13 · Das Beispielpaket (kuratierte Schicht): Gestaltungsentscheidungen
+Alle Entscheidungen gelten für `packs/beispiel-gehirn` und zeigen, was der Kern kann; sie sind keine Vorgabe für andere Pakete.
+- **Etappen:** Die Etappen folgen der Lernrichtung, nicht der Anzeigereihenfolge: Verzerrungen (Onboarding), Verhaltenstherapie (Scaffolding), Trauma (Endgame, mit der einzigen Mythos-Karte der Stärke 3). `reihenfolge` der Reisen entspricht der Lernrichtung.
+- **Das ernste Gebiet bleibt offen.** Die Reise zu Trauma ist von Anfang an offen (Autonomie bei sensiblen Themen); gesperrt ist nur die schwerste Mythos-Karte. Die Stationen, die Sicherheit vor Erinnerung stellen (Begriff, Toleranzfenster, Stabilisierung, Grounding), sind kritisch.
+- **Zwei bis drei Wege:** Die gesperrte Reise (Verhaltenstherapie) hat drei Wege ohne gemeinsame Einheit: zwei Stationen der Urteilsforschung, zwei Selbstversuche an Exponaten, oder die ganze erste Reise. Die Mythos-Karte der Stärke 3 hat zwei: eine Fähigkeit auf Stufe 2 oder vier Werkzeuge in der Ausrüstung.
+- **Werkzeuge:** Die Id trägt den Namen der Station, `aus` nennt die Station, `einsatz` die Orte. Der Besitz („offen“, Stufe 0) ist die Bedingung anderer Regeln, nie die Benutzung (E7). Ketten entstehen so: Das Gedankenprotokoll öffnet Reframing (zusammen mit sechs Stationen der Reise), das Toleranzfenster das Grounding.
+- **Die eine Wartezeit:** Das Verhaltensexperiment geht auf, wenn die Fähigkeit „Gedanken prüfen“ erreicht ist, **oder** nach der Station und achtzehn Stunden Pause nach dem Gedankenprotokoll. Die Pause ist die Alternative zu mehr Arbeit, nie das einzige Tor; der Freie Zugang überspringt sie (A20).
+- **Fähigkeiten:** Sechs Fähigkeiten mit „Ich kann …“-Satz; die Zuordnung (`uebt`) hängt Stationen, Exponate und eine Mythos-Karte an sie. Kritische Mitglieder einer Fähigkeit sind dieselben Einheiten, die in ihrer Reise kritisch sind; wer die Fähigkeit schaffen will, muss die Hauptquests der Reise getan haben.
+  Eine Fähigkeit, die eine Regel öffnet, darf die Einheit nicht selbst üben (die Mythos-Karte der Stärke 3 zählt zu keiner Fähigkeit, sonst entstünde ein Kreis).
+- **Rhythmus:** Takt Woche; Wiedersehen nach 2, 7 und 21 Tagen **für Fähigkeiten** (das Wiedersehen nennt dann den „Ich kann“-Satz); Verwitterung nach 35 Tagen.
+
+### Befunde zum Standard (aus dem Bau des Generators)
+Je Befund: Abschnitt, Problem, Vorschlag. Nummern BE1 bis BE6 gehören zu diesem Abschnitt und setzen die Tabelle B1 bis B19 oben fort.
+
+| Nr | Abschnitt | Problem | Vorschlag |
+|---|---|---|---|
+| BE1 | 3.3 | `onboarding` und `endgame` setzen eine Quest voraus (Stärke 1 und 3). Ein Paket ohne Mythos-Karten, die einzige Quest-Quelle im Museum, kann die Etappen nicht ohne Warnung vergeben. Der Abgleich sagt nicht, woher Quests kommen, wenn ein Angebot keine hat. | Etappe und Quest entkoppeln oder eine zweite Quelle von Quests nennen (Aufgaben an Exponaten, Übungen). |
+| BE2 | 5.6 | Die Entfernung zu einer Regel zählt Stufen, nicht Einheiten: Eine unberührte Station ist „2 Schritte“ entfernt, obwohl ein einziges Ereignis `geschafft` sie auf Stufe 2 hebt. Der Satz „Noch 2 Schritte“ stimmt für den Kern und täuscht den Menschen. | Entfernung in Einheiten zählen und die Stufe nur zur Reihenfolge benutzen; der Kern liefert `noch_einheiten` bereits. |
+| BE3 | 5.4, 4.2 | `braucht` verlangt „offen und schon einmal benutzt“ (Stufe 1). Ein Angebot, das den Gebrauch eines Werkzeugs nicht meldet, kann diese Bedingung nie erfüllen; eine Quest, die ein Werkzeug `braucht`, bleibt für immer zu. Die Alternative `offen: true` mit Stufe 0 (A8) ist nirgends als Kurzform vorgesehen. | Eine Kurzform für Besitz (`hat`) neben `braucht` führen; in 4.2 sagen, welche Meldungen ein Angebot für Werkzeuge liefern muss. |
+| BE4 | 5, 5.6 | Die nächste Aufgabe wählt die billigste Regel. Hat eine Reise einen kurzen und einen langen Weg, ist der lange nie die Aufgabe, und die Sperre dauert so lange wie der kurze Weg. Der Standard sagt nichts darüber, wie lang ein Weg sein darf, und „zwei Wege“ wirkt als zweimal der billigste. | Empfehlen, die Wege nach Kosten zu staffeln (ein kurzer, ein mittlerer), und die Prüfung die Kosten je Weg nennen lassen. |
+| BE5 | 3.2, B13 | Das Gewicht je Einheit macht die Kreuzung zugleich zum Schlüssel einer Reise und zur Pflicht der anderen: Der kurze Weg über die Kreuzungsstation ist dann kein unabhängiger Weg zur langen Pflicht der Nachbarreise. In Paketen mit zwei Reisen ist strenge Unabhängigkeit nicht zu haben (E5). | `in: [{ id, gewicht }]` (B13) oder die schwächere, prüfbare Unabhängigkeit (kein Engpass einzelner Einheiten) als Begriff einführen. |
+| BE6 | 3.3 | `entdecken` hat keine Bedeutung für Rechnung und Prüfung (sie warnt nur bei `onboarding` und `endgame`). Der Generator gebraucht sie für historische Reisen; das steht so nicht im Standard. | Sagen, wofür `entdecken` gilt (Reisen ohne eigene Hauptquest, Erkundungen) und was die Prüfung dazu verlangt. |

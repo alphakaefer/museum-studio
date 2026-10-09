@@ -1,0 +1,22 @@
+{
+  "_hinweis": "Zuordnung je Station der Reise „trauma“ (Endgame). Kritisch sind die Stationen, die Sicherheit vor Erinnerung stellen: Begriff, Toleranzfenster, Stabilisierung, Grounding. Die Mythos-Karte der Stärke 3 ist die Hauptquest der Reise.",
+  "trauma-begriff": { "gewicht": "kritisch", "uebt": ["ideen-nachzeichnen"] },
+  "anna-o": { "uebt": ["ideen-nachzeichnen"] },
+  "janet": { "uebt": ["ideen-nachzeichnen"] },
+  "kriegszitterer": { "uebt": ["ideen-nachzeichnen"] },
+  "ueberlebende-niederland": { "uebt": ["ideen-nachzeichnen"] },
+  "ptbs-kptbs": { "uebt": ["ideen-nachzeichnen"] },
+  "amygdala-furcht": { "uebt": ["erregung-einordnen"] },
+  "seligman-mismatch": { "uebt": ["lernen-erklaeren"] },
+  "toleranzfenster": { "gewicht": "kritisch", "uebt": ["erregung-einordnen"] },
+  "erlebnis/toleranzfenster": { "uebt": ["erregung-einordnen"] },
+  "polyvagal": { "uebt": ["erregung-einordnen"] },
+  "winnicott": { "gewicht": "optional" },
+  "bion-containing": { "gewicht": "optional" },
+  "mansuy": { "gewicht": "optional" },
+  "yehuda": { "gewicht": "optional" },
+  "stabilisierung": { "gewicht": "kritisch", "uebt": ["erregung-einordnen"] },
+  "grounding": { "gewicht": "kritisch", "uebt": ["erregung-einordnen"] },
+  "quest/verdraengte-erinnerungen-mythos": { "gewicht": "kritisch", "staerke": 3 },
+  "rekonsolidierung": { "uebt": ["lernen-erklaeren"] }
+}

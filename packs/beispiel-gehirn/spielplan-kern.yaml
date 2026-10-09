@@ -1,0 +1,226 @@
+# Kuratierte Schicht des Beispielpakets: von Hand gemachter Spielplan, der zeigt, was alles geht.
+# Erzeugen: node tools/spielplan-aus-plan.mjs beispiel-gehirn      (ohne --auto: nur das hier plus die Zuordnung je Station)
+# Prüfen:   node tools/check-spielplan.mjs beispiel-gehirn --streng --bericht --wege
+# Aufbau und alle Felder: docs/spielplan-vorlage-kern.yaml. Die Zuordnung je Station (Gewicht, Fähigkeiten, Stärke) steht in spielplan-zuordnung/.
+#
+# Die Geschichte in drei Etappen (die Reihenfolge der Etappen ist nicht die Anzeigereihenfolge der Reisen):
+#   verzerrung  Onboarding   Ein Strich, ein Werkzeug: schon die erste Station schenkt das Pre-Mortem. Gesperrtes ist angedeutet (Zielzustand sichtbar).
+#   kvt         Scaffolding  Das Werkzeugkasten-Kapitel: Gedanken prüfen. Öffnet sich über eine Brücke, ein Exponat oder die ganze erste Reise.
+#   trauma      Endgame      Das ernste Gebiet ist von Anfang an offen (Autonomie bei sensiblen Themen); gesperrt ist nur die schwerste Mythos-Karte.
+# Eine einzige Pause (Wartezeit) gibt es, und nur als Alternative zu einem Weg ohne Pause; der Freie Zugang überspringt sie.
+
+nur_lokal: true
+stufen: { anteil: "2/3", bis: 2 }
+
+# Nur wichtig, wenn jemand mit --auto erzeugt: Das ernste Gebiet bleibt offen (die Automatik würde es sperren), alles andere regelt dieser Kern.
+offen: [episode/trauma]
+
+gebiete:
+  - id: gebiet/wirklichkeit
+    name: Wirklichkeit und Urteil
+    reihenfolge: 1
+    auftakt: "Hier beginnt das Museum mit einer unbequemen Frage: Wie verlässlich ist das, was du siehst und glaubst? Du erkundest, wie das Gehirn Wirklichkeit baut und wo es sich dabei verrechnet."
+    abschluss: "Du kennst jetzt die typischen Stolpersteine des Urteilens und ein paar Werkzeuge, sie zu umgehen. Der Weg in die Klinik steht dir offen."
+  - id: gebiet/klinik
+    name: Klinik und Therapie
+    reihenfolge: 2
+    auftakt: "Hier geht es um Menschen, deren Erleben ihnen zur Last wird, und um Verfahren, die helfen sollen. Das Gebiet ist ernst und nüchtern; du bestimmst das Tempo."
+    abschluss: "Du hast beide Seiten gesehen: wie man Gedanken prüft und wie Belastendes das Gehirn prägt. Vieles ist gut belegt, manches wird noch gestritten."
+
+episoden_zusatz:
+  - id: episode/verzerrung
+    gebiet: gebiet/wirklichkeit
+    etappe: onboarding
+    reihenfolge: 1
+    auftakt: "Du glaubst, du siehst die Welt, wie sie ist. Zwei Striche, eine Zahl und ein Wort werden dir zeigen, dass dein Kopf mit Abkürzungen arbeitet. Keine Sorge: Du wirst dabei nicht dümmer, nur ehrlicher mit dir selbst."
+    abschluss: "Wer seine Denkfallen kennt, tappt trotzdem weiter hinein, nur mit mehr Humor. Du weißt jetzt, wo es sich lohnt, kurz innezuhalten, und wann eine Abkürzung einfach klug ist."
+  - id: episode/kvt
+    gebiet: gebiet/klinik
+    etappe: scaffolding
+    reihenfolge: 2
+    auftakt: "Was wäre, wenn nicht die Dinge selbst uns aufwühlen, sondern das, was wir über sie denken? Von einem Satz aus der Antike führt die Reise zu einem Werkzeugkasten, den du Station für Station selbst in die Hand nimmst."
+    abschluss: "Die Verhaltenstherapie ist gut erforscht, aber nicht allmächtig, und manchmal genügt es vielleicht, Gedanken nur anzuschauen. Ein paar Werkzeuge hast du jetzt; ob und wann du sie brauchst, entscheidest du."
+  - id: episode/trauma
+    gebiet: gebiet/klinik
+    etappe: endgame
+    reihenfolge: 3
+    auftakt: "Manche Erfahrungen sind zu groß, um sich in eine normale Erinnerung einzufügen. Diese Reise ist ernst; sie führt nicht in die Dunkelheit hinein, sondern durch sie hindurch. Geh in deinem Tempo und mach Pausen, wann du willst."
+    abschluss: "Vieles über Trauma ist inzwischen gut verstanden, vieles wird noch gestritten. Wenn dich etwas persönlich berührt hat: Sprich mit jemandem, dem du vertraust. Hilfsangebote findest du unten auf jeder Seite."
+
+# Fähigkeiten: der „Ich kann …“-Satz ist der angedeutete Zielzustand. Sie gehen nie zu, sie wachsen mit den Stationen, die sie üben (Zuordnung: uebt).
+skills:
+  - id: skill/denkfehler-erkennen
+    name: Denkfehler erkennen
+    kann: "Ich kann typische Denkfehler wie Anker, Verfügbarkeit und Bestätigungsfehler an Beispielen erkennen und benennen."
+  - id: skill/belege-pruefen
+    name: Belege prüfen
+    kann: "Ich kann prüfen, ob eine Behauptung belegt ist: Wer hat sie untersucht, ließ sie sich wiederholen, und was würde sie widerlegen?"
+  - id: skill/gedanken-pruefen
+    name: Gedanken prüfen
+    kann: "Ich kann einen Gedanken aufschreiben und wie eine Hypothese prüfen: Was spricht dafür, was dagegen, und was wäre eine ausgewogene Alternative?"
+  - id: skill/erregung-einordnen
+    name: Erregung einordnen
+    kann: "Ich kann das Toleranzfenster erklären und Übererregung von Erstarrung unterscheiden."
+  - id: skill/lernen-erklaeren
+    name: Lernen erklären
+    kann: "Ich kann erklären, wie Lernen im Gehirn zusammenhängt: Wiederholung stärkt Verbindungen, Überraschung korrigiert Erwartungen, und auch Ängste lassen sich neu lernen."
+  - id: skill/ideen-nachzeichnen
+    name: Ideen nachzeichnen
+    kann: "Ich kann nachzeichnen, wie aus einer Beobachtung ein Begriff und aus dem Begriff eine Diagnose oder Methode wurde."
+
+# Ausrüstung: echte Methoden und Modelle des Pakets, je offen nach der Station (oder dem Exponat), an der man sie kennenlernt.
+# Die id trägt den Namen der Station; aus = die Station, einsatz = die Orte, an denen das Werkzeug zählt (der Kern liest beides nicht, die Anbindung darf).
+werkzeuge:
+  - id: werkzeug/premortem
+    name: Pre-Mortem
+    sorte: methode
+    adresse: "#/station/premortem"
+    aus: inhalt/premortem
+    einsatz: [inhalt/premortem, quest/phrenologie-mythos]
+    gewicht: optional
+    kurz: "Stell dir vor, dein Plan sei gescheitert, und erkläre warum."
+  - id: werkzeug/gedankenprotokoll
+    name: Gedankenprotokoll
+    sorte: methode
+    adresse: "#/station/gedankenprotokoll"
+    aus: inhalt/gedankenprotokoll
+    einsatz: [erlebnis/gedankenprotokoll, inhalt/gedankenprotokoll]
+    gewicht: optional
+    kurz: "Situation, Gefühl, Gedanke, Belege dafür und dagegen, eine Alternative."
+  - id: werkzeug/reframing
+    name: Reframing
+    sorte: technik
+    adresse: "#/station/reframing"
+    aus: inhalt/reframing
+    einsatz: [inhalt/reframing]
+    gewicht: optional
+    kurz: "Die Deutung ändern, ohne Fakten zu leugnen."
+  - id: werkzeug/verhaltensexperiment
+    name: Verhaltensexperiment
+    sorte: methode
+    adresse: "#/station/verhaltensexperiment"
+    aus: inhalt/verhaltensexperiment
+    einsatz: [inhalt/verhaltensexperiment]
+    gewicht: optional
+    kurz: "Eine Befürchtung im Alltag testen wie eine Forscherin."
+  - id: werkzeug/grounding
+    name: Grounding 5-4-3-2-1
+    sorte: technik
+    adresse: "#/station/grounding"
+    aus: inhalt/grounding
+    einsatz: [inhalt/grounding]
+    gewicht: optional
+    kurz: "Aufmerksamkeit über die Sinne zurück ins Hier holen."
+  - id: werkzeug/toleranzfenster
+    name: Toleranzfenster
+    sorte: modell
+    adresse: "#/station/toleranzfenster"
+    aus: inhalt/toleranzfenster
+    einsatz: [erlebnis/toleranzfenster, inhalt/toleranzfenster]
+    gewicht: optional
+    kurz: "Eine Denkhilfe: der Bereich, in dem du zuhören, nachdenken und aushalten kannst."
+
+# Die erste Aufgabe soll die erste Station sein; sie sagt in Sätzen, was sie bringt.
+aufgaben:
+  - id: inhalt/muller-lyer
+    aufgabe:
+      "1": "Schau dir die beiden Striche an: Welcher ist länger?"
+      "2": "Miss nach und lies die Station zu Ende: Dein Kopf wird trotzdem anderer Meinung sein."
+
+regeln:
+  # --- Onboarding: ein Werkzeug schon nach der ersten Station (kurzer Weg, schnelle Belohnung)
+  - id: premortem-erste
+    schaltet: [werkzeug/premortem]
+    wenn: { einheit: inhalt/muller-lyer, stufe: 2 }
+    enthuellung: "Zwei gleich lange Striche, und dein Kopf bleibt dabei: Wissen allein schützt nicht vor Täuschung. Darum gibt es Verfahren. Dein erstes liegt jetzt in der Ausrüstung: das Pre-Mortem."
+  - id: premortem-station
+    schaltet: [werkzeug/premortem]
+    wenn: { einheit: inhalt/premortem, stufe: 2 }
+    enthuellung: "Neu in deiner Ausrüstung: das Pre-Mortem. Stell dir vor, dein Plan sei gescheitert, und erkläre, warum; so fängst du Fehler ab, bevor sie passieren."
+
+  # --- Die Reise „Kognitive Verhaltenstherapie“: drei Wege, die sich keine Einheit teilen
+  # (zwei Stationen der Denkfehler-Forschung, zwei Selbstversuche an Exponaten, oder die ganze erste Reise)
+  - id: kvt-bruecke
+    schaltet: [episode/kvt]
+    wenn:
+      alle:
+        - { einheit: inhalt/kahneman-tversky, stufe: 2 }
+        - { einheit: inhalt/bestaetigungsfehler, stufe: 2 }
+    enthuellung: "Du kennst die Abkürzungen des Urteils und den Bestätigungsfehler, der Überzeugungen am Leben hält, auch belastende. Genau dort setzt die Reise „Kognitive Verhaltenstherapie“ an, und sie steht dir jetzt offen."
+  - id: kvt-exponate
+    schaltet: [episode/kvt]
+    wenn:
+      alle:
+        - { einheit: erlebnis/wason, stufe: 2 }
+        - { einheit: erlebnis/anker, stufe: 2 }
+    enthuellung: "Zwei Versuche an dir selbst: Du suchst Treffer statt Widerlegungen, und eine Zufallszahl zieht deine Schätzung. Von hier führt ein Weg in die Reise „Kognitive Verhaltenstherapie“, wo Gedanken wie Hypothesen geprüft werden."
+  - id: kvt-weiter
+    schaltet: [episode/kvt]
+    wenn: { einheit: episode/verzerrung, stufe: 2 }
+    enthuellung: "Du kennst jetzt die Abkürzungen, mit denen dein Kopf dich hereinlegt. Der nächste Schritt ist, Gedanken zu prüfen: Die Reise „Kognitive Verhaltenstherapie“ steht dir offen."
+
+  # --- Ausrüstung der Verhaltenstherapie: Meilensteine in der Reise (sechs Stationen) und das Exponat samt Station
+  - id: gedankenprotokoll-ausprobiert
+    schaltet: [werkzeug/gedankenprotokoll]
+    wenn:
+      alle:
+        - { einheit: inhalt/gedankenprotokoll, stufe: 2 }
+        - { einheit: erlebnis/gedankenprotokoll, stufe: 2 }
+    enthuellung: "Du hast ein Gedankenprotokoll geschrieben: Situation, Gefühl, Gedanke, Alternative. Es liegt jetzt in deiner Ausrüstung und wartet auf den nächsten Gedanken, der sich wie eine Tatsache anfühlt."
+  - id: reframing-meilenstein
+    schaltet: [werkzeug/reframing]
+    wenn:
+      alle:
+        - { art: inhalt, in: episode/kvt, stufe: 2, mindestens: 6 }
+        - { einheit: werkzeug/gedankenprotokoll, stufe: 0, offen: true }
+    enthuellung: "Sechs Stationen der Verhaltenstherapie liegen hinter dir, und das Gedankenprotokoll ist dein Werkzeug. Neu in deiner Ausrüstung: Reframing. Das Problem bleibt, aber du darfst den Rahmen wechseln."
+  # Das Verhaltensexperiment: entweder du kannst Gedanken prüfen, oder du lässt eine Nacht zwischen Protokoll und Alltag (die einzige Pause, und nur als Alternative).
+  - id: verhaltensexperiment-koennen
+    schaltet: [werkzeug/verhaltensexperiment]
+    wenn: { einheit: skill/gedanken-pruefen, stufe: 2 }
+    enthuellung: "Wer Gedanken prüfen kann, darf sie jetzt auch testen: Das Verhaltensexperiment liegt in deiner Ausrüstung. Prüfe eine Befürchtung wie eine Forscherin, nicht wie eine Richterin."
+  - id: verhaltensexperiment-pause
+    schaltet: [werkzeug/verhaltensexperiment]
+    wenn:
+      alle:
+        - { einheit: inhalt/verhaltensexperiment, stufe: 2 }
+        - { wartezeit: { einheit: erlebnis/gedankenprotokoll, stufe: 2, stunden: 18 } }
+    enthuellung: "Eine Nacht nach dem Gedankenprotokoll: Jetzt darfst du deine Hypothese im Alltag testen. Das Verhaltensexperiment liegt in deiner Ausrüstung."
+
+  # --- Ausrüstung der Traumareise: erst Sicherheit, dann alles Weitere
+  - id: grounding-sicherheit
+    schaltet: [werkzeug/grounding]
+    wenn:
+      alle:
+        - { einheit: inhalt/stabilisierung, stufe: 2 }
+        - { einheit: inhalt/grounding, stufe: 2 }
+        - { einheit: werkzeug/toleranzfenster, stufe: 0, offen: true }
+    enthuellung: "Du weißt, wo dein Fenster liegt, und kennst den Grundsatz: erst Sicherheit, dann alles Weitere. Fünf Dinge sehen, vier fühlen, und du bist wieder im Hier: Das Grounding liegt in deiner Ausrüstung. Es ist eine Übung, keine Behandlung."
+  - id: toleranzfenster-exponat
+    schaltet: [werkzeug/toleranzfenster]
+    wenn:
+      alle:
+        - { einheit: inhalt/toleranzfenster, stufe: 2 }
+        - { einheit: erlebnis/toleranzfenster, stufe: 2 }
+    enthuellung: "Du hast am Regler gespielt und gesehen, wo das Fenster eng wird. Das Toleranzfenster liegt jetzt in deiner Ausrüstung: eine Denkhilfe, kein Messwert."
+
+  # --- Endgame: die schwerste Mythos-Karte (Stärke 3), zwei Wege ohne gemeinsame Einheit
+  - id: memory-koennen
+    schaltet: [quest/verdraengte-erinnerungen-mythos]
+    wenn: { einheit: skill/belege-pruefen, stufe: 2 }
+    enthuellung: "Du hast gelernt, Belege zu prüfen: Wer hat es untersucht, ließ es sich wiederholen? Damit kannst du dich der Frage stellen, die in den 1990ern Therapeuten und Gedächtnisforscher spaltete. Die Mythos-Karte ist offen."
+  - id: memory-ausruestung
+    schaltet: [quest/verdraengte-erinnerungen-mythos]
+    wenn:
+      alle:
+        - { einheit: werkzeug/premortem, stufe: 0, offen: true }
+        - { einheit: werkzeug/gedankenprotokoll, stufe: 0, offen: true }
+        - { einheit: werkzeug/reframing, stufe: 0, offen: true }
+        - { einheit: werkzeug/verhaltensexperiment, stufe: 0, offen: true }
+    enthuellung: "Vier Werkzeuge liegen in deiner Ausrüstung, und alle prüfen nüchtern, was sich wie eine Tatsache anfühlt. Die Mythos-Karte zu verdrängten Erinnerungen ist offen; beide Seiten haben dort etwas Wahres."
+
+# Rhythmus: eine Woche als Takt, Wiedersehen für Fähigkeiten, Verwitterung nach fünf Wochen. Keine Serien, nichts reißt; wer lange weg war, bekommt eine Aufgabe, keine Bilanz.
+rhythmus:
+  takt: { laenge: woche, beginn: erstes-ereignis }
+  wiederkehr: { abstand_tage: [2, 7, 21], fuer: { art: skill } }
+  verfall_tage: 35

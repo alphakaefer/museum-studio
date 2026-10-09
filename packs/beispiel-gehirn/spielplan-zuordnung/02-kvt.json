@@ -1,0 +1,22 @@
+{
+  "_hinweis": "Zuordnung je Station der Reise „kvt“ (Scaffolding). Die Kreuzungsstationen bestaetigungsfehler (verzerrung) und seligman-mismatch (trauma) stehen bei ihrer Heimat-Reise, beck und exposition hier.",
+  "epiktet": { "uebt": ["gedanken-pruefen"] },
+  "ellis-abc": { "gewicht": "kritisch", "uebt": ["gedanken-pruefen"] },
+  "behaviorismus": { "uebt": ["ideen-nachzeichnen"] },
+  "little-albert": { "uebt": ["lernen-erklaeren"] },
+  "exposition": { "uebt": ["lernen-erklaeren"] },
+  "eysenck": { "gewicht": "optional" },
+  "shedler": { "gewicht": "optional" },
+  "kognitive-wende": { "uebt": ["ideen-nachzeichnen"] },
+  "beck": { "uebt": ["gedanken-pruefen"] },
+  "sokratischer-dialog": { "uebt": ["gedanken-pruefen"] },
+  "reframing": { "uebt": ["gedanken-pruefen"] },
+  "gedankenprotokoll": { "gewicht": "kritisch", "uebt": ["gedanken-pruefen"] },
+  "erlebnis/gedankenprotokoll": { "uebt": ["gedanken-pruefen"] },
+  "verhaltensexperiment": { "gewicht": "kritisch" },
+  "hebb": { "uebt": ["lernen-erklaeren"] },
+  "erlebnis/hebb": { "uebt": ["lernen-erklaeren"] },
+  "rl-vorhersagefehler": { "gewicht": "optional" },
+  "dritte-welle": { "gewicht": "kritisch" },
+  "ki-verstehen": { "gewicht": "optional" }
+}

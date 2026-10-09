@@ -1,0 +1,1236 @@
+{
+  "format": "spielplan/0",
+  "id": "museum-beispiel-gehirn",
+  "name": "Gehirnmuseum – Beispielpaket",
+  "basis": "https://example.org/spielplan/museum-beispiel-gehirn/",
+  "nur_lokal": true,
+  "stufen": {
+    "anteil": "2/3",
+    "bis": 2
+  },
+  "begriffe": {
+    "gebiet": {
+      "art": "das",
+      "sg": "Gebiet",
+      "pl": "Gebiete"
+    },
+    "episode": {
+      "art": "die",
+      "sg": "Reise",
+      "pl": "Reisen"
+    },
+    "inhalt": {
+      "art": "die",
+      "sg": "Station",
+      "pl": "Stationen"
+    },
+    "quest": {
+      "art": "die",
+      "sg": "Mythos-Karte",
+      "pl": "Mythos-Karten"
+    },
+    "erlebnis": {
+      "art": "das",
+      "sg": "Exponat",
+      "pl": "Exponate"
+    },
+    "werkzeug": {
+      "art": "das",
+      "sg": "Werkzeug",
+      "pl": "Werkzeuge"
+    },
+    "skill": {
+      "art": "die",
+      "sg": "Fähigkeit",
+      "pl": "Fähigkeiten"
+    }
+  },
+  "rhythmus": {
+    "takt": {
+      "laenge": "woche",
+      "beginn": "erstes-ereignis"
+    },
+    "wiederkehr": {
+      "abstand_tage": [
+        2,
+        7,
+        21
+      ],
+      "fuer": {
+        "art": "skill"
+      }
+    },
+    "verfall_tage": 35
+  },
+  "einheiten": [
+    {
+      "id": "gebiet/wirklichkeit",
+      "art": "gebiet",
+      "name": "Wirklichkeit und Urteil",
+      "reihenfolge": 1,
+      "auftakt": "Hier beginnt das Museum mit einer unbequemen Frage: Wie verlässlich ist das, was du siehst und glaubst? Du erkundest, wie das Gehirn Wirklichkeit baut und wo es sich dabei verrechnet.",
+      "abschluss": "Du kennst jetzt die typischen Stolpersteine des Urteilens und ein paar Werkzeuge, sie zu umgehen. Der Weg in die Klinik steht dir offen."
+    },
+    {
+      "id": "gebiet/klinik",
+      "art": "gebiet",
+      "name": "Klinik und Therapie",
+      "reihenfolge": 2,
+      "auftakt": "Hier geht es um Menschen, deren Erleben ihnen zur Last wird, und um Verfahren, die helfen sollen. Das Gebiet ist ernst und nüchtern; du bestimmst das Tempo.",
+      "abschluss": "Du hast beide Seiten gesehen: wie man Gedanken prüft und wie Belastendes das Gehirn prägt. Vieles ist gut belegt, manches wird noch gestritten."
+    },
+    {
+      "id": "episode/verzerrung",
+      "art": "episode",
+      "name": "Kognitive Verzerrungen",
+      "in": "gebiet/wirklichkeit",
+      "etappe": "onboarding",
+      "reihenfolge": 1,
+      "adresse": "#/reise/verzerrung",
+      "auftakt": "Du glaubst, du siehst die Welt, wie sie ist. Zwei Striche, eine Zahl und ein Wort werden dir zeigen, dass dein Kopf mit Abkürzungen arbeitet. Keine Sorge: Du wirst dabei nicht dümmer, nur ehrlicher mit dir selbst.",
+      "abschluss": "Wer seine Denkfallen kennt, tappt trotzdem weiter hinein, nur mit mehr Humor. Du weißt jetzt, wo es sich lohnt, kurz innezuhalten, und wann eine Abkürzung einfach klug ist."
+    },
+    {
+      "id": "episode/trauma",
+      "art": "episode",
+      "name": "Psychotraumatologie",
+      "in": "gebiet/klinik",
+      "etappe": "endgame",
+      "reihenfolge": 3,
+      "adresse": "#/reise/trauma",
+      "auftakt": "Manche Erfahrungen sind zu groß, um sich in eine normale Erinnerung einzufügen. Diese Reise ist ernst; sie führt nicht in die Dunkelheit hinein, sondern durch sie hindurch. Geh in deinem Tempo und mach Pausen, wann du willst.",
+      "abschluss": "Vieles über Trauma ist inzwischen gut verstanden, vieles wird noch gestritten. Wenn dich etwas persönlich berührt hat: Sprich mit jemandem, dem du vertraust. Hilfsangebote findest du unten auf jeder Seite."
+    },
+    {
+      "id": "episode/kvt",
+      "art": "episode",
+      "name": "Kognitive Verhaltenstherapie",
+      "in": "gebiet/klinik",
+      "etappe": "scaffolding",
+      "reihenfolge": 2,
+      "adresse": "#/reise/kvt",
+      "auftakt": "Was wäre, wenn nicht die Dinge selbst uns aufwühlen, sondern das, was wir über sie denken? Von einem Satz aus der Antike führt die Reise zu einem Werkzeugkasten, den du Station für Station selbst in die Hand nimmst.",
+      "abschluss": "Die Verhaltenstherapie ist gut erforscht, aber nicht allmächtig, und manchmal genügt es vielleicht, Gedanken nur anzuschauen. Ein paar Werkzeuge hast du jetzt; ob und wann du sie brauchst, entscheidest du."
+    },
+    {
+      "id": "inhalt/muller-lyer",
+      "art": "inhalt",
+      "name": "Müller-Lyer-Illusion: Wissen schützt nicht",
+      "in": "episode/verzerrung",
+      "gewicht": "kritisch",
+      "reihenfolge": 1,
+      "adresse": "#/station/muller-lyer",
+      "aufgabe": {
+        "1": "Schau dir die beiden Striche an: Welcher ist länger?",
+        "2": "Miss nach und lies die Station zu Ende: Dein Kopf wird trotzdem anderer Meinung sein."
+      }
+    },
+    {
+      "id": "inhalt/vorhersagendes-gehirn",
+      "art": "inhalt",
+      "name": "Das vorhersagende Gehirn",
+      "in": "episode/verzerrung",
+      "gewicht": "kritisch",
+      "reihenfolge": 3,
+      "adresse": "#/station/vorhersagendes-gehirn",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/kahneman-tversky",
+      "art": "inhalt",
+      "name": "Kahneman und Tversky: Zwei Freunde vermessen den Irrtum",
+      "in": "episode/verzerrung",
+      "gewicht": "kritisch",
+      "reihenfolge": 5,
+      "adresse": "#/station/kahneman-tversky",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/stroop",
+      "art": "inhalt",
+      "name": "Der Stroop-Effekt: Die Tinte benennen, nicht das Wort",
+      "in": "episode/verzerrung",
+      "reihenfolge": 6,
+      "adresse": "#/station/stroop"
+    },
+    {
+      "id": "erlebnis/stroop",
+      "art": "erlebnis",
+      "name": "Der Stroop-Test",
+      "in": "episode/verzerrung",
+      "reihenfolge": 6,
+      "adresse": "#/station/stroop"
+    },
+    {
+      "id": "inhalt/ankereffekt",
+      "art": "inhalt",
+      "name": "Ankereffekt: Zahlen, die festhalten",
+      "in": "episode/verzerrung",
+      "gewicht": "kritisch",
+      "reihenfolge": 7,
+      "adresse": "#/station/ankereffekt",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "erlebnis/anker",
+      "art": "erlebnis",
+      "name": "Der Ankereffekt",
+      "in": "episode/verzerrung",
+      "reihenfolge": 7,
+      "adresse": "#/station/ankereffekt",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/verfuegbarkeit",
+      "art": "inhalt",
+      "name": "Haie und Flugzeuge: Die Verfügbarkeitsheuristik",
+      "in": "episode/verzerrung",
+      "reihenfolge": 8,
+      "adresse": "#/station/verfuegbarkeit",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/verlustaversion",
+      "art": "inhalt",
+      "name": "Verlustaversion: Verlieren tut doppelt weh",
+      "in": "episode/verzerrung",
+      "reihenfolge": 9,
+      "adresse": "#/station/verlustaversion",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/bestaetigungsfehler",
+      "art": "inhalt",
+      "name": "Bestätigungsfehler und die Wason-Aufgabe",
+      "in": [
+        "episode/verzerrung",
+        "episode/kvt"
+      ],
+      "reihenfolge": 10,
+      "adresse": "#/station/bestaetigungsfehler",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "erlebnis/wason",
+      "art": "erlebnis",
+      "name": "Wason-Wahlaufgabe",
+      "in": [
+        "episode/verzerrung",
+        "episode/kvt"
+      ],
+      "reihenfolge": 10,
+      "adresse": "#/station/bestaetigungsfehler",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/mesmer-franklin",
+      "art": "inhalt",
+      "name": "Mesmer und Franklins Kommission: Das erste Blindexperiment",
+      "in": "episode/verzerrung",
+      "reihenfolge": 13,
+      "adresse": "#/station/mesmer-franklin",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/phrenologie",
+      "art": "inhalt",
+      "name": "Phrenologie: Wenn Wissenschaft sich selbst bestätigt",
+      "in": "episode/verzerrung",
+      "reihenfolge": 14,
+      "adresse": "#/station/phrenologie",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "quest/phrenologie-mythos",
+      "art": "quest",
+      "name": "Mythos-Check: Kann man Charakter am Schädel ablesen?",
+      "in": "episode/verzerrung",
+      "gewicht": "kritisch",
+      "staerke": 1,
+      "reihenfolge": 14,
+      "adresse": "#/station/phrenologie",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/kognitive-dissonanz",
+      "art": "inhalt",
+      "name": "Wenn die Prophezeiung scheitert: Festingers Weltuntergangssekte",
+      "in": "episode/verzerrung",
+      "reihenfolge": 15,
+      "adresse": "#/station/kognitive-dissonanz",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/gerechte-welt",
+      "art": "inhalt",
+      "name": "Gerechte-Welt-Glaube: Wenn Opfer schuld sein müssen",
+      "in": "episode/verzerrung",
+      "reihenfolge": 18,
+      "adresse": "#/station/gerechte-welt",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/optimismus-bias",
+      "art": "inhalt",
+      "name": "Optimismus-Bias und positive Illusionen",
+      "in": "episode/verzerrung",
+      "reihenfolge": 20,
+      "adresse": "#/station/optimismus-bias",
+      "uebt": [
+        "skill/denkfehler-erkennen"
+      ]
+    },
+    {
+      "id": "inhalt/beck",
+      "art": "inhalt",
+      "name": "Aaron T. Beck: Automatische Gedanken und kognitive Fehler",
+      "in": [
+        "episode/kvt",
+        "episode/verzerrung"
+      ],
+      "reihenfolge": 10,
+      "adresse": "#/station/beck",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/premortem",
+      "art": "inhalt",
+      "name": "Pre-Mortem: Das Scheitern vorab erfinden",
+      "in": "episode/verzerrung",
+      "reihenfolge": 22,
+      "adresse": "#/station/premortem"
+    },
+    {
+      "id": "inhalt/gigerenzer",
+      "art": "inhalt",
+      "name": "Gigerenzer contra Kahneman: Fehler oder kluge Abkürzung?",
+      "in": "episode/verzerrung",
+      "reihenfolge": 23,
+      "adresse": "#/station/gigerenzer",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/trauma-begriff",
+      "art": "inhalt",
+      "name": "Trauma: Ein Wort für Wunde wandert in die Seele",
+      "in": "episode/trauma",
+      "gewicht": "kritisch",
+      "reihenfolge": 1,
+      "adresse": "#/station/trauma-begriff",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/anna-o",
+      "art": "inhalt",
+      "name": "Anna O.: Die Redekur und ihre Legende",
+      "in": "episode/trauma",
+      "reihenfolge": 2,
+      "adresse": "#/station/anna-o",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/janet",
+      "art": "inhalt",
+      "name": "Pierre Janet: Dissoziation, lange vor Freud",
+      "in": "episode/trauma",
+      "reihenfolge": 3,
+      "adresse": "#/station/janet",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/kriegszitterer",
+      "art": "inhalt",
+      "name": "Kriegszitterer und Craiglockhart: Rivers, Sassoon, Owen",
+      "in": "episode/trauma",
+      "reihenfolge": 4,
+      "adresse": "#/station/kriegszitterer",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/ptbs-kptbs",
+      "art": "inhalt",
+      "name": "Vom Vietnam-Trauma zur Diagnose: PTBS und komplexe PTBS",
+      "in": "episode/trauma",
+      "reihenfolge": 6,
+      "adresse": "#/station/ptbs-kptbs",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/amygdala-furcht",
+      "art": "inhalt",
+      "name": "Furchtkonditionierung: LeDoux und der schnelle Weg der Angst",
+      "in": "episode/trauma",
+      "reihenfolge": 7,
+      "adresse": "#/station/amygdala-furcht",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "inhalt/toleranzfenster",
+      "art": "inhalt",
+      "name": "Das Toleranzfenster: Zwischen Übererregung und Erstarrung",
+      "in": "episode/trauma",
+      "gewicht": "kritisch",
+      "reihenfolge": 9,
+      "adresse": "#/station/toleranzfenster",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "erlebnis/toleranzfenster",
+      "art": "erlebnis",
+      "name": "Das Toleranzfenster",
+      "in": "episode/trauma",
+      "reihenfolge": 9,
+      "adresse": "#/station/toleranzfenster",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "inhalt/polyvagal",
+      "art": "inhalt",
+      "name": "Polyvagal-Theorie: Faszinierend und umstritten",
+      "in": "episode/trauma",
+      "reihenfolge": 10,
+      "adresse": "#/station/polyvagal",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "inhalt/bindungstrauma",
+      "art": "inhalt",
+      "name": "Bindung und Bindungstrauma: Bowlby, Ainsworth, Main",
+      "in": "episode/trauma",
+      "reihenfolge": 11,
+      "adresse": "#/station/bindungstrauma"
+    },
+    {
+      "id": "inhalt/ace",
+      "art": "inhalt",
+      "name": "ACE-Studie: Die Kindheit im Körper",
+      "in": "episode/trauma",
+      "reihenfolge": 15,
+      "adresse": "#/station/ace"
+    },
+    {
+      "id": "inhalt/stabilisierung",
+      "art": "inhalt",
+      "name": "Stabilisierung: Erst Sicherheit, dann Erinnerung",
+      "in": "episode/trauma",
+      "gewicht": "kritisch",
+      "reihenfolge": 18,
+      "adresse": "#/station/stabilisierung",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "inhalt/verdraengte-erinnerungen",
+      "art": "inhalt",
+      "name": "Verdrängte Erinnerungen? Die Memory Wars",
+      "in": "episode/trauma",
+      "reihenfolge": 20,
+      "adresse": "#/station/verdraengte-erinnerungen"
+    },
+    {
+      "id": "quest/verdraengte-erinnerungen-mythos",
+      "art": "quest",
+      "name": "Mythos-Check: Verdrängte Erinnerungen? Die Memory Wars",
+      "in": "episode/trauma",
+      "gewicht": "kritisch",
+      "staerke": 3,
+      "reihenfolge": 20,
+      "adresse": "#/station/verdraengte-erinnerungen"
+    },
+    {
+      "id": "inhalt/exposition",
+      "art": "inhalt",
+      "name": "Exposition: Der Angst in die Augen sehen",
+      "in": [
+        "episode/kvt",
+        "episode/trauma"
+      ],
+      "reihenfolge": 5,
+      "adresse": "#/station/exposition",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/emdr",
+      "art": "inhalt",
+      "name": "EMDR: Ein Spaziergang wird zur Methode",
+      "in": "episode/trauma",
+      "reihenfolge": 22,
+      "adresse": "#/station/emdr"
+    },
+    {
+      "id": "inhalt/resilienz-ptw",
+      "art": "inhalt",
+      "name": "Resilienz und posttraumatisches Wachstum",
+      "in": "episode/trauma",
+      "reihenfolge": 23,
+      "adresse": "#/station/resilienz-ptw"
+    },
+    {
+      "id": "inhalt/rekonsolidierung",
+      "art": "inhalt",
+      "name": "Kann man Erinnerungen umschreiben?",
+      "in": "episode/trauma",
+      "reihenfolge": 24,
+      "adresse": "#/station/rekonsolidierung",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/epiktet",
+      "art": "inhalt",
+      "name": "Epiktet: Nicht die Dinge, sondern unsere Urteile",
+      "in": "episode/kvt",
+      "reihenfolge": 1,
+      "adresse": "#/station/epiktet",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/ellis-abc",
+      "art": "inhalt",
+      "name": "Albert Ellis: Das ABC der irrationalen Überzeugungen",
+      "in": "episode/kvt",
+      "gewicht": "kritisch",
+      "reihenfolge": 2,
+      "adresse": "#/station/ellis-abc",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/behaviorismus",
+      "art": "inhalt",
+      "name": "Behaviorismus: Der Geist wird aus dem Labor verbannt",
+      "in": "episode/kvt",
+      "reihenfolge": 3,
+      "adresse": "#/station/behaviorismus",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/little-albert",
+      "art": "inhalt",
+      "name": "Little Albert: Angst, die man lernt",
+      "in": "episode/kvt",
+      "reihenfolge": 4,
+      "adresse": "#/station/little-albert",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/eysenck",
+      "art": "inhalt",
+      "name": "Eysenck 1952: Wirkt Psychotherapie überhaupt?",
+      "in": "episode/kvt",
+      "gewicht": "optional",
+      "reihenfolge": 7,
+      "adresse": "#/station/eysenck"
+    },
+    {
+      "id": "inhalt/kognitive-wende",
+      "art": "inhalt",
+      "name": "Die kognitive Wende: Der Geist kehrt zurück",
+      "in": "episode/kvt",
+      "reihenfolge": 9,
+      "adresse": "#/station/kognitive-wende",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/sokratischer-dialog",
+      "art": "inhalt",
+      "name": "Sokratischer Dialog: Die Kunst, gute Fragen zu stellen",
+      "in": "episode/kvt",
+      "reihenfolge": 12,
+      "adresse": "#/station/sokratischer-dialog",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/gedankenprotokoll",
+      "art": "inhalt",
+      "name": "Das Gedankenprotokoll: Denken auf Papier",
+      "in": "episode/kvt",
+      "gewicht": "kritisch",
+      "reihenfolge": 14,
+      "adresse": "#/station/gedankenprotokoll",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "erlebnis/gedankenprotokoll",
+      "art": "erlebnis",
+      "name": "Gedankenprotokoll",
+      "in": "episode/kvt",
+      "reihenfolge": 14,
+      "adresse": "#/station/gedankenprotokoll",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/verhaltensaktivierung",
+      "art": "inhalt",
+      "name": "Verhaltensaktivierung: Muss man wirklich Gedanken ändern?",
+      "in": "episode/kvt",
+      "reihenfolge": 16,
+      "adresse": "#/station/verhaltensaktivierung"
+    },
+    {
+      "id": "inhalt/hebb",
+      "art": "inhalt",
+      "name": "Hebb: Was gemeinsam feuert, verdrahtet sich",
+      "in": "episode/kvt",
+      "reihenfolge": 17,
+      "adresse": "#/station/hebb",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "erlebnis/hebb",
+      "art": "erlebnis",
+      "name": "Neuronen-Spielwiese",
+      "in": "episode/kvt",
+      "reihenfolge": 17,
+      "adresse": "#/station/hebb",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/kabat-zinn",
+      "art": "inhalt",
+      "name": "Jon Kabat-Zinn: Achtsamkeit betritt die Klinik",
+      "in": "episode/kvt",
+      "reihenfolge": 19,
+      "adresse": "#/station/kabat-zinn"
+    },
+    {
+      "id": "inhalt/dritte-welle",
+      "art": "inhalt",
+      "name": "ACT, DBT und Co.: Akzeptanz statt Kampf",
+      "in": "episode/kvt",
+      "gewicht": "kritisch",
+      "reihenfolge": 20,
+      "adresse": "#/station/dritte-welle"
+    },
+    {
+      "id": "inhalt/ki-verstehen",
+      "art": "inhalt",
+      "name": "Von ELIZA zum KI-Therapeuten: Versteht die Maschine – und hilft sie?",
+      "in": "episode/kvt",
+      "gewicht": "optional",
+      "reihenfolge": 23,
+      "adresse": "#/station/ki-verstehen"
+    },
+    {
+      "id": "inhalt/anna-freud-abwehr",
+      "art": "inhalt",
+      "name": "Anna Freud: Das Ich und die Abwehrmechanismen",
+      "in": "episode/verzerrung",
+      "gewicht": "optional",
+      "reihenfolge": 17,
+      "adresse": "#/station/anna-freud-abwehr"
+    },
+    {
+      "id": "inhalt/winnicott",
+      "art": "inhalt",
+      "name": "Winnicott: Holding, die „ausreichend gute“ Mutter und das Übergangsobjekt",
+      "in": "episode/trauma",
+      "gewicht": "optional",
+      "reihenfolge": 12,
+      "adresse": "#/station/winnicott"
+    },
+    {
+      "id": "inhalt/bion-containing",
+      "art": "inhalt",
+      "name": "Bion: Containing und die Alpha-Funktion",
+      "in": "episode/trauma",
+      "gewicht": "optional",
+      "reihenfolge": 13,
+      "adresse": "#/station/bion-containing"
+    },
+    {
+      "id": "inhalt/popper",
+      "art": "inhalt",
+      "name": "Popper und Adlers Antwort: Ist die Psychoanalyse falsifizierbar?",
+      "in": "episode/verzerrung",
+      "reihenfolge": 12,
+      "adresse": "#/station/popper",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/mentalisieren",
+      "art": "inhalt",
+      "name": "Fonagy: Mentalisieren – Gedanken und Gefühle in sich und anderen sehen",
+      "in": "episode/trauma",
+      "reihenfolge": 14,
+      "adresse": "#/station/mentalisieren"
+    },
+    {
+      "id": "inhalt/shedler",
+      "art": "inhalt",
+      "name": "Shedler 2010: Wie gut wirkt psychodynamische Therapie?",
+      "in": "episode/kvt",
+      "gewicht": "optional",
+      "reihenfolge": 8,
+      "adresse": "#/station/shedler"
+    },
+    {
+      "id": "inhalt/asch",
+      "art": "inhalt",
+      "name": "Asch 1951: Linien und der Druck der Gruppe",
+      "in": "episode/verzerrung",
+      "reihenfolge": 16,
+      "adresse": "#/station/asch"
+    },
+    {
+      "id": "inhalt/rl-vorhersagefehler",
+      "art": "inhalt",
+      "name": "Dopamin und Reinforcement Learning: Der Vorhersagefehler",
+      "in": "episode/kvt",
+      "gewicht": "optional",
+      "reihenfolge": 18,
+      "adresse": "#/station/rl-vorhersagefehler"
+    },
+    {
+      "id": "inhalt/seligman-mismatch",
+      "art": "inhalt",
+      "name": "Vorbereitetes Lernen: Warum Schlangen schneller Angst machen",
+      "in": [
+        "episode/trauma",
+        "episode/kvt"
+      ],
+      "reihenfolge": 8,
+      "adresse": "#/station/seligman-mismatch",
+      "uebt": [
+        "skill/lernen-erklaeren"
+      ]
+    },
+    {
+      "id": "inhalt/cosmides",
+      "art": "inhalt",
+      "name": "Cosmides und Tooby: Das Betrugserkennungsmodul",
+      "in": "episode/verzerrung",
+      "gewicht": "optional",
+      "reihenfolge": 11,
+      "adresse": "#/station/cosmides"
+    },
+    {
+      "id": "inhalt/henrich",
+      "art": "inhalt",
+      "name": "Henrich: WEIRD, Kultur und Gene",
+      "in": "episode/verzerrung",
+      "reihenfolge": 2,
+      "adresse": "#/station/henrich",
+      "uebt": [
+        "skill/belege-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/mansuy",
+      "art": "inhalt",
+      "name": "Isabelle Mansuy: Trauma in den Spermien der Mäuse",
+      "in": "episode/trauma",
+      "gewicht": "optional",
+      "reihenfolge": 16,
+      "adresse": "#/station/mansuy"
+    },
+    {
+      "id": "inhalt/yehuda",
+      "art": "inhalt",
+      "name": "Rachel Yehuda: Nachkommen von Holocaust-Überlebenden",
+      "in": "episode/trauma",
+      "gewicht": "optional",
+      "reihenfolge": 17,
+      "adresse": "#/station/yehuda"
+    },
+    {
+      "id": "inhalt/ueberlebende-niederland",
+      "art": "inhalt",
+      "name": "Das Überlebenden-Syndrom: Niederland und die Gutachten",
+      "in": "episode/trauma",
+      "reihenfolge": 5,
+      "adresse": "#/station/ueberlebende-niederland",
+      "uebt": [
+        "skill/ideen-nachzeichnen"
+      ]
+    },
+    {
+      "id": "inhalt/grounding",
+      "art": "inhalt",
+      "name": "Grounding und 5-4-3-2-1: Zurück im Raum",
+      "in": "episode/trauma",
+      "gewicht": "kritisch",
+      "reihenfolge": 19,
+      "adresse": "#/station/grounding",
+      "uebt": [
+        "skill/erregung-einordnen"
+      ]
+    },
+    {
+      "id": "inhalt/wunderfrage-skalen",
+      "art": "inhalt",
+      "name": "Wunderfrage und Skalierung: Lösungsfokus von de Shazer und Berg",
+      "in": "episode/kvt",
+      "reihenfolge": 22,
+      "adresse": "#/station/wunderfrage-skalen"
+    },
+    {
+      "id": "inhalt/werte-act",
+      "art": "inhalt",
+      "name": "Werte klären: Der ACT-Kompass",
+      "in": "episode/kvt",
+      "reihenfolge": 21,
+      "adresse": "#/station/werte-act"
+    },
+    {
+      "id": "inhalt/reframing",
+      "art": "inhalt",
+      "name": "Reframing: Dieselbe Szene, ein anderer Rahmen",
+      "in": "episode/kvt",
+      "reihenfolge": 13,
+      "adresse": "#/station/reframing",
+      "uebt": [
+        "skill/gedanken-pruefen"
+      ]
+    },
+    {
+      "id": "inhalt/verhaltensexperiment",
+      "art": "inhalt",
+      "name": "Verhaltensexperiment: Annahmen im Alltag testen",
+      "in": "episode/kvt",
+      "gewicht": "kritisch",
+      "reihenfolge": 15,
+      "adresse": "#/station/verhaltensexperiment"
+    },
+    {
+      "id": "inhalt/berkeley",
+      "art": "inhalt",
+      "name": "George Berkeley: Sein heißt Wahrgenommenwerden",
+      "in": "episode/verzerrung",
+      "gewicht": "optional",
+      "reihenfolge": 4,
+      "adresse": "#/station/berkeley"
+    },
+    {
+      "id": "inhalt/marx",
+      "art": "inhalt",
+      "name": "Marx: Das Sein bestimmt das Bewusstsein",
+      "in": "episode/verzerrung",
+      "gewicht": "optional",
+      "reihenfolge": 19,
+      "adresse": "#/station/marx"
+    },
+    {
+      "id": "werkzeug/premortem",
+      "art": "werkzeug",
+      "name": "Pre-Mortem",
+      "sorte": "methode",
+      "gewicht": "optional",
+      "adresse": "#/station/premortem",
+      "aus": "inhalt/premortem",
+      "kurz": "Stell dir vor, dein Plan sei gescheitert, und erkläre warum.",
+      "einsatz": [
+        "inhalt/premortem",
+        "quest/phrenologie-mythos"
+      ]
+    },
+    {
+      "id": "werkzeug/gedankenprotokoll",
+      "art": "werkzeug",
+      "name": "Gedankenprotokoll",
+      "sorte": "methode",
+      "gewicht": "optional",
+      "adresse": "#/station/gedankenprotokoll",
+      "aus": "inhalt/gedankenprotokoll",
+      "kurz": "Situation, Gefühl, Gedanke, Belege dafür und dagegen, eine Alternative.",
+      "einsatz": [
+        "erlebnis/gedankenprotokoll",
+        "inhalt/gedankenprotokoll"
+      ]
+    },
+    {
+      "id": "werkzeug/reframing",
+      "art": "werkzeug",
+      "name": "Reframing",
+      "sorte": "technik",
+      "gewicht": "optional",
+      "adresse": "#/station/reframing",
+      "aus": "inhalt/reframing",
+      "kurz": "Die Deutung ändern, ohne Fakten zu leugnen.",
+      "einsatz": [
+        "inhalt/reframing"
+      ]
+    },
+    {
+      "id": "werkzeug/verhaltensexperiment",
+      "art": "werkzeug",
+      "name": "Verhaltensexperiment",
+      "sorte": "methode",
+      "gewicht": "optional",
+      "adresse": "#/station/verhaltensexperiment",
+      "aus": "inhalt/verhaltensexperiment",
+      "kurz": "Eine Befürchtung im Alltag testen wie eine Forscherin.",
+      "einsatz": [
+        "inhalt/verhaltensexperiment"
+      ]
+    },
+    {
+      "id": "werkzeug/grounding",
+      "art": "werkzeug",
+      "name": "Grounding 5-4-3-2-1",
+      "sorte": "technik",
+      "gewicht": "optional",
+      "adresse": "#/station/grounding",
+      "aus": "inhalt/grounding",
+      "kurz": "Aufmerksamkeit über die Sinne zurück ins Hier holen.",
+      "einsatz": [
+        "inhalt/grounding"
+      ]
+    },
+    {
+      "id": "werkzeug/toleranzfenster",
+      "art": "werkzeug",
+      "name": "Toleranzfenster",
+      "sorte": "modell",
+      "gewicht": "optional",
+      "adresse": "#/station/toleranzfenster",
+      "aus": "inhalt/toleranzfenster",
+      "kurz": "Eine Denkhilfe: der Bereich, in dem du zuhören, nachdenken und aushalten kannst.",
+      "einsatz": [
+        "erlebnis/toleranzfenster",
+        "inhalt/toleranzfenster"
+      ]
+    },
+    {
+      "id": "skill/denkfehler-erkennen",
+      "art": "skill",
+      "name": "Denkfehler erkennen",
+      "kann": "Ich kann typische Denkfehler wie Anker, Verfügbarkeit und Bestätigungsfehler an Beispielen erkennen und benennen."
+    },
+    {
+      "id": "skill/belege-pruefen",
+      "art": "skill",
+      "name": "Belege prüfen",
+      "kann": "Ich kann prüfen, ob eine Behauptung belegt ist: Wer hat sie untersucht, ließ sie sich wiederholen, und was würde sie widerlegen?"
+    },
+    {
+      "id": "skill/gedanken-pruefen",
+      "art": "skill",
+      "name": "Gedanken prüfen",
+      "kann": "Ich kann einen Gedanken aufschreiben und wie eine Hypothese prüfen: Was spricht dafür, was dagegen, und was wäre eine ausgewogene Alternative?"
+    },
+    {
+      "id": "skill/erregung-einordnen",
+      "art": "skill",
+      "name": "Erregung einordnen",
+      "kann": "Ich kann das Toleranzfenster erklären und Übererregung von Erstarrung unterscheiden."
+    },
+    {
+      "id": "skill/lernen-erklaeren",
+      "art": "skill",
+      "name": "Lernen erklären",
+      "kann": "Ich kann erklären, wie Lernen im Gehirn zusammenhängt: Wiederholung stärkt Verbindungen, Überraschung korrigiert Erwartungen, und auch Ängste lassen sich neu lernen."
+    },
+    {
+      "id": "skill/ideen-nachzeichnen",
+      "art": "skill",
+      "name": "Ideen nachzeichnen",
+      "kann": "Ich kann nachzeichnen, wie aus einer Beobachtung ein Begriff und aus dem Begriff eine Diagnose oder Methode wurde."
+    }
+  ],
+  "regeln": [
+    {
+      "id": "premortem-erste",
+      "schaltet": [
+        "werkzeug/premortem"
+      ],
+      "wenn": {
+        "einheit": "inhalt/muller-lyer",
+        "stufe": 2
+      },
+      "enthuellung": "Zwei gleich lange Striche, und dein Kopf bleibt dabei: Wissen allein schützt nicht vor Täuschung. Darum gibt es Verfahren. Dein erstes liegt jetzt in der Ausrüstung: das Pre-Mortem."
+    },
+    {
+      "id": "premortem-station",
+      "schaltet": [
+        "werkzeug/premortem"
+      ],
+      "wenn": {
+        "einheit": "inhalt/premortem",
+        "stufe": 2
+      },
+      "enthuellung": "Neu in deiner Ausrüstung: das Pre-Mortem. Stell dir vor, dein Plan sei gescheitert, und erkläre, warum; so fängst du Fehler ab, bevor sie passieren."
+    },
+    {
+      "id": "kvt-bruecke",
+      "schaltet": [
+        "episode/kvt"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "inhalt/kahneman-tversky",
+            "stufe": 2
+          },
+          {
+            "einheit": "inhalt/bestaetigungsfehler",
+            "stufe": 2
+          }
+        ]
+      },
+      "enthuellung": "Du kennst die Abkürzungen des Urteils und den Bestätigungsfehler, der Überzeugungen am Leben hält, auch belastende. Genau dort setzt die Reise „Kognitive Verhaltenstherapie“ an, und sie steht dir jetzt offen."
+    },
+    {
+      "id": "kvt-exponate",
+      "schaltet": [
+        "episode/kvt"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "erlebnis/wason",
+            "stufe": 2
+          },
+          {
+            "einheit": "erlebnis/anker",
+            "stufe": 2
+          }
+        ]
+      },
+      "enthuellung": "Zwei Versuche an dir selbst: Du suchst Treffer statt Widerlegungen, und eine Zufallszahl zieht deine Schätzung. Von hier führt ein Weg in die Reise „Kognitive Verhaltenstherapie“, wo Gedanken wie Hypothesen geprüft werden."
+    },
+    {
+      "id": "kvt-weiter",
+      "schaltet": [
+        "episode/kvt"
+      ],
+      "wenn": {
+        "einheit": "episode/verzerrung",
+        "stufe": 2
+      },
+      "enthuellung": "Du kennst jetzt die Abkürzungen, mit denen dein Kopf dich hereinlegt. Der nächste Schritt ist, Gedanken zu prüfen: Die Reise „Kognitive Verhaltenstherapie“ steht dir offen."
+    },
+    {
+      "id": "gedankenprotokoll-ausprobiert",
+      "schaltet": [
+        "werkzeug/gedankenprotokoll"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "inhalt/gedankenprotokoll",
+            "stufe": 2
+          },
+          {
+            "einheit": "erlebnis/gedankenprotokoll",
+            "stufe": 2
+          }
+        ]
+      },
+      "enthuellung": "Du hast ein Gedankenprotokoll geschrieben: Situation, Gefühl, Gedanke, Alternative. Es liegt jetzt in deiner Ausrüstung und wartet auf den nächsten Gedanken, der sich wie eine Tatsache anfühlt."
+    },
+    {
+      "id": "reframing-meilenstein",
+      "schaltet": [
+        "werkzeug/reframing"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "mindestens": 6,
+            "art": "inhalt",
+            "in": "episode/kvt",
+            "stufe": 2
+          },
+          {
+            "einheit": "werkzeug/gedankenprotokoll",
+            "stufe": 0,
+            "offen": true
+          }
+        ]
+      },
+      "enthuellung": "Sechs Stationen der Verhaltenstherapie liegen hinter dir, und das Gedankenprotokoll ist dein Werkzeug. Neu in deiner Ausrüstung: Reframing. Das Problem bleibt, aber du darfst den Rahmen wechseln."
+    },
+    {
+      "id": "verhaltensexperiment-koennen",
+      "schaltet": [
+        "werkzeug/verhaltensexperiment"
+      ],
+      "wenn": {
+        "einheit": "skill/gedanken-pruefen",
+        "stufe": 2
+      },
+      "enthuellung": "Wer Gedanken prüfen kann, darf sie jetzt auch testen: Das Verhaltensexperiment liegt in deiner Ausrüstung. Prüfe eine Befürchtung wie eine Forscherin, nicht wie eine Richterin."
+    },
+    {
+      "id": "verhaltensexperiment-pause",
+      "schaltet": [
+        "werkzeug/verhaltensexperiment"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "inhalt/verhaltensexperiment",
+            "stufe": 2
+          },
+          {
+            "wartezeit": {
+              "einheit": "erlebnis/gedankenprotokoll",
+              "stufe": 2,
+              "stunden": 18
+            }
+          }
+        ]
+      },
+      "enthuellung": "Eine Nacht nach dem Gedankenprotokoll: Jetzt darfst du deine Hypothese im Alltag testen. Das Verhaltensexperiment liegt in deiner Ausrüstung."
+    },
+    {
+      "id": "grounding-sicherheit",
+      "schaltet": [
+        "werkzeug/grounding"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "inhalt/stabilisierung",
+            "stufe": 2
+          },
+          {
+            "einheit": "inhalt/grounding",
+            "stufe": 2
+          },
+          {
+            "einheit": "werkzeug/toleranzfenster",
+            "stufe": 0,
+            "offen": true
+          }
+        ]
+      },
+      "enthuellung": "Du weißt, wo dein Fenster liegt, und kennst den Grundsatz: erst Sicherheit, dann alles Weitere. Fünf Dinge sehen, vier fühlen, und du bist wieder im Hier: Das Grounding liegt in deiner Ausrüstung. Es ist eine Übung, keine Behandlung."
+    },
+    {
+      "id": "toleranzfenster-exponat",
+      "schaltet": [
+        "werkzeug/toleranzfenster"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "inhalt/toleranzfenster",
+            "stufe": 2
+          },
+          {
+            "einheit": "erlebnis/toleranzfenster",
+            "stufe": 2
+          }
+        ]
+      },
+      "enthuellung": "Du hast am Regler gespielt und gesehen, wo das Fenster eng wird. Das Toleranzfenster liegt jetzt in deiner Ausrüstung: eine Denkhilfe, kein Messwert."
+    },
+    {
+      "id": "memory-koennen",
+      "schaltet": [
+        "quest/verdraengte-erinnerungen-mythos"
+      ],
+      "wenn": {
+        "einheit": "skill/belege-pruefen",
+        "stufe": 2
+      },
+      "enthuellung": "Du hast gelernt, Belege zu prüfen: Wer hat es untersucht, ließ es sich wiederholen? Damit kannst du dich der Frage stellen, die in den 1990ern Therapeuten und Gedächtnisforscher spaltete. Die Mythos-Karte ist offen."
+    },
+    {
+      "id": "memory-ausruestung",
+      "schaltet": [
+        "quest/verdraengte-erinnerungen-mythos"
+      ],
+      "wenn": {
+        "alle": [
+          {
+            "einheit": "werkzeug/premortem",
+            "stufe": 0,
+            "offen": true
+          },
+          {
+            "einheit": "werkzeug/gedankenprotokoll",
+            "stufe": 0,
+            "offen": true
+          },
+          {
+            "einheit": "werkzeug/reframing",
+            "stufe": 0,
+            "offen": true
+          },
+          {
+            "einheit": "werkzeug/verhaltensexperiment",
+            "stufe": 0,
+            "offen": true
+          }
+        ]
+      },
+      "enthuellung": "Vier Werkzeuge liegen in deiner Ausrüstung, und alle prüfen nüchtern, was sich wie eine Tatsache anfühlt. Die Mythos-Karte zu verdrängten Erinnerungen ist offen; beide Seiten haben dort etwas Wahres."
+    }
+  ]
+}
