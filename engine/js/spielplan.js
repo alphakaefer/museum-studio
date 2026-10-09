@@ -22,7 +22,7 @@
      wurzelStufe(plan, stand)                     Stufe der Wurzel-Einheit (für SCORM completed)
      zeitMs(x), isoZeit(ms), STUFEN, ARTEN, VERBEN, FORMAT
 
-   Brücke:  var sp = Spielplan.verbinde({ plan: plan, app: 'museum/gehirn' });
+   Brücke:  var sp = Spielplan.verbinde({ plan: plan, app: 'museum/mein-paket' });
      sp.melde(verb, objekt, { mit, ergebnis, beleg, fall, zeit })  -> gespeichertes Ereignis oder null (sp.letzterFehler sagt warum)
      sp.stand([jetzt])        der Spielstand      sp.einheit(id)  sein Eintrag darin      sp.ereignisse()  Kopie der gespeicherten Ereignisse
      sp.bei(name, fn)         name: 'freigeschaltet' ({einheit, art, name, regel, am, enthuellung}), 'stufe' ({einheit, von, nach}),
@@ -56,7 +56,9 @@
   var BELEG_ARTEN = ['messung', 'bestaetigung', 'eigen'];
   var STUFEN = ['Nebel', 'Erkundet', 'Geübt', 'Angewendet', 'Gemeistert'];
   var BEREICHE = [null, null, 'Grundverständnis', 'Anwendung', 'Transfer'];
-  var SP_IRI = 'https://zukunftsgut.org/spielplan/';
+  /** Wurzel der Adressen für die eigenen Verben, Erweiterungen und Arten in xAPI. Neutral (eine URN, nicht erreichbar, nicht nötig);
+   *  wer sein Vokabular unter einer eigenen Adresse veröffentlicht, setzt plan.vokabular oder opts.vokabular (siehe nachXapi). */
+  var SP_IRI = 'urn:spielplan:';
   var VERBEN = {
     begonnen: 'http://adlnet.gov/expapi/verbs/attempted',
     erkundet: 'http://adlnet.gov/expapi/verbs/experienced',
@@ -1201,6 +1203,7 @@
     if (!istText(p.name)) w('name fehlt.');
     if (!istText(p.basis)) w('basis fehlt: ohne sie lassen sich Einheiten nicht als Adressen nach xAPI übersetzen (6.3).');
     else if (!/^[a-z][a-z0-9+.\-]*:/i.test(p.basis)) f('basis „' + p.basis + '“ ist keine Adresse (IRI).');
+    if (p.vokabular !== undefined && !(istText(p.vokabular) && /^[a-z][a-z0-9+.\-]*:\S*[\/:]$/i.test(p.vokabular))) f('vokabular muss eine Adresse (IRI) sein, die mit „/“ oder „:“ endet.');
     if (p.nur_lokal !== undefined && typeof p.nur_lokal !== 'boolean') f('nur_lokal muss true oder false sein.');
 
     // --- formale Meldungen des Kompilierens (unbekannte ids, Bedingungen, Rhythmus …)
@@ -1228,7 +1231,7 @@
         else if ([1, 2, 3].indexOf(r.staerke) < 0) f(wo + 'staerke „' + r.staerke + '“ muss 1, 2 oder 3 sein.');
       } else if (r.staerke !== undefined) w(wo + 'staerke gehört nur an quest (3.1).');
       if (u.art === 'werkzeug') {
-        if (r.sorte !== undefined && SORTEN.indexOf(r.sorte) < 0) w(wo + 'sorte „' + r.sorte + '“ steht nicht im Lernlog-Abgleich (modell, methode, heuristik, technik, app)' + (r.sorte === 'baustein' ? '; „baustein“ nennt nur der Standard (Absatz unter der Artentabelle in 3)' : '') + '. Die Sorte ändert nichts an der Rechnung.');
+        if (r.sorte !== undefined && SORTEN.indexOf(r.sorte) < 0) w(wo + 'sorte „' + r.sorte + '“ gehört nicht zu den vorgesehenen Sorten (' + SORTEN.join(', ') + ')' + (r.sorte === 'baustein' ? '; „baustein“ nennt nur der Standard-Entwurf (Absatz unter der Artentabelle in 3)' : '') + '. Die Sorte ändert nichts an der Rechnung.');
       } else if (r.sorte !== undefined) w(wo + 'sorte gehört nur an werkzeug (3).');
       if (u.art === 'gebiet' && r.gewicht !== undefined) w(wo + 'gewicht gilt nicht für gebiet (3.1).');
       if (u.uebt.length && ['quest', 'erlebnis', 'inhalt', 'episode'].indexOf(u.art) < 0) w(wo + 'uebt ist für quest, erlebnis, inhalt und episode vorgesehen (3.1).');
@@ -1327,8 +1330,6 @@
    * Übersetzung nach xAPI (6.3): rein, ohne Netzwerk. Die Seite sendet damit nichts.
    * ------------------------------------------------------------------ */
 
-  var SP_EXT = SP_IRI + 'ext/';
-
   /** 128 Bit aus einem Text: fest, ohne Zufall (für gleiche Statement-ids bei gleichem Ereignis, damit Nachreichen nichts doppelt macht). */
   function hash128(str) {
     var h = [0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344], m = [0x01000193, 0x9e3779b1, 0x85ebca6b, 0xc2b2ae35], i, j;
@@ -1356,7 +1357,8 @@
 
   /**
    * Ein Ereignis der Kurzform als xAPI-Statement (6.3).
-   * opts: { homePage, activityId, registration (UUID), actor (fertiger Actor, z. B. aus cmi5), kontext (z. B. cmi5-contextTemplate), id }
+   * opts: { homePage, activityId, registration (UUID), actor (fertiger Actor, z. B. aus cmi5), kontext (z. B. cmi5-contextTemplate), id,
+   *         vokabular (Wurzel der Adressen für eigene Verben, Erweiterungen und Arten; sonst plan.vokabular, sonst urn:spielplan:) }
    * Wirft TypeError bei unbrauchbaren Ereignissen (kein Verb, kein objekt, keine Zeit, kein wer).
    */
   function nachXapi(e, plan, opts) {
@@ -1370,15 +1372,17 @@
     var basis = istText(K.plan.basis) ? K.plan.basis : 'urn:spielplan:' + (K.id || 'plan') + ':';
     if (/^https?:/i.test(basis) && basis.slice(-1) !== '/') basis += '/';
     function iri(id) { return basis + id; }
+    var wurzel = istText(opts.vokabular) ? opts.vokabular : (istText(K.plan.vokabular) ? K.plan.vokabular : SP_IRI), EXT = wurzel + 'ext/';
+    var verbId = VERBEN[e.verb].indexOf(SP_IRI) === 0 ? wurzel + VERBEN[e.verb].slice(SP_IRI.length) : VERBEN[e.verb];   // nur die eigenen Verben liegen im Vokabular
     var u = K.by[e.objekt];
     var s = {
       actor: opts.actor || { objectType: 'Agent', account: { homePage: opts.homePage || (istText(K.plan.basis) ? K.plan.basis : basis), name: String(e.wer) } },
-      verb: { id: VERBEN[e.verb], display: { de: e.verb } },
+      verb: { id: verbId, display: { de: e.verb } },
       object: { objectType: 'Activity', id: iri(e.objekt) }
     };
     if (u) {
       s.object.definition = { name: { de: u.name } };
-      if (u.art) s.object.definition.type = SP_IRI + 'arten/' + u.art;
+      if (u.art) s.object.definition.type = wurzel + 'arten/' + u.art;
     }
     var res = {}, er = istObj(e.ergebnis) ? e.ergebnis : {};
     if (e.verb === 'geschafft' || e.verb === 'bestanden') res.completion = true;
@@ -1392,16 +1396,16 @@
     if (istObj(e.beleg)) {
       var b = {};
       ['art', 'quelle', 'fall'].forEach(function (k) { if (istText(e.beleg[k])) b[k] = e.beleg[k]; });
-      if (Object.keys(b).length) { res.extensions = {}; res.extensions[SP_EXT + 'beleg'] = b; }
+      if (Object.keys(b).length) { res.extensions = {}; res.extensions[EXT + 'beleg'] = b; }
     }
     if (Object.keys(res).length) s.result = res;
     var ctx = { contextActivities: { grouping: [{ objectType: 'Activity', id: opts.activityId || basis }] } };
     if (u && u.eltern.length) ctx.contextActivities.parent = [{ objectType: 'Activity', id: iri(u.eltern[0]) }];
     if (opts.registration) ctx.registration = opts.registration;
     var ext = {};
-    if (textListe(e.mit).length) ext[SP_EXT + 'mit'] = textListe(e.mit).map(iri);
-    if (istText(e.app)) ext[SP_EXT + 'app'] = e.app;
-    if (istText(e.regel)) ext[SP_EXT + 'regel'] = e.regel;
+    if (textListe(e.mit).length) ext[EXT + 'mit'] = textListe(e.mit).map(iri);
+    if (istText(e.app)) ext[EXT + 'app'] = e.app;
+    if (istText(e.regel)) ext[EXT + 'regel'] = e.regel;
     if (Object.keys(ext).length) ctx.extensions = ext;
     if (istObj(opts.kontext)) {                                       // z. B. cmi5-contextTemplate: Erweiterungen und Aktivitäten ergänzen
       var kt = opts.kontext;

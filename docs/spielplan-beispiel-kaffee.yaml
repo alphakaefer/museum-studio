@@ -1,7 +1,7 @@
 format: spielplan/0
 id: museum-kaffee
 name: Kaffee-Museum
-basis: https://zukunftsgut.org/spielplan/museum-kaffee/
+basis: https://example.org/spielplan/museum-kaffee/
 einheiten:
   - { id: gebiet/anbau,      art: gebiet,  name: Anbau }
   - { id: gebiet/handel,     art: gebiet,  name: Handel, sichtbar: angedeutet }

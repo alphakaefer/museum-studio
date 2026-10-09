@@ -1,4 +1,4 @@
-// Museum Studio – kleiner YAML-Teilmengen-Leser für Spielpläne (docs/spielplan-standard.md), ohne Abhängigkeiten.
+// Museum Studio – kleiner YAML-Teilmengen-Leser für Spielpläne (Format spielplan/0, siehe docs/SPIELPLAN-ARBEITSSTAND.md), ohne Abhängigkeiten.
 //
 //   import { parseYaml, parseDatei, ladeDatei, YamlFehler } from './yaml-lite.mjs';
 //   const plan = ladeDatei('docs/spielplan-beispiel-kaffee.yaml');   // YAML oder JSON, nach Inhalt erkannt
@@ -28,7 +28,7 @@ export class YamlFehler extends Error {
 
 const SONDER = /^[&*!%@`]/;
 
-/** Entfernt einen Kommentar am Zeilenende. Anführungszeichen öffnen nur am Anfang eines Wertes (Karl's # bleibt Text, "a # b" bleibt ganz). */
+/** Entfernt einen Kommentar am Zeilenende. Anführungszeichen öffnen nur am Anfang eines Wertes (Lea's # bleibt Text, "a # b" bleibt ganz). */
 function ohneKommentar(s) {
   let quote = null, start = true, i = 0;
   const ersteStelle = s.search(/\S/);

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Museum Studio – Prüfung eines Spielplans (Format spielplan/0, docs/spielplan-standard.md, Abschnitt 10).
+// Museum Studio – Prüfung eines Spielplans (Format spielplan/0, Abschnitt 10 des Standard-Entwurfs; Überblick: docs/SPIELPLAN-ARBEITSSTAND.md).
 //
 //   node tools/check-spielplan.mjs <datei.yaml | datei.json | paket> [--streng] [--json]
 //

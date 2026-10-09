@@ -5,7 +5,7 @@
 //
 // Gruppen:
 //   1 yaml-lite            Lesen der YAML-Teilmenge, Fehler mit Zeilennummer, Rundlauf mit zufälligen Strukturen
-//   2 Konformität Kaffee   das Beispiel aus dem Anhang des Standards (docs/spielplan-beispiel-kaffee.yaml), Zeile für Zeile
+//   2 Konformität Kaffee   das kleine Kaffee-Beispiel (docs/spielplan-beispiel-kaffee.yaml), Zeile für Zeile
 //   3 Regeln               kritisch, wesentlich, optional, wartezeit, Transfer, Zugang, Aufgabe, Sätze, Rhythmus, Ereignisse, Prüfung
 //   4 Eigenschaften        Zufallspläne und -ereignisse (fester Startwert) gegen ein unabhängig geschriebenes Orakel:
 //                          Reihenfolge egal, nichts sinkt oder sperrt wieder zu, Fixpunkt stabil, Pausen ändern keine Stufe
@@ -32,15 +32,21 @@ const { Spielplan: SP } = ladeKern();
 const tests = [];
 let gruppeName = '';
 const gruppen = [];
-function gruppe(name) { gruppeName = name; gruppen.push({ name, ok: 0, bad: 0 }); }
+function gruppe(name) { gruppeName = name; gruppen.push({ name, ok: 0, bad: 0, skip: 0 }); }
 function test(name, fn) { tests.push({ gruppe: gruppen[gruppen.length - 1], name, fn }); }
 function gleich(a, b, msg) { assert.deepStrictEqual(a, b, msg); }
+/** Ein Test, dem etwas fehlt (Browser, privater Entwurf), meldet sich als übersprungen statt grün oder rot zu sein. */
+function ueberspringe(grund) { const e = new Error(grund); e.uebersprungen = true; throw e; }
 function wahr(c, msg) { assert.ok(c, msg); }
 const T = (h, m = 0, tag = 9) => `2026-10-${String(tag).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00Z`;
 const E = (verb, objekt, zeit, extra = {}) => Object.assign({ wer: 'lokal:test', verb, objekt, zeit, app: 'test' }, extra);
 const BELEG = (fall, art = 'messung') => ({ art, quelle: 'test:messung', fall });
 function tief(x) { if (x && typeof x === 'object') { Object.values(x).forEach(tief); Object.freeze(x); } return x; }
 const klon = x => JSON.parse(JSON.stringify(x));
+/** Quelltext ohne Blockkommentare, Zeilenkommentare und Kommentare am Zeilenende (Grobe Näherung, reicht für Prüfungen auf Namen im Code). */
+function ohneKommentare(code) {
+  return code.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter(z => !/^\s*\/\//.test(z)).map(z => z.replace(/\s\/\/\s.*$/, '')).join('\n');
+}
 
 /** Kleiner Plan-Baukasten: einheit(id, art, extra) usw. */
 function plan(einheiten, regeln = [], rest = {}) { return Object.assign({ format: 'spielplan/0', id: 'test', name: 'Test', basis: 'https://example.org/sp/test/', einheiten, regeln }, rest); }
@@ -63,7 +69,7 @@ test('Zeichenketten in Anführungszeichen mit Escapes und verdoppeltem Apostroph
     { a: 'Zeile\nzwei "zitat" \\ ä', b: "it's # kein Kommentar", c: 'a # b', d: '1', e: '' });
 });
 test('Kommentare: am Zeilenende, als eigene Zeile, Hash im Wort bleibt', () => {
-  gleich(parseYaml('# Kopf\na: 1 # Ende\nb: x#y\n   # eingerückt\nc: Karl\'s Haus # und Kommentar\nd: http://x/#/y'), { a: 1, b: 'x#y', c: "Karl's Haus", d: 'http://x/#/y' });
+  gleich(parseYaml('# Kopf\na: 1 # Ende\nb: x#y\n   # eingerückt\nc: Lea\'s Haus # und Kommentar\nd: http://x/#/y'), { a: 1, b: 'x#y', c: "Lea's Haus", d: 'http://x/#/y' });
 });
 test('Block-Abbildung und Block-Liste, verschachtelt, Liste auf der Höhe des Schlüssels', () => {
   const y = 'a:\n  b:\n    c: 1\n  d: [1, 2]\nliste:\n- x\n- y\nandere:\n  - 1\n  - 2\nleer:\nende: 1';
@@ -161,7 +167,7 @@ function alsYaml(wert, r, einzug = 0) {
 }
 test('Rundlauf: zufällige Strukturen als Block-YAML und als JSON werden gleich gelesen', () => {
   const r = rng(20261009);
-  const worte = ['eins', 'zwei drei', 'Ähre', 'a/b-c', '2026-11-02', 'ja', '12', 'true', 'x: y', 'mit # Hash', "Karl's", 'Zeile\nzwei', '', ' führend'];
+  const worte = ['eins', 'zwei drei', 'Ähre', 'a/b-c', '2026-11-02', 'ja', '12', 'true', 'x: y', 'mit # Hash', "Lea's", 'Zeile\nzwei', '', ' führend'];
   const wert = d => {
     const t = r.int(d > 2 ? 4 : 7);
     if (t === 0) return r.pick(worte);
@@ -182,15 +188,18 @@ test('Rundlauf: zufällige Strukturen als Block-YAML und als JSON werden gleich 
 });
 test('Das Kaffee-Beispiel wird vollständig gelesen (mehrzeilige Flow-Abbildung, Kommentare, Schrägstriche, Doppelpunkte in Adressen)', () => {
   const p = ladeDatei(path.join(ROOT, 'docs', 'spielplan-beispiel-kaffee.yaml'));
-  gleich(p.format, 'spielplan/0'); gleich(p.basis, 'https://zukunftsgut.org/spielplan/museum-kaffee/');
+  gleich(p.format, 'spielplan/0'); gleich(p.basis, 'https://example.org/spielplan/museum-kaffee/');
   gleich(p.einheiten.length, 11); gleich(p.regeln.length, 2);
   const tasse = p.einheiten.find(u => u.id === 'episode/tasse');
   gleich(tasse.etappe, 'onboarding'); gleich(tasse.auftakt, 'Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse.');
   gleich(p.rhythmus, { takt: { laenge: 'woche', beginn: 'erstes-ereignis' }, wiederkehr: { abstand_tage: [2, 7, 21], fuer: { art: 'skill' } }, verfall_tage: 35 });
   gleich(p.regeln[0].enthuellung, 'Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi.');
 });
-test('Die Beispiele des Standards (Abschnitt 3.1, 5, 5.1, 5.5, 10) werden gelesen', () => {
-  const md = fs.readFileSync(path.join(ROOT, 'docs', 'spielplan-standard.md'), 'utf8');
+test('Die YAML-Beispiele des Standard-Entwurfs werden gelesen (nur wenn der Entwurf vorliegt; Pfad: SPIELPLAN_STANDARD)', () => {
+  // Der Entwurf gehört nicht in dieses Repository. Wer ihn hat, gibt den Pfad per Umgebungsvariable an (oder legt ihn als docs/spielplan-standard.md daneben, ohne ihn einzuchecken).
+  const quelle = [process.env.SPIELPLAN_STANDARD, path.join(ROOT, 'docs', 'spielplan-standard.md')].filter(Boolean).find(f => fs.existsSync(f));
+  if (!quelle) ueberspringe('der Standard-Entwurf liegt nicht vor (SPIELPLAN_STANDARD setzen)');
+  const md = fs.readFileSync(quelle, 'utf8');
   const bloecke = [...md.matchAll(/```yaml\n([\s\S]*?)```/g)].map(m => m[1]);
   wahr(bloecke.length >= 5, 'weniger YAML-Blöcke als erwartet: ' + bloecke.length);
   bloecke.forEach((b, i) => { try { const w = parseYaml(b.replace(/\[ … \]/g, '[]').replace(/\{ … \}/g, '{}')); wahr(w && typeof w === 'object', 'Block ' + i); } catch (e) { throw new Error(`YAML-Block ${i + 1} des Standards: ${e.message}\n${b.slice(0, 200)}`); } });
@@ -1097,36 +1106,36 @@ function pruefeStatement(st) {
   if (st.timestamp !== undefined && !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(st.timestamp)) f.push('timestamp kein ISO-8601 mit Zone: ' + st.timestamp);
   return f;
 }
-const BASIS = 'https://zukunftsgut.org/spielplan/museum-kaffee/', EXT = 'https://zukunftsgut.org/spielplan/ext/';
+const BASIS = 'https://example.org/spielplan/museum-kaffee/', EXT = 'urn:spielplan:ext/';   // Wurzel des Vokabulars ohne plan.vokabular: urn:spielplan:
 const FIX = [
   { name: 'geschafft mit Ergebnis, Werkzeug und App',
     e: { wer: 'lokal:7f3a9c21', verb: 'geschafft', objekt: 'quest/kaldi-mythos', zeit: '2026-10-09T10:12:00Z', app: 'museum/kaffee', mit: ['werkzeug/roestkurve'], ergebnis: { dauer_s: 240, punkte: 8, max: 10 } },
     soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:7f3a9c21' } }, verb: { id: 'http://adlnet.gov/expapi/verbs/completed', display: { de: 'geschafft' } },
-      object: { objectType: 'Activity', id: BASIS + 'quest/kaldi-mythos', definition: { name: { de: 'Mythos oder Geschichte?' }, type: 'https://zukunftsgut.org/spielplan/arten/quest' } },
+      object: { objectType: 'Activity', id: BASIS + 'quest/kaldi-mythos', definition: { name: { de: 'Mythos oder Geschichte?' }, type: 'urn:spielplan:arten/quest' } },
       result: { completion: true, score: { raw: 8, min: 0, max: 10, scaled: 0.8 }, duration: 'PT4M' },
       context: { contextActivities: { grouping: [{ objectType: 'Activity', id: BASIS }], parent: [{ objectType: 'Activity', id: BASIS + 'episode/tasse' }] }, extensions: { [EXT + 'mit']: [BASIS + 'werkzeug/roestkurve'], [EXT + 'app']: 'museum/kaffee' } },
       timestamp: '2026-10-09T10:12:00.000Z' } },
   { name: 'angewendet mit Beleg (Messung) und Fall',
-    e: { wer: 'lokal:7f3a9c21', verb: 'angewendet', objekt: 'erlebnis/roestung', zeit: '2026-10-10T08:00:00Z', app: 'museum/kaffee', beleg: { art: 'messung', quelle: 'zwilling:akademie/kurs_teilnehmer', fall: 'akademie' } },
-    soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:7f3a9c21' } }, verb: { id: 'https://zukunftsgut.org/spielplan/verben/angewendet', display: { de: 'angewendet' } },
-      object: { objectType: 'Activity', id: BASIS + 'erlebnis/roestung', definition: { name: { de: 'Die Röstung am Exponat' }, type: 'https://zukunftsgut.org/spielplan/arten/erlebnis' } },
-      result: { extensions: { [EXT + 'beleg']: { art: 'messung', quelle: 'zwilling:akademie/kurs_teilnehmer', fall: 'akademie' } } },
+    e: { wer: 'lokal:7f3a9c21', verb: 'angewendet', objekt: 'erlebnis/roestung', zeit: '2026-10-10T08:00:00Z', app: 'museum/kaffee', beleg: { art: 'messung', quelle: 'daten:kurs/teilnehmer', fall: 'kurs' } },
+    soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:7f3a9c21' } }, verb: { id: 'urn:spielplan:verben/angewendet', display: { de: 'angewendet' } },
+      object: { objectType: 'Activity', id: BASIS + 'erlebnis/roestung', definition: { name: { de: 'Die Röstung am Exponat' }, type: 'urn:spielplan:arten/erlebnis' } },
+      result: { extensions: { [EXT + 'beleg']: { art: 'messung', quelle: 'daten:kurs/teilnehmer', fall: 'kurs' } } },
       context: { contextActivities: { grouping: [{ objectType: 'Activity', id: BASIS }], parent: [{ objectType: 'Activity', id: BASIS + 'episode/tasse' }] }, extensions: { [EXT + 'app']: 'museum/kaffee' } },
       timestamp: '2026-10-10T08:00:00.000Z' } },
   { name: 'begonnen, kleinste Form',
     e: { wer: 'lokal:a', verb: 'begonnen', objekt: 'inhalt/kaldi', zeit: '2026-10-09T09:00:00Z' },
     soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:a' } }, verb: { id: 'http://adlnet.gov/expapi/verbs/attempted', display: { de: 'begonnen' } },
-      object: { objectType: 'Activity', id: BASIS + 'inhalt/kaldi', definition: { name: { de: 'Kaldi und die Ziegen' }, type: 'https://zukunftsgut.org/spielplan/arten/inhalt' } },
+      object: { objectType: 'Activity', id: BASIS + 'inhalt/kaldi', definition: { name: { de: 'Kaldi und die Ziegen' }, type: 'urn:spielplan:arten/inhalt' } },
       context: { contextActivities: { grouping: [{ objectType: 'Activity', id: BASIS }], parent: [{ objectType: 'Activity', id: BASIS + 'episode/tasse' }] } }, timestamp: '2026-10-09T09:00:00.000Z' } },
   { name: 'bestanden, Erfolg und Dauer über eine Stunde',
     e: { wer: 'lokal:a', verb: 'bestanden', objekt: 'skill/quellen', zeit: '2026-10-09T09:00:00+02:00', ergebnis: { dauer_s: 3725, erfolg: true } },
     soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:a' } }, verb: { id: 'http://adlnet.gov/expapi/verbs/passed', display: { de: 'bestanden' } },
-      object: { objectType: 'Activity', id: BASIS + 'skill/quellen', definition: { name: { de: 'Quellen prüfen' }, type: 'https://zukunftsgut.org/spielplan/arten/skill' } },
+      object: { objectType: 'Activity', id: BASIS + 'skill/quellen', definition: { name: { de: 'Quellen prüfen' }, type: 'urn:spielplan:arten/skill' } },
       result: { completion: true, success: true, duration: 'PT1H2M5S' }, context: { contextActivities: { grouping: [{ objectType: 'Activity', id: BASIS }] } }, timestamp: '2026-10-09T07:00:00.000Z' } },
   { name: 'freigeschaltet (abgeleitet) mit Regel',
     e: { wer: 'lokal:a', verb: 'freigeschaltet', objekt: 'werkzeug/roestkurve', zeit: '2026-10-09T10:12:00Z', app: 'museum/kaffee', regel: 'roestkurve' },
-    soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:a' } }, verb: { id: 'https://zukunftsgut.org/spielplan/verben/freigeschaltet', display: { de: 'freigeschaltet' } },
-      object: { objectType: 'Activity', id: BASIS + 'werkzeug/roestkurve', definition: { name: { de: 'Röstkurve' }, type: 'https://zukunftsgut.org/spielplan/arten/werkzeug' } },
+    soll: { actor: { objectType: 'Agent', account: { homePage: BASIS, name: 'lokal:a' } }, verb: { id: 'urn:spielplan:verben/freigeschaltet', display: { de: 'freigeschaltet' } },
+      object: { objectType: 'Activity', id: BASIS + 'werkzeug/roestkurve', definition: { name: { de: 'Röstkurve' }, type: 'urn:spielplan:arten/werkzeug' } },
       context: { contextActivities: { grouping: [{ objectType: 'Activity', id: BASIS }] }, extensions: { [EXT + 'app']: 'museum/kaffee', [EXT + 'regel']: 'roestkurve' } }, timestamp: '2026-10-09T10:12:00.000Z' } },
 ];
 for (const fx of FIX) {
@@ -1154,6 +1163,21 @@ test('xAPI: ohne basis gilt urn:spielplan:<id>:, unbekanntes Objekt wird ohne De
   const st = SP.nachXapi({ wer: 'a', verb: 'begonnen', objekt: 'quest/y', zeit: T(10) }, p);
   gleich(st.object.id, 'urn:spielplan:x:quest/y'); gleich(st.object.definition, undefined); gleich(pruefeStatement(st), []);
   for (const e of [null, { wer: 'a', verb: 'tanzen', objekt: 'quest/y', zeit: T(10) }, { wer: 'a', verb: 'begonnen', zeit: T(10) }, { wer: 'a', verb: 'begonnen', objekt: 'q', zeit: 'nie' }, { verb: 'begonnen', objekt: 'q', zeit: T(10) }]) assert.throws(() => SP.nachXapi(e, p), TypeError);
+});
+test('xAPI: eigenes Vokabular (plan.vokabular oder opts.vokabular) ersetzt die neutrale Wurzel nur bei den eigenen Verben, Erweiterungen und Arten', () => {
+  const eigen = Object.assign(klon(KAFFEE), { vokabular: 'https://vokabular.example/sp/' });
+  const e = E('angewendet', 'erlebnis/roestung', T(10), { mit: ['werkzeug/roestkurve'], beleg: BELEG('a'), regel: 'roestkurve' });
+  const a = SP.nachXapi(e, eigen), grund = SP.nachXapi(e, KAFFEE);
+  gleich(a.verb.id, 'https://vokabular.example/sp/verben/angewendet');
+  gleich(a.object.definition.type, 'https://vokabular.example/sp/arten/erlebnis');
+  gleich(Object.keys(a.context.extensions).sort(), ['app', 'mit', 'regel'].map(k => 'https://vokabular.example/sp/ext/' + k));
+  gleich(Object.keys(a.result.extensions), ['https://vokabular.example/sp/ext/beleg']);
+  gleich(grund.verb.id, 'urn:spielplan:verben/angewendet', 'ohne Angabe die neutrale Wurzel');
+  gleich(SP.nachXapi(E('geschafft', 'quest/kaldi-mythos', T(10)), eigen).verb.id, 'http://adlnet.gov/expapi/verbs/completed', 'ADL-Verben bleiben');
+  gleich(SP.nachXapi(e, eigen, { vokabular: 'urn:anders:' }).verb.id, 'urn:anders:verben/angewendet', 'opts.vokabular geht vor plan.vokabular');
+  gleich(SP.pruefe(eigen).fehler, []);
+  for (const falsch of ['kein-iri', 'https://x.example/ohne-ende', 5, '']) wahr(SP.pruefe(Object.assign(klon(KAFFEE), { vokabular: falsch })).fehler.some(f => /vokabular/.test(f)), 'vokabular ' + JSON.stringify(falsch));
+  gleich(SP.pruefe(Object.assign(klon(KAFFEE), { vokabular: 'urn:meins:' })).fehler, []);
 });
 test('xAPI: Zufallsereignisse ergeben gültige Statements, verschiedene Ereignisse verschiedene ids', () => {
   const r = rng(99), ids = new Set();
@@ -1245,15 +1269,15 @@ test('Brücke: Doppelte binnen einer Minute werden nicht noch einmal gespeichert
 });
 test('Brücke, Datenschutz: nur Kennungen und Zahlen werden gespeichert, keine Texte', () => {
   const b = bruecke(), sp = b.sp;
-  const e = sp.melde('angewendet', 'erlebnis/roestung', { ergebnis: { punkte: 3, antwort: 'Mein Chef heißt Müller', dauer_s: -5, erfolg: 'ja' }, beleg: { art: 'messung', quelle: 'Frau Müller sagt es', fall: 'Firma Müller GmbH', text: 'geheim' }, text: 'nochmal geheim', name: 'Karl' });
+  const e = sp.melde('angewendet', 'erlebnis/roestung', { ergebnis: { punkte: 3, antwort: 'Mein Chef heißt Müller', dauer_s: -5, erfolg: 'ja' }, beleg: { art: 'messung', quelle: 'Frau Müller sagt es', fall: 'Firma Müller GmbH', text: 'geheim' }, text: 'nochmal geheim', name: 'Lea' });
   gleich(e.ergebnis, { punkte: 3 }); gleich(e.beleg, { art: 'messung' }); gleich(Object.keys(e).sort(), ['app', 'beleg', 'ergebnis', 'objekt', 'verb', 'wer', 'zeit']);
   wahr(/fall ist keine Kennung/.test(sp.letzterFehler) || /quelle/.test(sp.letzterFehler), sp.letzterFehler);
-  const e2 = sp.melde('angewendet', 'erlebnis/roestung', { beleg: { art: 'bestaetigung', quelle: 'Zwilling:Akademie/Kurs_1', fall: ' Akademie-1 ' }, zeit: T(11) });
-  gleich(e2.beleg, { art: 'bestaetigung', quelle: 'zwilling:akademie/kurs_1', fall: 'akademie-1' });
+  const e2 = sp.melde('angewendet', 'erlebnis/roestung', { beleg: { art: 'bestaetigung', quelle: 'Daten:Kurs/Lauf_1', fall: ' Kurs-1 ' }, zeit: T(11) });
+  gleich(e2.beleg, { art: 'bestaetigung', quelle: 'daten:kurs/lauf_1', fall: 'kurs-1' });
   const e3 = sp.melde('angewendet', 'erlebnis/roestung', { beleg: { art: 'zufall', fall: 'x' }, zeit: T(12) });
   gleich(e3.beleg, undefined, 'ungültige Belegart: kein Beleg'); const e4 = sp.melde('angewendet', 'erlebnis/roestung', { fall: 'x', zeit: T(13) }); gleich(e4.beleg, undefined, 'fall ohne Beleg wird nicht gespeichert');
   const e5 = sp.melde('angewendet', 'erlebnis/roestung', { beleg: { art: 'eigen' }, fall: 'kurzform', zeit: T(14) }); gleich(e5.beleg, { art: 'eigen', fall: 'kurzform' }, 'fall als Kurzform in den Optionen');
-  const alles = JSON.stringify(sp.ereignisse()); wahr(!/Müller|geheim|Karl|Chef/.test(alles), alles);
+  const alles = JSON.stringify(sp.ereignisse()); wahr(!/Müller|geheim|Lea|Chef/.test(alles), alles);
   const e6 = sp.melde('geschafft', 'quest/kaldi-mythos', { mit: ['werkzeug/roestkurve', 'quest/kaldi-mythos', 'werkzeug/gibtsnicht', 5] }); gleich(e6.mit, ['werkzeug/roestkurve']);
 });
 test('Brücke: Transfer über die Brücke (zwei Fälle) ergibt Stufe 4 am Werkzeug', () => {
@@ -1350,8 +1374,9 @@ test('Die Seite sendet nichts: kein fetch, XMLHttpRequest, sendBeacon, WebSocket
   gleich(aufrufe, []);
   const quelle = fs.readFileSync(path.join(ROOT, 'engine', 'js', 'spielplan.js'), 'utf8');
   wahr(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|EventSource|new Image/.test(quelle.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')), 'spielplan.js enthält keinen Netzwerkzugriff');
-  const build = fs.readFileSync(path.join(ROOT, 'tools', 'build.mjs'), 'utf8');
-  wahr(!/spielplan-adapter/.test(build), 'der Build bindet den Adapter nicht ein');
+  // Der Build darf den Adapter in Kommentaren nennen (er erklärt dort, dass er ihn nie einbindet); im Code darf er nicht vorkommen.
+  // Die Ausgabe eines echten Builds prüft der Test in Gruppe 8.
+  wahr(!/spielplan-adapter/.test(ohneKommentare(fs.readFileSync(path.join(ROOT, 'tools', 'build.mjs'), 'utf8'))), 'der Build bindet den Adapter nicht ein');
 });
 test('Brücke: jetzt als Funktion, Text oder Zahl; ohne plan wirft verbinde einen klaren Fehler', () => {
   const k = ladeKern();
@@ -1456,7 +1481,7 @@ test('xAPI-Adapter (cmi5): Start mit fetch-Token, LaunchData, initialized; Ereig
   gleich(kern.map(s => s.verb.id.split('/').pop()).sort(), ['attempted', 'completed', 'freigeschaltet'], 'die beiden Ereignisse und die abgeleitete Freischaltung');
   kern.forEach(s => { gleich(s.actor, ACTOR); gleich(s.context.registration, REG); gleich(s.context.extensions['https://w3id.org/xapi/cmi5/context/extensions/sessionid'], 'sitzung-42'); });
   const frei = kern.find(s => s.verb.id.endsWith('freigeschaltet'));
-  gleich(frei.object.id, 'https://example.org/kurs/werkzeug/w'); gleich(frei.context.extensions['https://zukunftsgut.org/spielplan/ext/regel'], 'w');
+  gleich(frei.object.id, 'https://example.org/kurs/werkzeug/w'); gleich(frei.context.extensions['urn:spielplan:ext/regel'], 'w');
   wahr(!lrs.liste().some(s => s.verb.id.endsWith('completed') && s.object.id === ACT), 'noch nicht abgeschlossen');
   gleich(SP.wurzelStufe(KURS, sp.stand()), 1, 'Wurzel steht bei Stufe 1'); sp.melde('geschafft', 'inhalt/b', { zeit: T(10, 3) }); await ad.letzte;
   const fertig = lrs.liste().filter(s => s.verb.id.endsWith('/completed') && s.object.id === ACT);
@@ -1642,7 +1667,7 @@ test('SCORM 1.2: incomplete beim Start, completed bei Stufe 2 der Wurzel, kompak
 test('SCORM 1.2: Wiederaufnahme aus suspend_data (Ereignisse, Minutengenau): Stufen, Freischaltungen, Fälle kommen zurück', () => {
   const k = kernMitAdapter(), api = mockScorm12(), p = plan([U('gebiet/g'), U('werkzeug/w'), U('quest/a', { in: 'gebiet/g' }), U('quest/b', { in: 'gebiet/g' })], [{ id: 'r', schaltet: ['werkzeug/w'], wenn: { einheit: 'quest/a' }, enthuellung: 'x' }], { id: 'wieder' });
   const sp = scormSitzung(k, api, 'API', {}, p);
-  sp.melde('geschafft', 'quest/a', { mit: ['werkzeug/w'], zeit: '2026-10-09T10:00:00Z' }); sp.melde('angewendet', 'quest/b', { beleg: { art: 'messung', fall: 'Akademie' }, zeit: '2026-10-09T11:30:00Z' });
+  sp.melde('geschafft', 'quest/a', { mit: ['werkzeug/w'], zeit: '2026-10-09T10:00:00Z' }); sp.melde('angewendet', 'quest/b', { beleg: { art: 'messung', fall: 'Werkstatt' }, zeit: '2026-10-09T11:30:00Z' });
   sp.melde('angewendet', 'quest/b', { beleg: { art: 'eigen', fall: 'dorf' }, zeit: '2026-10-10T09:00:00Z' });
   const vorher = sp.stand('2026-10-11T00:00:00Z');
   const k2 = kernMitAdapter(), sp2 = scormSitzung(k2, api, 'API', {}, p, () => '2026-10-11T00:00:00Z');
@@ -1772,6 +1797,38 @@ test('Spielplan-Dateien der Pakete im Repo bestehen die Prüfung (soweit vorhand
   }
 });
 
+/** Baut ein Paket (Ordnername unter packs/ oder Pfad) ohne Skins in einen Ordner unter TMP und gibt die Liste der erzeugten Dateien zurück. */
+function baue(paket, name) {
+  const out = path.join(TMP, 'bau-' + name);
+  execFileSync(process.execPath, [path.join(ROOT, 'tools', 'build.mjs'), paket, '--skins=none', '--out=' + out], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  const dateien = [];
+  (function geh(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) geh(f); else dateien.push(path.relative(out, f).split(path.sep).join('/')); } })(out);
+  return { out, dateien, html: fs.readFileSync(path.join(out, 'index.html'), 'utf8') };
+}
+const SPIEL_DATEIEN = ['js/spielplan.js', 'js/spielplan-adapter.js', 'js/spiel.js', 'css/spiel.css', 'data/spielplan.js'];
+test('Build: ein Paket ohne spielplan.json bekommt nichts vom Spielplan (keine Dateien, keine Verweise in der Seite)', () => {
+  let n = 0;
+  for (const paket of ['_vorlage', 'spieltheorie', 'beispiel-gehirn']) {
+    if (!fs.existsSync(path.join(ROOT, 'packs', paket)) || fs.existsSync(path.join(ROOT, 'packs', paket, 'spielplan.json'))) continue;
+    const b = baue(paket, 'ohne-' + paket);
+    gleich(b.dateien.filter(f => SPIEL_DATEIEN.includes(f)), [], paket + ': Dateien des Spielplans');
+    wahr(!/spielplan|js\/spiel\.js|css\/spiel\.css|MUSEUM\.data\.spielplan/.test(b.html), paket + ': index.html verweist auf den Spielplan');
+    n++;
+  }
+  wahr(n >= 1, 'kein Paket ohne Spielplan gefunden');
+});
+test('Build: ein Paket mit spielplan.json bekommt Kern und Daten, nie den Adapter (xAPI, SCORM)', () => {
+  if (!fs.existsSync(path.join(ROOT, 'engine', 'js', 'spiel.js')) || !fs.existsSync(path.join(ROOT, 'engine', 'css', 'spiel.css'))) ueberspringe('engine/js/spiel.js oder engine/css/spiel.css fehlt noch (die Anbindung gehört nicht zum Kern)');
+  const dir = path.join(TMP, 'mit-spielplan'); fs.cpSync(path.join(ROOT, 'packs', '_vorlage'), dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'spielplan.json'), JSON.stringify(KAFFEE));
+  const b = baue(dir, 'mit');
+  for (const f of ['js/spielplan.js', 'js/spiel.js', 'css/spiel.css', 'data/spielplan.js']) wahr(b.dateien.includes(f), 'fehlt in der Ausgabe: ' + f);
+  wahr(!b.dateien.includes('js/spielplan-adapter.js') && !/spielplan-adapter/.test(b.html), 'der Adapter darf nicht ausgeliefert werden');
+  const daten = fs.readFileSync(path.join(b.out, 'data', 'spielplan.js'), 'utf8');
+  wahr(daten.includes('MUSEUM.data.spielplan=') && daten.includes('"museum-kaffee"'), 'data/spielplan.js trägt den Plan');
+  for (const d of ['js/spielplan.js', 'js/spiel.js']) wahr(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|EventSource|new Image/.test(ohneKommentare(fs.readFileSync(path.join(b.out, d), 'utf8'))), 'Netzwerkzugriff im Spielplan-Teil der Seite: ' + d);
+});
+
 /* ================================================================ Konformitätsset */
 
 gruppe('8b Konformitätsset (docs/spielplan-konformitaet.json)');
@@ -1780,7 +1837,7 @@ gruppe('8b Konformitätsset (docs/spielplan-konformitaet.json)');
 function konformitaetsFaelle() {
   const F = [];
   const fall = (name, beschreibung, p, ereignisse, jetzt, optionen) => F.push({ name, beschreibung, plan: klon(p), ereignisse: klon(ereignisse), jetzt, optionen: optionen || {} });
-  fall('kaffee-anfang', 'Der Anhang des Standards ohne Ereignisse: Röstkurve, Röstung, Handel, Weltmarkt gesperrt.', KAFFEE, [], T(10));
+  fall('kaffee-anfang', 'Das Kaffee-Beispiel ohne Ereignisse: Röstkurve, Röstung, Handel, Weltmarkt gesperrt.', KAFFEE, [], T(10));
   fall('kaffee-mythos', 'Die kritische Mythos-Quest schaltet die Röstkurve frei (Regel), das Werkzeug ist noch nicht benutzt, also bleibt die Röstung gesperrt (braucht).', KAFFEE, [KA('geschafft', 'quest/kaldi-mythos', T(10, 12))], T(11));
   fall('kaffee-episode-geuebt', 'Mythos, Kaldi, Röstkurve benutzt, Röstung geschafft: Episode geübt (zwei Drittel von zwei wesentlichen sind zwei), Handel und Weltmarkt gehen im selben Augenblick auf.', KAFFEE,
     [KA('geschafft', 'quest/kaldi-mythos', T(10, 0)), KA('geschafft', 'inhalt/kaldi', T(10, 5)), KA('begonnen', 'werkzeug/roestkurve', T(10, 6)), KA('geschafft', 'erlebnis/roestung', T(10, 10))], T(12));
@@ -1790,7 +1847,7 @@ function konformitaetsFaelle() {
   fall('sammeln-anteil-067', 'Mit stufen.anteil 0.67 verlangen drei wesentliche Einheiten alle drei (Befund B2).', sammelPlan(['wesentlich', 'wesentlich', 'wesentlich'], { stufen: { anteil: 0.67 } }), ['x0', 'x1'].map((id, i) => E('geschafft', 'inhalt/' + id, T(10, i))), T(12));
   const q = plan([U('quest/q'), U('werkzeug/w')]);
   fall('stufen-treppe', 'Begonnen 1, geschafft 2, angewendet ohne Beleg 2, angewendet mit Beleg 3.', q, [E('angewendet', 'quest/q', T(10)), E('begonnen', 'quest/q', T(9)), E('angewendet', 'quest/q', T(11), { beleg: { art: 'eigen', fall: 'a' } })], T(12));
-  fall('transfer-zwei-faelle', 'Zwei verschiedene Fälle (ohne Groß- und Kleinschreibung verglichen) ergeben Stufe 4.', q, [E('angewendet', 'quest/q', T(10), { beleg: { art: 'messung', fall: 'Akademie' } }), E('angewendet', 'quest/q', T(11), { beleg: { art: 'eigen', fall: 'dorf' } })], T(12));
+  fall('transfer-zwei-faelle', 'Zwei verschiedene Fälle (ohne Groß- und Kleinschreibung verglichen) ergeben Stufe 4.', q, [E('angewendet', 'quest/q', T(10), { beleg: { art: 'messung', fall: 'Werkstatt' } }), E('angewendet', 'quest/q', T(11), { beleg: { art: 'eigen', fall: 'dorf' } })], T(12));
   fall('transfer-derselbe-fall', 'Derselbe Fall zweimal bleibt bei Stufe 3.', q, [E('angewendet', 'quest/q', T(10), { beleg: { art: 'messung', fall: 'a' } }), E('angewendet', 'quest/q', T(11), { beleg: { art: 'eigen', fall: 'A' } })], T(12));
   fall('transfer-geteilt', 'Angewendet mit Beleg und geteilt: Stufe 4; geteilt allein nur Stufe 1.', plan([U('quest/q'), U('quest/r')]), [E('angewendet', 'quest/q', T(10), { beleg: { art: 'messung', fall: 'a' } }), E('geteilt', 'quest/q', T(11)), E('geteilt', 'quest/r', T(11))], T(12));
   fall('werkzeug-ueber-mit', 'Geschafft und angewendet mit Beleg werden über mit ans Werkzeug gereicht; begonnen nicht.', plan([U('werkzeug/w'), U('quest/a'), U('quest/b'), U('quest/c')]),
@@ -1857,7 +1914,7 @@ async function browserOderNull() {
 }
 test('Browser: Kern läuft als klassisches Skript unter file://, speichert in localStorage (gm:sp:), überlebt Neuladen, sendet nichts, ohne Konsolenfehler', async () => {
   const browser = await browserOderNull();
-  if (!browser) { console.log('  (übersprungen: Playwright oder Chromium nicht gefunden; PLAYWRIGHT_MODULE_DIR setzen)'); return; }
+  if (!browser) ueberspringe('Playwright oder Chromium nicht gefunden (PLAYWRIGHT_MODULE_DIR setzen)');
   try {
     const seite = path.join(TMP, 'browser.html');
     fs.writeFileSync(seite, `<!doctype html><meta charset="utf-8"><title>t</title><script src="file://${path.join(ROOT, 'engine', 'js', 'spielplan.js')}"></script>
@@ -1885,7 +1942,7 @@ test('Browser: Kern läuft als klassisches Skript unter file://, speichert in lo
 });
 test('Browser: gesperrter localStorage (privates Fenster) und Übung im iframe per postMessage', async () => {
   const browser = await browserOderNull();
-  if (!browser) return;
+  if (!browser) ueberspringe('Playwright oder Chromium nicht gefunden (PLAYWRIGHT_MODULE_DIR setzen)');
   try {
     const seite = path.join(TMP, 'browser2.html');
     fs.writeFileSync(seite, `<!doctype html><meta charset="utf-8"><title>t</title><script src="file://${path.join(ROOT, 'engine', 'js', 'spielplan.js')}"></script>
@@ -1912,15 +1969,19 @@ test('Browser: gesperrter localStorage (privates Fenster) und Übung im iframe p
 /* ================================================================ Abschluss */
 async function laufe() {
   let schlecht = 0;
+  const uebersprungen = [];
   for (const t of tests) {
     if (process.env.SP_NUR && !(t.gruppe.name + ' ' + t.name).includes(process.env.SP_NUR)) continue;
     try { await Promise.race([Promise.resolve().then(t.fn), new Promise((_, nein) => setTimeout(() => nein(new Error('Zeitüberschreitung nach 20 s')), 20000).unref())]); t.gruppe.ok++; }
-    catch (e) { t.gruppe.bad++; schlecht++; console.log(`✗ [${t.gruppe.name}] ${t.name}\n    ${String(e && e.message || e).split('\n').slice(0, 8).join('\n    ')}`); if (process.env.SP_TRACE && e.stack) console.log(e.stack); }
+    catch (e) {
+      if (e && e.uebersprungen) { t.gruppe.skip++; uebersprungen.push(`[${t.gruppe.name}] ${t.name}\n    ${e.message}`); continue; }
+      t.gruppe.bad++; schlecht++; console.log(`✗ [${t.gruppe.name}] ${t.name}\n    ${String(e && e.message || e).split('\n').slice(0, 8).join('\n    ')}`); if (process.env.SP_TRACE && e.stack) console.log(e.stack); }
   }
   fs.rmSync(TMP, { recursive: true, force: true });
   let ok = 0;
-  for (const g of gruppen) { ok += g.ok; console.log(`${g.bad ? '✗' : '✓'} ${g.name}: ${g.ok} von ${g.ok + g.bad}`); }
-  console.log(`\n${schlecht ? '✗' : '✓'} ${ok} von ${ok + schlecht} Tests`);
+  for (const g of gruppen) { ok += g.ok; console.log(`${g.bad ? '✗' : '✓'} ${g.name}: ${g.ok} von ${g.ok + g.bad}${g.skip ? `, ${g.skip} übersprungen` : ''}`); }
+  uebersprungen.forEach(u => console.log(`- übersprungen: ${u}`));
+  console.log(`\n${schlecht ? '✗' : '✓'} ${ok} von ${ok + schlecht} Tests${uebersprungen.length ? ` (${uebersprungen.length} übersprungen)` : ''}`);
   process.exit(schlecht ? 1 : 0);
 }
 laufe();

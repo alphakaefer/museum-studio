@@ -17,7 +17,7 @@
 //   data/skins.js        MUSEUM.skins (aus den theme.json)
 //   data/orders.js       MUSEUM.data.orders (aus plan.json)
 //   data/journeys.js, data/stationen/*.js, data/material.js, data/layout.js, data/exhibits/*.js, data/visuals/*.js   (Paketdateien)
-//   Nur mit packs/<id>/spielplan.json (Spielplan, docs/spielplan-standard.md; erzeugt von tools/spielplan-aus-plan.mjs):
+//   Nur mit packs/<id>/spielplan.json (Spielplan, Format spielplan/0, siehe docs/SPIELPLAN-ARBEITSSTAND.md; erzeugt von tools/spielplan-aus-plan.mjs):
 //   data/spielplan.js (MUSEUM.data.spielplan), js/spielplan.js (Kern), js/spiel.js (Anbindung), css/spiel.css. Der Adapter
 //   (js/spielplan-adapter.js, xAPI und SCORM) wird nie eingebunden. Ohne spielplan.json bleibt die Ausgabe unverändert.
 // Nur Node-Standardbibliothek.

@@ -4,12 +4,12 @@
  "faelle": [
   {
    "name": "kaffee-anfang",
-   "beschreibung": "Der Anhang des Standards ohne Ereignisse: Röstkurve, Röstung, Handel, Weltmarkt gesperrt.",
+   "beschreibung": "Das Kaffee-Beispiel ohne Ereignisse: Röstkurve, Röstung, Handel, Weltmarkt gesperrt.",
    "plan": {
     "format": "spielplan/0",
     "id": "museum-kaffee",
     "name": "Kaffee-Museum",
-    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "basis": "https://example.org/spielplan/museum-kaffee/",
     "einheiten": [
      {
       "id": "gebiet/anbau",
@@ -221,7 +221,7 @@
     "format": "spielplan/0",
     "id": "museum-kaffee",
     "name": "Kaffee-Museum",
-    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "basis": "https://example.org/spielplan/museum-kaffee/",
     "einheiten": [
      {
       "id": "gebiet/anbau",
@@ -447,7 +447,7 @@
     "format": "spielplan/0",
     "id": "museum-kaffee",
     "name": "Kaffee-Museum",
-    "basis": "https://zukunftsgut.org/spielplan/museum-kaffee/",
+    "basis": "https://example.org/spielplan/museum-kaffee/",
     "einheiten": [
      {
       "id": "gebiet/anbau",
@@ -1183,7 +1183,7 @@
      "app": "test",
      "beleg": {
       "art": "messung",
-      "fall": "Akademie"
+      "fall": "Werkstatt"
      }
     },
     {

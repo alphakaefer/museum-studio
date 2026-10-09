@@ -4,3 +4,5 @@ packs/gehirn/
 .DS_Store
 packs/*/pack.local.json
 _site/
+# Entwurf des Spielplan-Standards (privat, nicht Teil dieses Repos; nur lokal zum Vergleichen)
+docs/spielplan-standard.md
