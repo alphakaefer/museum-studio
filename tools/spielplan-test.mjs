@@ -191,9 +191,9 @@ test('Das Kaffee-Beispiel wird vollständig gelesen (mehrzeilige Flow-Abbildung,
   gleich(p.format, 'spielplan/0'); gleich(p.basis, 'https://example.org/spielplan/museum-kaffee/');
   gleich(p.einheiten.length, 11); gleich(p.regeln.length, 2);
   const tasse = p.einheiten.find(u => u.id === 'episode/tasse');
-  gleich(tasse.etappe, 'onboarding'); gleich(tasse.auftakt, 'Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse.');
+  gleich(tasse.etappe, 'onboarding'); gleich(tasse.auftakt, 'Ein Strauch am Berghang, viele Hände unterwegs, und am Ende deine Tasse.');
   gleich(p.rhythmus, { takt: { laenge: 'woche', beginn: 'erstes-ereignis' }, wiederkehr: { abstand_tage: [2, 7, 21], fuer: { art: 'skill' } }, verfall_tage: 35 });
-  gleich(p.regeln[0].enthuellung, 'Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi.');
+  gleich(p.regeln[0].enthuellung, 'Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht.');
 });
 test('Die YAML-Beispiele des Standard-Entwurfs werden gelesen (nur wenn der Entwurf vorliegt; Pfad: SPIELPLAN_STANDARD)', () => {
   // Der Entwurf gehört nicht in dieses Repository. Wer ihn hat, gibt den Pfad per Umgebungsvariable an (oder legt ihn als docs/spielplan-standard.md daneben, ohne ihn einzuchecken).
@@ -237,7 +237,7 @@ test('Die erste Aufgabe ist genau eine, mit Satz „was sie bringt“ (Grundsatz
 test('Mythos geschafft: Regel „roestkurve“ geht auf, Enthüllung wörtlich aus dem Plan, Röstkurve wird die nächste Aufgabe', () => {
   const s = ST(KAFFEE, [KA('geschafft', 'quest/kaldi-mythos', T(10, 12))], T(10, 15));
   gleich(s.freigeschaltet.length, 1);
-  gleich(s.freigeschaltet[0], { einheit: 'werkzeug/roestkurve', art: 'werkzeug', name: 'Röstkurve', regel: 'roestkurve', am: T(10, 12), enthuellung: 'Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi.' });
+  gleich(s.freigeschaltet[0], { einheit: 'werkzeug/roestkurve', art: 'werkzeug', name: 'Röstkurve', regel: 'roestkurve', am: T(10, 12), enthuellung: 'Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht.' });
   gleich(zugang(s, 'werkzeug/roestkurve'), 'offen');
   gleich(s.einheiten['werkzeug/roestkurve'].seit, T(10, 12));
   gleich(s.aufgabe.einheit, 'werkzeug/roestkurve');
@@ -249,7 +249,7 @@ test('Die Röstung braucht die Röstkurve: offen und schon einmal benutzt (5.4)'
   gleich(zugang(ST(KAFFEE, [mythos, KA('begonnen', 'werkzeug/roestkurve', T(11, 5))], T(11, 10)), 'erlebnis/roestung'), 'offen');
   gleich(zugang(ST(KAFFEE, [KA('begonnen', 'werkzeug/roestkurve', T(9))], T(11)), 'erlebnis/roestung'), 'gesperrt', 'benutzt, aber selbst noch gesperrt: zählt nicht');
 });
-test('Anhang: Episode geübt, sobald die kritische Mythos-Quest und zwei Drittel der wesentlichen Einheiten geschafft sind; Bohnensorten sind Nebenquest', () => {
+test('Anhang: Die Episode gilt als geübt, wenn die kritische Quest und von den wesentlichen Einheiten zwei Drittel geschafft sind; Bohnensorten sind Nebenquest', () => {
   const m = KA('geschafft', 'quest/kaldi-mythos', T(10, 0)), k = KA('geschafft', 'inhalt/kaldi', T(10, 5));
   const w = KA('begonnen', 'werkzeug/roestkurve', T(10, 6)), r = KA('geschafft', 'erlebnis/roestung', T(10, 10)), b = KA('geschafft', 'inhalt/bohnensorten', T(10, 11));
   gleich(stufe(ST(KAFFEE, [m, k], T(12)), 'episode/tasse'), 0, 'Röstung (wesentlich) fehlt: zwei Drittel von 2 sind 2');
@@ -265,7 +265,7 @@ test('Episode geübt öffnet Handel (Regel) und Weltmarkt (nach), im selben Auge
   const s = ST(KAFFEE, ev, T(12));
   gleich(zugang(s, 'gebiet/handel'), 'offen'); gleich(zugang(s, 'episode/weltmarkt'), 'offen');
   const h = s.freigeschaltet.find(f => f.einheit === 'gebiet/handel');
-  gleich(h.regel, 'handel'); gleich(h.am, T(10, 10)); gleich(h.enthuellung, 'Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen.');
+  gleich(h.regel, 'handel'); gleich(h.am, T(10, 10)); gleich(h.enthuellung, 'Die Tasse ist erst der Anfang. Das Gebiet Handel steht dir jetzt offen.');
   const w = s.freigeschaltet.find(f => f.einheit === 'episode/weltmarkt');
   gleich(w.regel, 'kurz/episode/weltmarkt'); wahr(w.enthuellung.includes('Der Weltmarkt'), 'Standardsatz für Kurzformen');
 });
@@ -1293,7 +1293,7 @@ test('Brücke: Hörer freigeschaltet (einmal, mit Enthüllung), stufe, melde; Ab
   b.sp.bei('freigeschaltet', () => { throw new Error('kaputter Hörer'); });
   b.sp.bei('stufe', s => got.s.push(s)); b.sp.bei('melde', e => got.m.push(e.verb + ' ' + e.objekt));
   b.sp.melde('geschafft', 'quest/kaldi-mythos');
-  gleich(got.f.length, 1); gleich(got.f[0].einheit, 'werkzeug/roestkurve'); gleich(got.f[0].enthuellung, 'Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi.'); gleich(got.f[0].am, T(10));
+  gleich(got.f.length, 1); gleich(got.f[0].einheit, 'werkzeug/roestkurve'); gleich(got.f[0].enthuellung, 'Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht.'); gleich(got.f[0].am, T(10));
   gleich(got.s.map(x => `${x.einheit} ${x.von}->${x.nach}`).sort(), ['quest/kaldi-mythos 0->2', 'skill/quellen 0->2']);
   gleich(got.m, ['geschafft quest/kaldi-mythos']);
   b.sp.melde('erkundet', 'inhalt/kaldi'); gleich(got.f.length, 1, 'nicht noch einmal');

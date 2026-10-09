@@ -28,7 +28,7 @@
       "name": "Von der Pflanze zur Tasse",
       "in": "gebiet/anbau",
       "etappe": "onboarding",
-      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+      "auftakt": "Ein Strauch am Berghang, viele Hände unterwegs, und am Ende deine Tasse."
      },
      {
       "id": "inhalt/kaldi",
@@ -79,13 +79,13 @@
       "id": "skill/quellen",
       "art": "skill",
       "name": "Quellen prüfen",
-      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+      "kann": "Ich kann prüfen, ob hinter einer Geschichte eine Quelle steht."
      },
      {
       "id": "skill/roesten",
       "art": "skill",
       "name": "Röstung lesen",
-      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+      "kann": "Ich kann aus einer Röstkurve schließen, wie eine Tasse schmecken wird."
      },
      {
       "id": "episode/weltmarkt",
@@ -106,7 +106,7 @@
        "einheit": "quest/kaldi-mythos",
        "stufe": 2
       },
-      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+      "enthuellung": "Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht."
      },
      {
       "id": "handel",
@@ -117,7 +117,7 @@
        "einheit": "episode/tasse",
        "stufe": 2
       },
-      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+      "enthuellung": "Die Tasse ist erst der Anfang. Das Gebiet Handel steht dir jetzt offen."
      }
     ],
     "rhythmus": {
@@ -240,7 +240,7 @@
       "name": "Von der Pflanze zur Tasse",
       "in": "gebiet/anbau",
       "etappe": "onboarding",
-      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+      "auftakt": "Ein Strauch am Berghang, viele Hände unterwegs, und am Ende deine Tasse."
      },
      {
       "id": "inhalt/kaldi",
@@ -291,13 +291,13 @@
       "id": "skill/quellen",
       "art": "skill",
       "name": "Quellen prüfen",
-      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+      "kann": "Ich kann prüfen, ob hinter einer Geschichte eine Quelle steht."
      },
      {
       "id": "skill/roesten",
       "art": "skill",
       "name": "Röstung lesen",
-      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+      "kann": "Ich kann aus einer Röstkurve schließen, wie eine Tasse schmecken wird."
      },
      {
       "id": "episode/weltmarkt",
@@ -318,7 +318,7 @@
        "einheit": "quest/kaldi-mythos",
        "stufe": 2
       },
-      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+      "enthuellung": "Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht."
      },
      {
       "id": "handel",
@@ -329,7 +329,7 @@
        "einheit": "episode/tasse",
        "stufe": 2
       },
-      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+      "enthuellung": "Die Tasse ist erst der Anfang. Das Gebiet Handel steht dir jetzt offen."
      }
     ],
     "rhythmus": {
@@ -466,7 +466,7 @@
       "name": "Von der Pflanze zur Tasse",
       "in": "gebiet/anbau",
       "etappe": "onboarding",
-      "auftakt": "Eine Kirsche, ein Kern, zwölf Hände – bis zu deiner Tasse."
+      "auftakt": "Ein Strauch am Berghang, viele Hände unterwegs, und am Ende deine Tasse."
      },
      {
       "id": "inhalt/kaldi",
@@ -517,13 +517,13 @@
       "id": "skill/quellen",
       "art": "skill",
       "name": "Quellen prüfen",
-      "kann": "Ich kann eine Legende von einer belegten Quelle unterscheiden."
+      "kann": "Ich kann prüfen, ob hinter einer Geschichte eine Quelle steht."
      },
      {
       "id": "skill/roesten",
       "art": "skill",
       "name": "Röstung lesen",
-      "kann": "Ich kann an einer Röstkurve ablesen, wie der Kaffee schmecken wird."
+      "kann": "Ich kann aus einer Röstkurve schließen, wie eine Tasse schmecken wird."
      },
      {
       "id": "episode/weltmarkt",
@@ -544,7 +544,7 @@
        "einheit": "quest/kaldi-mythos",
        "stufe": 2
       },
-      "enthuellung": "Du hast die Röstkurve – damit liest du jede Röstung wie ein Profi."
+      "enthuellung": "Neu in deiner Ausrüstung: die Röstkurve. Mit ihr liest du, was im Röster geschieht."
      },
      {
       "id": "handel",
@@ -555,7 +555,7 @@
        "einheit": "episode/tasse",
        "stufe": 2
       },
-      "enthuellung": "Hinter der Tasse liegt ein Markt. Das Gebiet Handel ist offen."
+      "enthuellung": "Die Tasse ist erst der Anfang. Das Gebiet Handel steht dir jetzt offen."
      }
     ],
     "rhythmus": {

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Museum Studio – Spielplan aus dem Stationsplan ableiten (Format spielplan/0, docs/spielplan-standard.md).
+// Museum Studio – Spielplan aus dem Stationsplan ableiten (Format spielplan/0, Entscheidungen in docs/spielplan-auslegung.md).
 //
 //   node tools/spielplan-aus-plan.mjs <paket> [--skelett] [--out=datei] [--stdout] [--trotzdem]
 //
 // Erzeugt packs/<paket>/spielplan.json (kanonisches JSON; der Zusammenbau liefert es als data/spielplan.js aus) aus
 //   plan.json + journeys.js + pack.json      die mechanisch ableitbaren Einheiten (Auslegung S1 in docs/spielplan-auslegung.md)
 //   spielplan-kern.yaml (oder .json)         die kuratierte Schicht: gebiete, episoden_zusatz, gewichte, quests, aufgaben, skills,
-//                                            werkzeuge, regeln, rhythmus, stufen, begriffe (Format: Kopf von packs/gehirn/spielplan-kern.yaml)
+//                                            werkzeuge, regeln, rhythmus, stufen, begriffe (Format: wie der Kopf eines Spielplans, siehe docs/spielplan-beispiel-kaffee.yaml)
 //   spielplan-zuordnung/*.json               Zuordnung je Station: uebt, braucht, staerke, gewicht (siehe unten)
 // --skelett: ohne kuratierte Schicht (Kern und Zuordnung werden ignoriert): alles offen, keine Regeln. Nur zum Testen der Oberfläche
 //            und als Grundlage, aus der ein Mensch den Kern schreibt.
@@ -23,7 +23,7 @@
 //   gewichte, aufgaben             gewicht und aufgabe an der Einheit (alles Übrige ist wesentlich)
 //   regeln, rhythmus, stufen, begriffe, nur_lokal, basis   unverändert in den Kopf
 // Zuordnungsdateien (JSON): { "<station-id>": { uebt, braucht, staerke, gewicht }, … } oder eine Liste von Einträgen mit "station" statt des Schlüssels;
-//   der Schlüssel darf auch eine volle Einheiten-id sein (z. B. "quest/phrenologie-mythos"). uebt nennt Skills, braucht Werkzeuge (kurze Namen
+//   der Schlüssel darf auch eine volle Einheiten-id sein (z. B. "quest/<station>-mythos"). uebt nennt Skills, braucht Werkzeuge (kurze Namen
 //   ohne Art werden zu skill/… bzw. werkzeug/…). Mehrere Dateien werden in Namensfolge gemischt; Listen vereinigen sich, Einzelwerte überschreiben.
 // Nur Node-Standardbibliothek und die Werkzeuge in tools/.
 import fs from 'fs';
@@ -223,7 +223,7 @@ export function leiteAb(P, { skelett = false, kern = null, kernDatei = '' } = {}
   // --- Kopf
   const kopf = {
     format: 'spielplan/0', id: K.id || 'museum-' + (pack.id || P.name), name: K.name || pack.title || P.name,
-    basis: K.basis || 'https://zukunftsgut.org/spielplan/museum-' + (pack.id || P.name) + '/',
+    basis: K.basis || 'https://example.org/spielplan/museum-' + (pack.id || P.name) + '/',
     nur_lokal: K.nur_lokal === undefined ? false : K.nur_lokal,
     stufen: K.stufen || { anteil: '2/3', bis: 2 },
     begriffe: K.begriffe || GENERISCH,
