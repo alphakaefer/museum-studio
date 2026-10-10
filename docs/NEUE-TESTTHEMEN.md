@@ -1,9 +1,18 @@
 # Zwei Testthemen: Tschechisch A1–A2 und ADHS
 
-Dieses Dokument bereitet zwei neue Museen vor und sagt ehrlich, was vom Spielplan (einer in Entwicklung befindlichen Mechanik für Freischalten, Rhythmus und Fortschritt) dafür schon nutzbar ist.
-Stand: 9. Oktober 2026.
+Dieses Dokument bereitet zwei neue Museen vor und sagt ehrlich, was vom Spielplan (einer Mechanik für Freischalten, Rhythmus und Fortschritt, siehe `docs/SPIELPLAN.md`) dafür schon nutzbar ist.
+Stand: 10. Oktober 2026.
 
 ## So startest du (ohne Terminal-Fragen, mit fertigen Antworten)
+
+Der Spielplan ist im Branch `experiment/spielplan` nutzbar. Hole dir diesen Stand:
+
+```bash
+git clone --branch experiment/spielplan https://github.com/alphakaefer/museum-studio.git
+```
+
+Beide Konfigurationen haben `"spielplan": "ja"`: Tschechisch mit `"zugang": "freischalten"`, ADHS mit `"zugang": "frei"` (Freier Zugang als Standard; auch das Onboarding schlägt das bei heiklem Thema Gesundheit vor).
+Der Agent richtet den Spielplan nach der Freigabe des Plans und den Texten ein (`docs/AGENTEN.md`, Schritt 6b).
 
 Die Antworten für beide Themen liegen als Konfiguration in `docs/beispiele/`. Mit Terminal:
 
@@ -18,22 +27,22 @@ Das Onboarding schreibt je Paket `BRIEFING.md` (der Auftrag) und `ARBEITSSTAND.m
 Sie plant zuerst Reisen und Stationen und zeigt dir den **Plan zur Freigabe**, ehe Texte entstehen (`docs/AGENTEN.md`). Ohne Terminal: `onboarding.html` per Doppelklick öffnen und die Werte aus den beiden Dateien übernehmen, oder einer KI sagen „Lies AGENTS.md und baue ein Museum zu …“.
 Anpassen kannst du alles in den JSON-Dateien (Zielgruppe, Skin, Anschauung, heikle Themen).
 
-## Wie viel vom Spielplan ist schon nutzbar?
+## Wie viel vom Spielplan ist nutzbar?
 
-**Kurz: für die Laufzeit noch nichts, als Planungsrahmen schon einiges.**
+**Kurz: Im Branch `experiment/spielplan` läuft er im Museum, für ein Paket mit `packs/<id>/spielplan.json`.** Ohne diese Datei bleibt alles wie bisher.
 
-- Der Spielplan ist ein Prototyp außerhalb dieses Repos. Berechnung und Prüfung der Regeln sind gebaut und getestet, die Anbindung an die Oberfläche des Museums (Gesperrtes angedeutet, Enthüllung im Moment, eine nächste Aufgabe im Eingang) ist **nicht fertig** und nicht in `museum-studio`. Ein neues Paket kann den Spielplan heute also nicht einschalten.
-- Was du heute schon bekommst, sind die Bausteine des Frameworks: Reisen, Stationen, Reisepass mit Stempeln, Abbildungen und Exponate (`MUSEUM.viz`). Das reicht für beide Themen als „Lernmuseum ohne Freischalten“.
-- Als **Gedankengerüst** lässt sich der Spielplan schon in der Planung nutzen. Bitte die KI im Arbeitsstand der Pakete (`packs/<id>/ARBEITSSTAND.md`) je Reise festhalten: eine Etappe (Entdecken, Onboarding, Aufbau, Endspiel), die Fähigkeiten als „Ich kann …“-Sätze, was kritisch, wesentlich oder optional ist, und welche Stationen man später wiedersehen sollte. Das kostet nichts und lässt sich später in einen Spielplan überführen.
+- **Geht:** Freischalten mit Moment am Ort, Eingang mit genau einer nächsten Aufgabe, Freier Zugang als Schalter, Rhythmus (Wiedersehen, Verwitterung, keine Serien), Auftakt und Abschluss je Reise, Stempel im Reisepass. Alles lokal (`gm:sp:`), nichts wird gesendet. Einrichten: `node tools/spielplan-aus-plan.mjs <id> --auto`, dann verfeinern (`docs/SPIELPLAN.md`).
+- **Geht nicht (noch):** Stufe 3 und 4 (Anwendung, Transfer; das Museum kann sie nicht prüfen), Fortschritt über mehrere Geräte, xAPI und SCORM im laufenden Museum (nur Schnittstelle), eigene Zeitzone. Karteikarten mit Wiederholungsabständen als Exponat gibt es nicht; das Wiedersehen kommt aus dem Rhythmus des Spielplans.
+- **Ungeprüft:** ob Freischalten für Sprachenlernen und für ein sensibles Thema trägt; das zeigt dieser Test mit Menschen.
 
-| Baustein | Tschechisch A1–A2 | ADHS | Heute im Framework? |
+| Baustein | Tschechisch A1–A2 | ADHS | Heute im Branch? |
 |---|---|---|---|
-| Etappen je Reise (Heldenreise) | gut: vom ersten Satz zum Alltagsgespräch | gut: vom Verstehen zum eigenen Alltag | nur als Reihenfolge der Reisen |
-| Fähigkeiten „Ich kann …“ | sehr gut: die Kannbeschreibungen A1 und A2 des Referenzrahmens sind genau das | vorsichtig: Verstehen und Einordnen ja, kein „Ich kann meine ADHS regeln“ | nur im Text und im Arbeitsstand |
-| Gewicht (kritisch, wesentlich, optional) | sehr gut: Kernwortschatz gegen Randvokabeln | gut: Kernbefunde gegen Vertiefung | nur im Plan notiert |
-| Wiedersehen nach Abständen (Karteikarten) | sehr gut: Wörter und Satzmuster brauchen Wiederholung | nur sparsam | ein eigenes Exponat (Karteikasten im Browser) wäre ohne Spielplan möglich |
-| Freischalten, Enthüllung, nächste Aufgabe | möglich, aber für Lernende am Anfang eher hinderlich | nur mit „Freiem Zugang“ | nein |
-| Pausen kosten nichts, keine Serien | wichtig für Lernmotivation | besonders wichtig | gilt schon: das Museum zählt keine Serien |
+| Etappen je Reise (Heldenreise) | gut: vom ersten Satz zum Alltagsgespräch | gut: vom Verstehen zum eigenen Alltag | ja: Etappe je Reise im Spielplan |
+| Fähigkeiten „Ich kann …“ | sehr gut: die Kannbeschreibungen A1 und A2 des Referenzrahmens sind genau das | vorsichtig: Verstehen und Einordnen ja, kein „Ich kann meine ADHS regeln“ | ja, als Fähigkeiten; die Sätze kommen aus belegbaren Quellen, nicht erfunden |
+| Gewicht (kritisch, wesentlich, optional) | sehr gut: Kernwortschatz gegen Randvokabeln | gut: Kernbefunde gegen Vertiefung | ja: Gewicht im Spielplan |
+| Wiedersehen nach Abständen (Karteikarten) | sehr gut: Wörter und Satzmuster brauchen Wiederholung | nur sparsam | ja: Wiedersehen und Verwitterung; ein Karteikasten als Exponat fehlt |
+| Freischalten, Enthüllung, nächste Aufgabe | möglich, aber für Lernende am Anfang eher hinderlich | nur mit „Freiem Zugang“ | ja (bei ADHS Freier Zugang als Standard) |
+| Pausen kosten nichts, keine Serien | wichtig für Lernmotivation | besonders wichtig | ja: Pausen kosten nichts, keine Serien |
 
 ## Was bei den Themen besonders zu beachten ist
 
@@ -50,7 +59,7 @@ Anpassen kannst du alles in den JSON-Dateien (Zielgruppe, Skin, Anschauung, heik
 - **Fair darstellen.** Zwischen dem medizinischen Modell und der Sicht der Neurodiversität, bei Diagnosehäufigkeit, Medikation und Ursachen gibt es echte Meinungsverschiedenheiten. Alle Positionen mit Stärken und Schwächen nennen, nichts als Wahrheit setzen, Mythen als solche kennzeichnen (z. B. „ADHS kommt von falscher Erziehung“).
 - **Quellenlage.** Verlässlich sind Leitlinien (in Deutschland die S3-Leitlinie), die diagnostischen Handbücher (ICD-11, DSM-5-TR) und Übersichtsarbeiten. Der Faktencheck muss hier „unabhängig geprüft“ erreichen, nicht „aus dem Gedächtnis“.
 - **Zielgruppe und Ton.** Betroffene, Angehörige und Lehrkräfte brauchen verschiedene Töne. Das Onboarding steht auf „gemischt“; die KI sollte im Plan sagen, ob sie Reisen nach Zielgruppe teilt. Stigmatisierende Sprache vermeiden.
-- **Spielmechanik mit Vorsicht.** Eine Aufgabe statt einer Liste, keine Serien, Pausen kostenlos und ein Freier Zugang passen gut zu einem aufmerksamkeitsfreundlichen Museum. Zwang, Wartezeiten und Belohnungsdruck können dagegen das Gegenteil bewirken. Falls der Spielplan später auf dieses Paket angewendet wird: Freier Zugang als Standard, nicht als Ausnahme.
+- **Spielmechanik mit Vorsicht.** Eine Aufgabe statt einer Liste, keine Serien, Pausen kostenlos und ein Freier Zugang passen gut zu einem aufmerksamkeitsfreundlichen Museum. Zwang, Wartezeiten und Belohnungsdruck können dagegen das Gegenteil bewirken. Für dieses Paket gilt deshalb: Freier Zugang als Standard, nicht als Ausnahme (so steht es in `docs/beispiele/adhs.json`).
 - **Anschauung.** Auf „viel“ gestellt. Gute Kandidaten: wie Aufmerksamkeit und Arbeitsgedächtnis zusammenspielen, Zeitwahrnehmung, Ablenkung und Reize, Tagesabläufe. Immer als Veranschaulichung kennzeichnen, nie als Test der Besucherin oder des Besuchers.
 
 ## Vorschläge für den Plan (ungeprüft, der Agent entscheidet)
@@ -62,5 +71,5 @@ Diese Reisenideen sind Anregungen für das Gespräch mit dem Agenten, keine Vorg
 
 ## Was wir mitnehmen sollten (für die nächste Runde)
 
-- Das Spielplan-Prototyp bleibt pausiert, bis klar ist, welche Teile für Sprachenlernen und für ein sensibles Thema wie ADHS tragen. Beide Pakete sind ein guter Test, ob „Freischalten“ überhaupt gewollt ist oder ob Wiederholen und Freier Zugang genügen.
+- Beide Pakete sind der Test, ob „Freischalten“ für Sprachenlernen und für ein sensibles Thema wie ADHS gewollt ist oder ob Wiederholen und Freier Zugang genügen. Probiere beides: mit und ohne Freien Zugang, und mit dem Zeitreise-Hook aus `docs/SPIELPLAN.md`.
 - Beim Test bitte notieren: Welche Frage im Onboarding war unklar? Hat der Plan deine Erwartung getroffen? Hat der Agent die Anschauungsquote erreicht? Wo fehlt ein Baustein in `MUSEUM.viz` (z. B. Karteikasten, Lückentext)? Das gehört in `docs/ENGINE-WUENSCHE.md`.

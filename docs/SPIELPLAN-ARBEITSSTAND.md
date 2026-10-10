@@ -89,3 +89,8 @@ node tools/build.mjs <paket> --skins=all --out=dist/<name>             # bauen, 
 - Committe gezielt (`git add <Datei>`, nie `git add -A`); an gemeinsamen Dateien (`engine/js/*.js`, `engine/css/*.css`, `tools/build.mjs`, `docs/*.md`) nur kleine Änderungen, nie komplett neu schreiben.
 - Neue Entscheidungen, Erfindungen und Vorschläge an den Standard kommen als **neuer Abschnitt** ans Ende von `docs/spielplan-auslegung.md` und `docs/SPIELPLAN-ERFAHRUNGEN.md`; bestehende Einträge anderer bleiben unverändert.
 - Schreibe in öffentliche Dokumente eigene Beschreibungen, keine wörtlichen Passagen aus dem Standard-Entwurf; verweise mit Abschnittsnummer.
+
+## Nachtrag Onboarding und Doku (10. Oktober 2026)
+
+Fertig: Fragen Spielplan und Zugang (Terminal, `onboarding.html`, Briefing, Test grün), `docs/SPIELPLAN.md`, Schritt 6b in `docs/AGENTEN.md`, Abschnitt 9b in `docs/ARCHITEKTUR.md`, README, `docs/NEUE-TESTTHEMEN.md`, beide Beispielkonfigurationen (Probelauf grün).
+Offen: `docs/ONBOARDING.md` (Fragenliste um Spielplan und Zugang ergänzen), `docs/DESIGNER.md` (Spielplan-Klassen in `spiel.css`), `AGENTS.md` (ein Verweis). Die Abschnitte zu Reisepass und Ansichten in `docs/SPIELPLAN.md` gelten, sobald die Ansichten committet sind.

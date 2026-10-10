@@ -236,3 +236,10 @@ Die Diagnose eines früheren Versuchs (aus dem Auftrag): ein Dashboard über ein
 - **Zwischenablage unter `file://`:** Ohne sicheren Kontext fällt „Link kopieren“ auf `execCommand` zurück; geht auch das nicht, zeigt es den Link zum Markieren. Das Ereignis `geteilt` gibt es nur, wenn das Kopieren gelang.
 - **Tab-Kommunikation:** Zwei Tabs teilen den Stand über `storage`; die Enthüllung zeigt dort der Tab, in dem etwas geschah, der andere zeigt sie, wenn er sie nicht schon gesehen hat. Das Merken (`gm:sp:<plan>:enthuellt`) ist ein Schlüssel ohne Zeitstempel; ein Tab, der gleichzeitig schreibt, kann ihn überschreiben (der Moment kann dann doppelt erscheinen).
 - **Reisepass, Netzplan und Zeitstrahl** kennen den Spielplan noch nicht (Aufgabe der zweiten Anbindung); `MUSEUM.spiel.zugang()`, `stand()` und `bei()` sind dafür gedacht.
+
+## Onboarding und Dokumentation (Lauf 10. Oktober 2026)
+
+- Die Frage zum Spielplan hat drei Antworten (ja, später, nein; Standard später), weil die vorsichtige Wahl „Museum zuerst ohne Spielplan bauen“ sein sollte. Der Zugang (frei oder mit Freischalten) ist eine Folgefrage, deren Standard von einer früheren Antwort abhängt (heikles Thema Gesundheit: frei). Dafür gibt es in der einen Fragenquelle den Standard-Typ `abhaengig`; Terminal und Seite lesen ihn aus derselben Datei.
+- Bei „frei“ setzt das Onboarding `spielFrei: true` in `pack.json`; die Anbindung beachtet das nur mit `spielplan.json`.
+- Erfahrung: Ein Standard, der von einer früheren Antwort abhängt, muss beim „Wiederholen“ neu abgeleitet werden, solange er nur ein Standard war; sonst bleibt ein veralteter Wert hängen.
+- Vorschlag an den Standard: ein Feld, das den Freien Zugang als Vorbelegung des Plans ausdrückt, statt ihn Anwendungen zu überlassen.
