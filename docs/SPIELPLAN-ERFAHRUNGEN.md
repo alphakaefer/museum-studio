@@ -243,3 +243,18 @@ Die Diagnose eines früheren Versuchs (aus dem Auftrag): ein Dashboard über ein
 - Bei „frei“ setzt das Onboarding `spielFrei: true` in `pack.json`; die Anbindung beachtet das nur mit `spielplan.json`.
 - Erfahrung: Ein Standard, der von einer früheren Antwort abhängt, muss beim „Wiederholen“ neu abgeleitet werden, solange er nur ein Standard war; sonst bleibt ein veralteter Wert hängen.
 - Vorschlag an den Standard: ein Feld, das den Freien Zugang als Vorbelegung des Plans ausdrückt, statt ihn Anwendungen zu überlassen.
+
+## Abnahme (10. Oktober 2026)
+
+Ergebnis je Punkt:
+1. **Regression:** spielplan-test 149 von 149 (1 übersprungen, der private Entwurf liegt nicht vor), check-pack und check-spielplan ohne Fehler, smoke --quick bestanden, spiel-test 22 von 22. Ohne Spielplan: spieltheorie und _vorlage gleichen dem Stand 29441df in elf Zuständen (spiel-vergleich). Rohe Dateien unterscheiden sich in js/*.js, weil dort jetzt die Haken `if (M.data.spielplan)` stehen; Daten, Stile und Skins sind gleich. Falle: ein Paket mit `pack.local.json` (nicht eingecheckt) muss auch im alten Stand dieselbe Datei haben, sonst sieht der Vergleich Unterschiede, die keine sind.
+2. **Spieler (tools/spielplan-sim.mjs):** beispiel-gehirn: 91 Einheiten, 29 gesperrt und alle angedeutet mit Bedingungssatz, 80 Schritte der Nächsten Aufgabe bis alles offen (keine Sackgasse, ohne Warten), 8 Enthüllungen im Moment der Handlung, Freier Zugang 29 auf 0 gesperrt bei unveränderten Ereignissen, nach 60 Tagen Pause keine Stufe geändert und keine Strafwörter, nur `gm:`-Schlüssel, 0 Netzanfragen. spieltheorie mit `--auto`: 35 Einheiten, 19 gesperrt, 31 Schritte, 2 Enthüllungen, sonst gleich.
+3. **Darstellung:** halle und kabinett, hell und dunkel, 1280 und 390 Pixel: kein seitliches Scrollen, keine Konsolenfehler; Eingang, Enthüllung, Reisepass und Netzplan angesehen, keine Fehler, die einen Eingriff nötig machten.
+4. **Hygiene:** nichts Privates in engine, tools, docs, packs außer Karls Namen als Urheber in Beispielkonfigurationen und Paket-Credits (gewollt) und Hinweisen auf die Umgebungsvariable `SPIELPLAN_STANDARD`. Kein Fachbezug im Spielplan-Code von engine/ (ein Kommentar in timeline.js nennt psychologische Epochen, älter als der Spielplan).
+5. **Vorzeigebilder** und 6. diese Dokumente sind erstellt.
+
+Befunde und Erfahrungen:
+- Beim Automatik-Spielplan folgt die Nächste Aufgabe ohne Warten bis zum Ende; Wartezeiten tauchen im Test gar nicht auf. Ob der Takt im Alltag trägt, zeigt nur Zeit, nicht diese Simulation (Vorschlag: ein Standard-Kennwert, wie viele Tage ein Probelauf vorstellen soll).
+- Ein Abnahme-Spieler, der nur die API ruft, beweist die Regeln, nicht die Wahrnehmung; deshalb zusätzlich die Bilder.
+- Skin und Modus lassen sich im Test nur über `gm:skin` und `gm:theme` (JSON-Werte) setzen; ein falsches Setzen fällt nicht auf, wenn man die Bilder nicht ansieht.
+- Vorschlag an den Standard: eine Mindestdauer oder Obergrenze, nach der „alles verwittert“ nach langer Pause nicht als Zustand jeder Einheit gemeldet wird, sondern als ein Wiedersehen mit einer Einheit zur Zeit.
