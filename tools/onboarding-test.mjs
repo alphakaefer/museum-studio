@@ -18,9 +18,23 @@ const ok = (c, m) => { if (c) console.log('✓ ' + m); else { failed++; console.
 const SCENARIOS = {
   minimal: { cfg: { name: 'Mini' }, ui: { name: 'Mini' } },
   voll: {
-    cfg: { name: 'Quantenwelt', untertitel: 'Was ist wirklich?', thema: 'Quantenphysik für Neugierige. Nicht dabei: Mathematik.', zielgruppe: 'gemischt', sprache: 'en', anrede: 'Sie', geschichte: 'ja', groesse: 'umfassend', reisenamen: ['Welle oder Teilchen?', 'Messung, und was dann?'], skin: 'quelltext', skinWahl: false, anschauung: 'zentral', heikel: ['gesundheit', 'gewalt'], quellen: ['offen', 'eigene', 'domain'], materialHost: 'https://www.beispiel.de/', urheber: 'Karl Hosang', lizenz: 'cc0-1.0', impressumUrl: 'https://www.beispiel.de/impressum' },
-    ui: { name: 'Quantenwelt', untertitel: 'Was ist wirklich?', thema: 'Quantenphysik für Neugierige. Nicht dabei: Mathematik.', zielgruppe: 'gemischt', sprache: 'en', anrede: 'Sie', geschichte: 'ja', groesse: 'umfassend', reisenamen: 'Welle oder Teilchen?; Messung, und was dann?', skin: 'quelltext', skinWahl: false, anschauung: 'zentral', heikel: ['gesundheit', 'gewalt'], quellen: ['offen', 'eigene', 'domain'], materialHost: 'https://www.beispiel.de/', urheber: 'Karl Hosang', lizenz: 'cc0-1.0', impressumUrl: 'https://www.beispiel.de/impressum' }
-  }
+    cfg: { name: 'Quantenwelt', untertitel: 'Was ist wirklich?', thema: 'Quantenphysik für Neugierige. Nicht dabei: Mathematik.', zielgruppe: 'gemischt', sprache: 'en', anrede: 'Sie', geschichte: 'ja', groesse: 'umfassend', reisenamen: ['Welle oder Teilchen?', 'Messung, und was dann?'], skin: 'quelltext', skinWahl: false, anschauung: 'zentral', heikel: ['gesundheit', 'gewalt'], quellen: ['offen', 'eigene', 'domain'], materialHost: 'https://www.beispiel.de/', spielplan: 'ja', zugang: 'freischalten', urheber: 'Karl Hosang', lizenz: 'cc0-1.0', impressumUrl: 'https://www.beispiel.de/impressum' },
+    ui: { name: 'Quantenwelt', untertitel: 'Was ist wirklich?', thema: 'Quantenphysik für Neugierige. Nicht dabei: Mathematik.', zielgruppe: 'gemischt', sprache: 'en', anrede: 'Sie', geschichte: 'ja', groesse: 'umfassend', reisenamen: 'Welle oder Teilchen?; Messung, und was dann?', skin: 'quelltext', skinWahl: false, anschauung: 'zentral', heikel: ['gesundheit', 'gewalt'], quellen: ['offen', 'eigene', 'domain'], materialHost: 'https://www.beispiel.de/', spielplan: 'ja', zugang: 'freischalten', urheber: 'Karl Hosang', lizenz: 'cc0-1.0', impressumUrl: 'https://www.beispiel.de/impressum' }
+  },
+  // Spielplan ja bei einem Gesundheitsthema, Zugang nicht angefasst: der Standard folgt dem heiklen Thema (frei als Standard), in Terminal und Seite gleich
+  gesund: { cfg: { name: 'Gesund', heikel: ['gesundheit'], spielplan: 'ja' }, ui: { name: 'Gesund', heikel: ['gesundheit'], spielplan: 'ja' } },
+  // Spielplan ja ohne heikles Thema: Standard mit Freischalten
+  lernen: { cfg: { name: 'Lernen', spielplan: 'ja' }, ui: { name: 'Lernen', spielplan: 'ja' } },
+  nein: { cfg: { name: 'Ohne Spiel', spielplan: 'nein' }, ui: { name: 'Ohne Spiel', spielplan: 'nein' } }
+};
+
+// Was der Spielplan-Teil des Auftrags je Szenario enthalten muss (md: Textstücke, nicht: darf nicht vorkommen)
+const WIRKUNG = {
+  minimal: { md: ['## Spielplan', 'Später entscheiden', 'Richte keinen ein'], nicht: ['Schritt 6b'], spielplan: 'spaeter', zugang: '', spielFrei: false, standard: ['spielplan'] },
+  voll: { md: ['Ja, einrichten', 'Mit Freischalten', 'Schritt 6b', 'spielplan-aus-plan.mjs', '„Ich kann …“-Sätze'], spielplan: 'ja', zugang: 'freischalten', spielFrei: false, gewaehlt: ['spielplan', 'zugang'] },
+  gesund: { md: ['Ja, einrichten', 'Frei als Standard', '"spielFrei": true', 'Schritt 6b'], spielplan: 'ja', zugang: 'frei', spielFrei: true, gewaehlt: ['spielplan'], standard: ['zugang'] },
+  lernen: { md: ['Mit Freischalten', 'Schritt 6b'], nicht: ['"spielFrei": true'], spielplan: 'ja', zugang: 'freischalten', spielFrei: false, gewaehlt: ['spielplan'], standard: ['zugang'] },
+  nein: { md: ['## Spielplan', 'keinen** Spielplan'], nicht: ['Schritt 6b', 'Frei als Standard', 'Mit Freischalten'], spielplan: 'nein', zugang: '', spielFrei: false, gewaehlt: ['spielplan'] }
 };
 
 function terminal(cfg, id) {
@@ -29,7 +43,7 @@ function terminal(cfg, id) {
   try {
     execFileSync(process.execPath, [path.join(ROOT, 'tools', 'onboarding.mjs'), '--skip-doctor', '--yes', '--config=' + file], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     const dir = path.join(ROOT, 'packs', id);
-    return { md: fs.readFileSync(path.join(dir, 'BRIEFING.md'), 'utf8'), json: fs.readFileSync(path.join(dir, 'BRIEFING.json'), 'utf8') };
+    return { md: fs.readFileSync(path.join(dir, 'BRIEFING.md'), 'utf8'), json: fs.readFileSync(path.join(dir, 'BRIEFING.json'), 'utf8'), pack: JSON.parse(fs.readFileSync(path.join(dir, 'pack.json'), 'utf8')), arbeitsstand: fs.readFileSync(path.join(dir, 'ARBEITSSTAND.md'), 'utf8') };
   } finally { fs.rmSync(file, { force: true }); fs.rmSync(path.join(ROOT, 'packs', id), { recursive: true, force: true }); }
 }
 
@@ -48,7 +62,7 @@ async function fillBlock(page, ui, keys) {
   }
 }
 
-const BLOCKS = [['name', 'id', 'untertitel', 'thema'], ['zielgruppe', 'sprache', 'anrede'], ['geschichte', 'groesse', 'reisenamen'], ['skin', 'skinWahl', 'anschauung'], ['heikel', 'quellen', 'materialHost'], ['urheber', 'lizenz', 'impressumUrl']];
+const BLOCKS = [['name', 'id', 'untertitel', 'thema'], ['zielgruppe', 'sprache', 'anrede'], ['geschichte', 'groesse', 'reisenamen'], ['skin', 'skinWahl', 'anschauung'], ['heikel', 'quellen', 'materialHost'], ['spielplan', 'zugang'], ['urheber', 'lizenz', 'impressumUrl']];
 
 async function runUi(page, ui, shotName) {
   const idBase = ui.id;
@@ -56,7 +70,7 @@ async function runUi(page, ui, shotName) {
   await page.click('#start');
   for (let i = 0; i < BLOCKS.length; i++) {
     await fillBlock(page, ui, BLOCKS[i]);
-    if (SHOTS && shotName === 'voll' && (i === 0 || i === 4)) await page.screenshot({ path: path.join(SHOTS, `schritt-${i + 1}.png`), fullPage: true });
+    if (SHOTS && shotName === 'voll' && (i === 0 || i === 4 || i === 5)) await page.screenshot({ path: path.join(SHOTS, `schritt-${i + 1}.png`), fullPage: true });
     await page.click('#next');
   }
   if (SHOTS && shotName === 'voll') await page.screenshot({ path: path.join(SHOTS, 'zusammenfassung.png'), fullPage: true });
@@ -88,8 +102,31 @@ try {
     ok(normUi(u.json) === t.json.split(id).join('<ID>'), `[${name}] BRIEFING.json: Browser = Terminal`);
     ok(u.prompt.includes(u.md.trim()) && u.prompt.includes('AGENTS.md'), `[${name}] Prompt enthält das Briefing und verweist auf AGENTS.md`);
     ok(errors.length === 0, `[${name}] keine JavaScript-Fehler${errors.length ? ': ' + errors[0] : ''}`);
+    const w = WIRKUNG[name];
+    if (w) {
+      const fehlt = w.md.filter(x => !t.md.includes(x)), zuviel = (w.nicht || []).filter(x => t.md.includes(x));
+      ok(!fehlt.length && !zuviel.length, `[${name}] Briefing: Spielplan-Abschnitt passt${fehlt.length ? ' (fehlt: ' + fehlt.join(' | ') + ')' : ''}${zuviel.length ? ' (zuviel: ' + zuviel.join(' | ') + ')' : ''}`);
+      const j = JSON.parse(t.json);
+      ok(j.spielplan === w.spielplan && j.zugang === w.zugang, `[${name}] BRIEFING.json: spielplan „${j.spielplan}“, zugang „${j.zugang}“`);
+      ok((t.pack.spielFrei === true) === w.spielFrei && (w.spielFrei || !('spielFrei' in t.pack)), `[${name}] pack.json: spielFrei ${w.spielFrei ? 'gesetzt (frei als Standard)' : 'nicht gesetzt'}`);
+      ok((w.standard || []).every(k => j.standardUebernommen.includes(k)) && (w.gewaehlt || []).every(k => !j.standardUebernommen.includes(k)), `[${name}] Standardwerte und ausdrückliche Wahl richtig getrennt`);
+    }
     await page.close();
   }
+
+  // Beispielkonfigurationen (docs/beispiele) laden mit dem Terminal-Werkzeug und tragen das Spielplan-Feld
+  for (const [datei, erwartet] of [['tschechisch.json', { md: 'Mit Freischalten', frei: false }], ['adhs.json', { md: 'Frei als Standard', frei: true }]]) {
+    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs', 'beispiele', datei), 'utf8'));
+    const t = terminal(cfg, `zz-onbtest-${process.pid}-${datei.replace('.json', '')}`);
+    ok(cfg.spielplan === 'ja' && t.md.includes('## Spielplan') && t.md.includes(erwartet.md) && t.md.includes('Schritt 6b') && (t.pack.spielFrei === true) === erwartet.frei,
+      `docs/beispiele/${datei}: lädt, Spielplan „ja“, Zugang „${erwartet.md}“${erwartet.frei ? ', pack.json spielFrei' : ''}`);
+  }
+  // Ein Zugang ohne Spielplan „ja“ wird nicht beachtet
+  { const t = terminal({ name: 'Zugang ohne Spiel', spielplan: 'nein', zugang: 'frei' }, `zz-onbtest-${process.pid}-zugang`);
+    ok(JSON.parse(t.json).zugang === '' && !('spielFrei' in t.pack) && !t.md.includes('Frei als Standard'), 'Feld „zugang“ ohne Spielplan „ja“ wird ignoriert'); }
+  // Ein Paket mit Spielplan „später“ hat einen Hinweis in ARBEITSSTAND.md, bei „ja“ einen offenen Punkt
+  { const a = terminal({ name: 'Hinweis' }, `zz-onbtest-${process.pid}-hinweis`), b = terminal({ name: 'Hinweis ja', spielplan: 'ja' }, `zz-onbtest-${process.pid}-hinweisja`);
+    ok(a.arbeitsstand.includes('Spielplan: im Abschlussbericht darauf hinweisen') && b.arbeitsstand.includes('Spielplan einrichten (Schritt 6b'), 'ARBEITSSTAND.md: Hinweis bei „später“, offener Punkt bei „ja“'); }
 
   // Fehlerfälle und Bedienung
   const p = await ctxB.newPage();
@@ -100,8 +137,8 @@ try {
   await p.fill('#f-name', 'Spieltheorie mit sehr langem Namen hier'); await p.fill('#f-id', 'Ungültig Ä'); await p.click('#next');
   ok((await p.textContent('#e-id')).includes('geht nicht'), 'ungültige ID: Fehlermeldung');
   await p.fill('#f-id', ''); await p.click('#next');
-  ok((await p.textContent('#plabel')).includes('Schritt 2 von 7'), 'Fortschritt: Schritt 2 von 7 nach gültigem Block');
-  ok((await p.textContent('#pmsg')).includes('Noch 5 Schritte'), 'Fortschritt: „Noch 5 Schritte“');
+  ok((await p.textContent('#plabel')).includes('Schritt 2 von 8'), 'Fortschritt: Schritt 2 von 8 nach gültigem Block');
+  ok((await p.textContent('#pmsg')).includes('Noch 6 Schritte'), 'Fortschritt: „Noch 6 Schritte“');
   await p.click('#back');
   ok((await p.inputValue('#f-name')).startsWith('Spieltheorie'), 'Zurück behält die Eingaben');
   await p.click('#next'); await p.click('#next'); await p.click('#next'); await p.click('#next');
@@ -113,6 +150,20 @@ try {
   await p.fill('#f-materialHost', 'www.beispiel.de'); await p.click('#next');
   ok((await p.textContent('#e-materialHost')).includes('https://'), 'ungültige Domain: Fehlermeldung');
   await p.fill('#f-materialHost', 'https://www.beispiel.de/'); await p.click('#next');
+  // Spielgefühl: Standard „später“, die Nachfrage Zugang erscheint erst bei „Ja“, ihr Standard folgt dem heiklen Thema
+  const gewaehlt = async k => p.locator(`.q[data-key="${k}"] input:checked`).getAttribute('value');
+  ok(await gewaehlt('spielplan') === 'spaeter' && await p.locator('.q[data-key="zugang"]').isHidden(), 'Spielplan: Standard „später“, Zugang verborgen');
+  ok(await p.locator('.q[data-key="spielplan"] input[type=radio]').count() === 3, 'Spielplan: ja, später, nein zur Wahl');
+  await p.locator('.q[data-key="spielplan"] input[value="ja"]').check({ force: true });
+  ok(await p.locator('.q[data-key="zugang"]').isVisible() && await gewaehlt('zugang') === 'freischalten', 'Spielplan „Ja“: Zugang erscheint, Standard „mit Freischalten“ (kein heikles Thema)');
+  await p.click('#back'); await p.locator('.q[data-key="heikel"] input[value="gesundheit"]').check({ force: true }); await p.click('#next');
+  ok(await gewaehlt('zugang') === 'frei', 'Heikles Thema Gesundheit: Standard des Zugangs wechselt zu „frei als Standard“');
+  await p.locator('.q[data-key="zugang"] input[value="freischalten"]').check({ force: true });
+  await p.click('#back'); await p.locator('.q[data-key="heikel"] input[value="gewalt"]').check({ force: true }); await p.click('#next');
+  ok(await gewaehlt('zugang') === 'freischalten', 'Ausdrücklich gewählter Zugang bleibt, auch wenn sich das heikle Thema ändert');
+  await p.locator('.q[data-key="spielplan"] input[value="nein"]').check({ force: true });
+  ok(await p.locator('.q[data-key="zugang"]').isHidden(), 'Spielplan „Nein“: Zugang wieder verborgen');
+  await p.click('#next');
   ok(await p.locator('.q[data-key="lizenz"] input[type=radio]').count() === 3, 'Lizenz: genau drei freie Lizenzen zur Wahl');
   const lic = await p.locator('.q[data-key="lizenz"] label.opt strong').allTextContents();
   ok(JSON.stringify(lic) === JSON.stringify(['CC BY 4.0', 'CC BY-SA 4.0', 'CC0 1.0']), `Lizenzliste: ${lic.join(', ')}`);

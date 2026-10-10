@@ -203,7 +203,7 @@ function buildField(q) {
     opts.forEach(function (o, i) {
       var checked = q.typ === 'jaNein' ? (def ? o.id === 'ja' : o.id === 'nein') : multi ? def.indexOf(o.id) >= 0 : o.id === def;
       var inp = el('input', { type: multi ? 'checkbox' : 'radio', name: 'n-' + q.key, value: o.id, id: 'o-' + q.key + '-' + i, checked: checked });
-      inp.addEventListener('change', function () { touched.add(q.key); if (q.key === 'quellen') updateConditional(); });
+      inp.addEventListener('change', function () { touched.add(q.key); updateConditional(); });
       grid.appendChild(el('label', { 'class': 'opt', 'for': inp.id }, inp, el('span', null, el('strong', null, o.label), o.beschreibung ? el('span', { 'class': 'od' }, o.beschreibung) : null)));
     });
     fs.appendChild(grid);
@@ -240,11 +240,22 @@ function buildField(q) {
   return f;
 }
 
-function currentSources() { var c = fields.quellen.root.querySelectorAll('input:checked'), v = []; for (var i = 0; i < c.length; i++) v.push(c[i].value); return v; }
+// Nachfragen (nurWenn) erscheinen, sobald die Antwort darauf passt: Adresse bei „Domain“, Zugang bei Spielplan „Ja“
+function currentValue(key) { var f = fields[key], raw = f.get(); return f.q.typ === 'mehrfach' ? (raw ? raw.split(',') : []) : raw; }
 function updateConditional() {
-  var q = Q.filter(function (x) { return x.key === 'materialHost'; })[0];
-  var show = currentSources().indexOf('domain') >= 0;
-  fields.materialHost.root.hidden = !show;
+  Q.forEach(function (q) {
+    if (!q.nurWenn) return;
+    var v = currentValue(q.nurWenn.key);
+    fields[q.key].root.hidden = !(q.nurWenn.enthaelt !== undefined ? v.indexOf(q.nurWenn.enthaelt) >= 0 : v === q.nurWenn.gleich);
+  });
+}
+// Ein Standard, der von früheren Antworten abhängt (Zugang je nach heiklem Thema), gilt erst, wenn der Schritt erscheint, und nur, solange die Frage unberührt ist
+function aktualisiereStandards(n) {
+  Q.forEach(function (q) {
+    if (q.block !== BL[n].id || !hatAbhaengigenStandard(q) || touched.has(q.key)) return;
+    var inp = fields[q.key].root.querySelector('input[value="' + defaultFor(q, A, ctx, null) + '"]');
+    if (inp) inp.checked = true;
+  });
 }
 function updateIdPlaceholder() {
   var n = fields.name.get().trim() || 'Mein Museum';
@@ -294,6 +305,7 @@ function validateBlock(i) {
 // ───────── Ablauf
 function show(n) {
   step = n;
+  if (n >= 0 && n < BL.length) aktualisiereStandards(n);
   $('#intro').hidden = n !== -1;
   $('#wizard').hidden = !(n >= 0 && n < BL.length);
   $('#summary').hidden = n !== BL.length;

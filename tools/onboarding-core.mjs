@@ -127,11 +127,21 @@ export function parseAnswer(q, raw, a, ctx) {
   }
 }
 
+/** Hat die Frage einen Standard, der von einer früheren Antwort abhängt ({ abhaengig: { key, enthaelt | gleich, dann, sonst } })? */
+export function hatAbhaengigenStandard(q) {
+  const s = q.standard;
+  return !!(s && typeof s === 'object' && !Array.isArray(s) && s.abhaengig && typeof s.abhaengig === 'object');
+}
+
 /** Standardwert einer Frage (prev: frühere Antworten bei „Wiederholen“). */
 export function defaultFor(q, a, ctx, prev) {
   if (prev && q.key in prev && prev[q.key] !== '' && prev[q.key] !== undefined) return prev[q.key];
   const s = q.standard;
   if (s && typeof s === 'object' && !Array.isArray(s) && s.ableitung === 'id-aus-name') return ctx.freeId(slugify(a.name || 'museum'));
+  if (hatAbhaengigenStandard(q)) {   // Standard hängt von einer früheren Antwort ab (zum Beispiel Zugang je nach heiklem Thema)
+    const d = s.abhaengig, v = a[d.key];
+    return (d.enthaelt !== undefined ? Array.isArray(v) && v.includes(d.enthaelt) : v === d.gleich) ? d.dann : d.sonst;
+  }
   if (q.typ === 'auswahl' && q.optionen && !q.optionen.some(o => o.id === s)) return q.optionen[0].id;
   return s === undefined ? '' : s;
 }
@@ -172,6 +182,10 @@ export const lizenzText = (ctx, a) => optionOf(ctx, 'lizenz', a.lizenz).text;
 export const shareOf = (ctx, a) => (optionOf(ctx, 'anschauung', a.anschauung) || optionOf(ctx, 'anschauung', 'viel')).anteil;
 export const buildCmd = a => `node tools/build.mjs ${a.id} ${a.skinWahl ? '--skins=all' : `--skins=${a.skin}`}`;
 export const checkCmd = a => `${a.materialHost ? `MATERIAL_HOST=${a.materialHost} ` : ''}node tools/check-pack.mjs ${a.id}`;
+/** Antwort auf „Spielplan“; alte Konfigurationen ohne das Feld gelten als „später“. */
+export const spielplanOf = a => a.spielplan || 'spaeter';
+/** Schaltet pack.json den Freien Zugang als Vorbelegung ein (nur bei Spielplan „ja“ und Zugang „frei“)? */
+export const spielFreiVorbelegt = a => spielplanOf(a) === 'ja' && a.zugang === 'frei';
 export const groesseRichtwert = (ctx, a) => (optionOf(ctx, 'groesse', a.groesse) || { richtwert: '' }).richtwert;
 
 /** Unverbindlicher Hinweis aus alten Konfigurationen (a.altHinweis = { reisen, stationenJeReise, historisch }), sonst ''. */
@@ -203,6 +217,7 @@ export function summaryRows(a, d, ctx) {
     ['Anschauung', `${disp('anschauung')} (etwa ${Math.round(shareOf(ctx, a) * 100)} % der Stationen mit Abbildung oder Exponat)`],
     ['Heikle Themen', disp('heikel')],
     ['Quellen', disp('quellen') + (a.materialHost ? ` (${a.materialHost})` : '')],
+    ['Spielplan', disp('spielplan') + star('spielplan') + (a.spielplan === 'ja' ? `; Zugang: ${disp('zugang')}${star('zugang')}` : '')],
     ['Lizenz, Credits', `${lizenzText(ctx, a)}; ${a.urheber || 'keine Urheberangabe'}`],
     ['Impressum', a.impressumUrl || 'kein Link']
   ];
@@ -220,6 +235,7 @@ export function briefingJson(a, d, ctx) {
     name: a.name, id: a.id, untertitel: a.untertitel, thema: a.thema, zielgruppe: a.zielgruppe, sprache: a.sprache, anrede: a.anrede,
     geschichte: a.geschichte, groesse: a.groesse, reisenamen: a.reisenamen,
     skin: a.skin, skinWahl: a.skinWahl, anschauung: a.anschauung, heikel: a.heikel, quellen: a.quellen, materialHost: a.materialHost || '',
+    spielplan: a.spielplan || 'spaeter', zugang: a.spielplan === 'ja' ? a.zugang || '' : '',
     urheber: a.urheber, lizenz: a.lizenz, impressumUrl: a.impressumUrl
   };
   if (a.altHinweis) { if (a.altHinweis.reisen) o.reisen = a.altHinweis.reisen; if (a.altHinweis.stationenJeReise) o.stationenJeReise = a.altHinweis.stationenJeReise; }
@@ -288,6 +304,21 @@ export function briefingMd(a, d, ctx) {
   L.push(`- **Umschaltung für Besucher:** ${a.skinWahl ? 'ja, alle Looks einbinden' : 'nein, nur der gewählte'}. Bau: \`${buildCmd(a)}\`.`);
   L.push(`- **Anschauung: ${optionOf(ctx, 'anschauung', a.anschauung).label}** (etwa ${Math.round(shareOf(ctx, a) * 100)} % der Stationen)${ja('anschauung')}. Rechne nach dem Plan die **Mindestzahl** aus (Anteil mal Zahl eindeutiger Stationen, aufgerundet): so viele Stationen brauchen eine Abbildung oder ein Exponat (\`pack.json\` \`limits.visualShare\` = ${shareOf(ctx, a)}, \`requireVisualPlan\`: true). Jede Station bekommt in \`plan.json\` ein Feld \`visual\` (abbildung | exponat | keine mit Begründung); \`docs/AGENTEN.md\`, Schritt 2b „Anschauung planen“, und der Baukasten \`MUSEUM.viz\` (Muster: \`packs/_vorlage/visuals/\`). Je abstrakter eine Station, desto eher gehört eine Abbildung dazu.`, '');
 
+  L.push('## Spielplan', '');
+  const spOpt = optionOf(ctx, 'spielplan', spielplanOf(a));
+  L.push(`- **Entscheidung:** ${spOpt.label}${ja('spielplan')}. ${spOpt.regel}`);
+  if (spielplanOf(a) === 'ja') {
+    const zg = optionOf(ctx, 'zugang', a.zugang);
+    L.push(`- ${zg.regel}${ja('zugang')}`);
+    L.push('- **Maßstab: ein Spiel, kein Dashboard.** Es braucht eine **Geschichte** (Auftakt und Abschluss je Reise), den **Moment** des Freischaltens (etwas geht dort auf, wo man gerade handelt), **Rhythmus** (Wiedersehen nach Abständen, keine Serien, die reißen) und **Rückmeldung am Ort**. Kein Reiter mit Statistik, keine Punkte. Immer: Freier Zugang als Schalter, Pausen kosten nichts, genau **eine** nächste Aufgabe als Vorschlag, nie eine Pflicht.');
+    L.push('- **So gehst du vor** (nach der Freigabe des Plans und nach den Stationstexten, vor dem Rauchtest; Befehle und Fehlersuche in `docs/SPIELPLAN.md`):');
+    L.push(`  1. \`node tools/spielplan-aus-plan.mjs ${a.id} --auto\` erzeugt einen spielbaren Standard in \`packs/${a.id}/spielplan.json\` (Gebiete, Etappen, ein Drittel der Reisen offen, mindestens zwei Wege je gesperrter Reise).`);
+    L.push(`  2. Danach die **kuratierte Schicht** in \`packs/${a.id}/spielplan-kern.yaml\` (Vorlage: \`docs/spielplan-vorlage-kern.yaml\`): Auftakt und Abschluss im Ton des Museums, **„Ich kann …“-Sätze** (Fähigkeiten), Gewichte, Enthüllungstexte, \`offen: [...]\`. Die Sätze nicht erfinden: aus anerkannten Kompetenzbeschreibungen oder den Texten des Auftraggebers ableiten, sonst weglassen und in \`ARBEITSSTAND.md\` als Annahme vermerken.`);
+    L.push(`  3. \`node tools/check-spielplan.mjs ${a.id} --streng --bericht --wege\` und \`node tools/check-pack.mjs ${a.id}\`; bauen und im Browser ausprobieren (Zeitreise-Hook, Zurücksetzen: \`docs/SPIELPLAN.md\`).`);
+    L.push('- Ohne Befehle (reiner Chat): Beschreibe den Spielplan (Gebiete, Etappen, „Ich kann …“-Sätze, Zugang) nur als Vorschlag im Plan und lass die Umsetzung für später vormerken.');
+  }
+  L.push('');
+
   L.push('## Lizenz, Credits, Rechtliches', '');
   L.push(`- **Lizenz der Inhalte:** ${lizenzText(ctx, a)}${ja('lizenz')} (in \`pack.json\` \`license\` eingetragen; der Code von Museum Studio bleibt MIT). Es gelten nur freie Lizenzen; füge keine Inhalte mit unfreier Lizenz ein.`);
   L.push(`- **Credits:** ${a.urheber || 'keine Angabe (nur „Erstellt mit Museum Studio“)'}.`);
@@ -303,6 +334,7 @@ export function briefingMd(a, d, ctx) {
     '`pack.json` geprüft: alle Platzhalter weg, Fußhinweise passen zum Inhalt' + (a.sprache === 'de' ? '' : ', Wortschatz `vocab` übersetzt'),
     ...(a.heikel.length ? ['Sorgfaltsregeln zu den heiklen Themen eingehalten und im Abschlussbericht ausdrücklich bestätigt (welche Positionen/Aspekte fehlen bewusst?)'] : []),
     'Faktencheck durchgeführt und in `FAKTENCHECK.md` festgehalten (Stufe je Reise ehrlich angeben: unabhängig, Selbstprüfung, Gedächtnis)',
+    ...(spielplanOf(a) === 'ja' ? [`Spielplan eingerichtet (Schritt 6b; Zugang: ${optionOf(ctx, 'zugang', a.zugang).label}): \`packs/${a.id}/spielplan.json\` erzeugt, „Ich kann …“-Sätze nur aus belegbaren Quellen, \`node tools/check-spielplan.mjs ${a.id} --streng\` grün, im Browser ausprobiert (Freier Zugang an und aus), Geschichte, Moment, Rhythmus und Rückmeldung am Ort im Abschlussbericht benannt`] : []),
     `Layout berechnet: \`node tools/layout-map.mjs ${a.id}\``,
     `Gesamtprüfung grün: \`${checkCmd(a)}\``,
     `Gebaut: \`${buildCmd(a)}\` (Ergebnis in \`dist/${a.id}/index.html\`); wenn Playwright vorhanden ist: \`npm run smoke -- ${a.id} --quick\``,

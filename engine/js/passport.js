@@ -36,11 +36,20 @@
   function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
   function plural(n, one, many) { return n === 1 ? one : many; }
 
-  function journeys() { return ((M.data && M.data.journeys) || []).filter(function (j) { return j && !j.virtual; }); }
+  // Spielplan (nur mit packs/<paket>/spielplan.json; sonst ist MUSEUM.spiel nicht aktiv und nichts davon wirkt): verborgene Reisen werden nirgends gezählt oder genannt
+  function spielAn() { return !!(M.spiel && M.spiel.aktiv); }
+  function spZ(uid) { return spielAn() ? M.spiel.zugang(uid) : null; }
+  function jSichtbar(jid) { var z = spZ('episode/' + jid); return !z || z.sichtbar; }
+  function jGesperrt(jid) { var z = spZ('episode/' + jid); return !!z && !z.offen; }
+  function sGesperrt(sid) { var z = spZ('inhalt/' + sid); return !!z && !z.offen; }
+  function sEinheit(uid) { return spielAn() ? M.spiel.einheit(uid) : null; }
+  function wartetAufWiedersehen(e) { return !!e && (e.verwittert || e.faellig); }
+
+  function journeys() { return ((M.data && M.data.journeys) || []).filter(function (j) { return j && !j.virtual && jSichtbar(j.id); }); }
   function journeyOf(id) { return M.data && M.data.journeyById && M.data.journeyById[id]; }
   function orderOf(id) { return (M.data && M.data.orders && M.data.orders[id]) || []; }
   function jShort(id) { var j = journeyOf(id); return j ? (j.kurz || j.name) : id; }
-  function isKnown(jid) { return !!journeyOf(jid) && !journeyOf(jid).virtual; }
+  function isKnown(jid) { return !!journeyOf(jid) && !journeyOf(jid).virtual && jSichtbar(jid); }
   function realJourneysOf(st) { return (st.journeys || []).filter(isKnown); }
 
   function yearText(st) {
@@ -615,6 +624,7 @@
       if (M.store.isVisited(id)) return;
       var st = S[id];
       var jids = realJourneysOf(st);
+      if (spielAn()) { if (sGesperrt(id)) return; jids = jids.filter(function (jid) { return !jGesperrt(jid); }); }   // Spielplan: nur Offenes wird vorgeschlagen
       if (!jids.length) return;
       var score = 0, onA = [], nextOn = null, lead = null;
       var newJ = jids.filter(function (jid) { return untouched[jid]; });

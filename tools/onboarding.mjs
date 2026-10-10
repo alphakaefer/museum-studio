@@ -20,7 +20,7 @@ import { spawn } from 'child_process';
 import { ROOT, isMain } from './check-lib.mjs';
 import { createPack, PackError } from './new-pack.mjs';
 import { runDoctor, printDoctor } from './doctor.mjs';
-import { makeContext, isVisible, optionOf, langName, resolveAnswer, defaultFor, asRaw, parseAnswer, displayValue, summaryRows, briefingMd, briefingJson, lizenzText, shareOf, buildCmd, checkCmd, altHinweisText } from './onboarding-core.mjs';
+import { makeContext, isVisible, optionOf, langName, resolveAnswer, defaultFor, asRaw, parseAnswer, displayValue, summaryRows, briefingMd, briefingJson, lizenzText, shareOf, buildCmd, checkCmd, altHinweisText, hatAbhaengigenStandard, spielplanOf, spielFreiVorbelegt } from './onboarding-core.mjs';
 
 // ───────────────────────────── Grundbausteine ─────────────────────────────
 
@@ -84,7 +84,9 @@ async function interview(io, ctx, prevState) {
       const b = ctx.data.bloecke.find(x => x.id === q.block);
       if (b) say(`\n══ ${b.titel} ══\n   ${b.einleitung}`);
     }
-    const prev = prevState ? prevState.a : null;
+    let prev = prevState ? prevState.a : null;
+    // „Wiederholen“: Ein Standard, der von einer früheren Antwort abhängt (Zugang je nach heiklem Thema), wird neu abgeleitet, solange er nur ein Standard war
+    if (prev && hatAbhaengigenStandard(q) && prevState.d.has(q.key)) { prev = Object.assign({}, prev); delete prev[q.key]; }
     const def = defaultFor(q, a, ctx, prev);
     const defStr = displayValue(q, def) || (q.typ === 'text' || q.typ === 'url' ? '' : String(def));
     const nr = top.indexOf(q) + 1;
@@ -163,6 +165,7 @@ function fromConfig(ctx, cfg0, { useDefaults }) {
     a[q.key] = res.value;
   }
   if (problems.length) throw new ConfigError(problems.join('\n  '));
+  if (cfg.zugang !== undefined && cfg.zugang !== null && cfg.zugang !== '' && spielplanOf(a) !== 'ja') say('Hinweis: Das Feld „zugang“ gilt nur bei "spielplan": "ja" und wird sonst nicht beachtet.');
   if (Object.keys(alt).length) a.altHinweis = alt;
   return { a, d };
 }
@@ -207,6 +210,7 @@ export function packFields(a, ctx) {
     credits: a.urheber ? `${a.urheber}. Erstellt mit Museum Studio.` : 'Erstellt mit Museum Studio.'
   };
   if (a.urheber) f.author = a.urheber;
+  if (spielFreiVorbelegt(a)) f.spielFrei = true;   // Freier Zugang als Standard; wirkt nur mit packs/<id>/spielplan.json (engine/js/spiel.js)
   return f;
 }
 
@@ -233,14 +237,17 @@ function arbeitsstandMd(a, d, ctx) {
   L.push(`- Ton und Ansprache: ${a.anrede}-Anrede, ${langName(ctx, a.sprache)}, warm und klar`);
   L.push(`- Umfang: nicht vorgegeben (Agent entscheidet). Größenordnung als Wunsch: ${displayValue(ctx.byKey.groesse, a.groesse)}${altHinweisText(a) ? `; älterer Hinweis: ${altHinweisText(a)}` : ''}. Geschichte als eigene Reise: ${displayValue(ctx.byKey.geschichte, a.geschichte)}`);
   L.push(`- Erlaubte Quellen: ${a.quellen.map(q => optionOf(ctx, 'quellen', q).label).join('; ')}${a.materialHost ? ` (${a.materialHost})` : ''}`);
-  L.push(`- Heikle Themen (und Umgang damit): ${a.heikel.length ? a.heikel.map(x => optionOf(ctx, 'heikel', x).label).join('; ') + ', Sorgfaltsregeln in BRIEFING.md' : 'keine genannt'}`, '');
+  L.push(`- Heikle Themen (und Umgang damit): ${a.heikel.length ? a.heikel.map(x => optionOf(ctx, 'heikel', x).label).join('; ') + ', Sorgfaltsregeln in BRIEFING.md' : 'keine genannt'}`);
+  L.push(`- Spielplan: ${displayValue(ctx.byKey.spielplan, spielplanOf(a))}${spielplanOf(a) === 'ja' ? `; Zugang: ${displayValue(ctx.byKey.zugang, a.zugang)}${spielFreiVorbelegt(a) ? ' (`spielFrei: true` ist in pack.json schon gesetzt)' : ''}` : ''}`, '');
   L.push('## Annahmen');
   L.push('Alles, was nicht ausdrücklich vom Auftraggeber stammt. Jede Annahme mit Datum und Begründung, damit der Auftraggeber sie später bestätigen oder umwerfen kann.', '');
   L.push('| Datum | Annahme | Begründung | Bestätigt? |', '|---|---|---|---|', ...rows, '');
   L.push('## Entscheidungen', 'Kurz, mit Grund (Warum diese Reisen? Warum keine historische Reise? Warum diese Heimat-Reise für Station X?).', '', '-', '');
   L.push('## Fortschritt je Reise', '| Reise | Plan | Texte | Faktencheck (Stufe) | Bemerkung |', '|---|---|---|---|---|', '| | | | | |', '');
   L.push('Faktencheck-Stufen: **unabhängig geprüft** (anderer Agent oder Mensch, mit Quellen), **Selbstprüfung** (derselbe Agent im getrennten Durchgang mit Quellen), **Gedächtnis** (nicht belegt). Details: `docs/AGENTEN.md`, Schritt 5.', '');
-  L.push('## Offen', '- [ ] Reisen und Plan (Schritt 1 und 2), Plan dem Auftraggeber zur Freigabe zeigen', '- [ ] Anschauung planen (Schritt 2b) und bauen, Mindestzahl siehe BRIEFING.md', ...(a.impressumUrl ? [] : ['- [ ] Impressum/Datenschutz-Link klären (im Onboarding keiner angegeben)']), '');
+  L.push('## Offen', '- [ ] Reisen und Plan (Schritt 1 und 2), Plan dem Auftraggeber zur Freigabe zeigen', '- [ ] Anschauung planen (Schritt 2b) und bauen, Mindestzahl siehe BRIEFING.md',
+    ...(spielplanOf(a) === 'ja' ? ['- [ ] Spielplan einrichten (Schritt 6b, nach den Texten; `docs/SPIELPLAN.md`)'] : spielplanOf(a) === 'spaeter' ? ['- [ ] Spielplan: im Abschlussbericht darauf hinweisen, dass es ihn gibt (`docs/SPIELPLAN.md`); der Auftraggeber entscheidet später'] : []),
+    ...(a.impressumUrl ? [] : ['- [ ] Impressum/Datenschutz-Link klären (im Onboarding keiner angegeben)']), '');
   L.push('## Bekannte Schwächen', '-', '');
   L.push('## Wünsche an die Engine', 'Nur Verweise; Wünsche selbst stehen in `docs/ENGINE-WUENSCHE.md`.', '');
   L.push('## Nächste Schritte', '1. `BRIEFING.md` lesen, dann `docs/AGENTEN.md` ab Schritt 1.', '2. Plan zeigen (Freigabe) oder als Annahme festhalten, dann Stationen schreiben.', '');
@@ -250,7 +257,7 @@ function arbeitsstandMd(a, d, ctx) {
 // ───────────────────────────── Ausgabe ─────────────────────────────
 
 export function terminalPrompt(a) {
-  return `Lies AGENTS.md, docs/AGENTEN.md und packs/${a.id}/BRIEFING.md und richte das Paket packs/${a.id} nach der Anleitung ein: Schritt 0 (Rahmen) ist durch das Briefing erledigt, der Plan ist noch leer. Entscheide Zahl und Zuschnitt der Reisen und Stationen fachlich nach Thema und Zielgruppe, zeige mir den Plan zur Freigabe, bevor du Texte schreibst, und arbeite dann die Schritte 1 bis 8 ab (dazu gehört Schritt 2b, Anschauung planen und bauen). Halte Annahmen in packs/${a.id}/ARBEITSSTAND.md fest, committe nach jedem Schritt und melde am Ende, was geprüft ist und was offen bleibt.`;
+  return `Lies AGENTS.md, docs/AGENTEN.md und packs/${a.id}/BRIEFING.md und richte das Paket packs/${a.id} nach der Anleitung ein: Schritt 0 (Rahmen) ist durch das Briefing erledigt, der Plan ist noch leer. Entscheide Zahl und Zuschnitt der Reisen und Stationen fachlich nach Thema und Zielgruppe, zeige mir den Plan zur Freigabe, bevor du Texte schreibst, und arbeite dann die Schritte 1 bis 8 ab (dazu gehört Schritt 2b, Anschauung planen und bauen${spielplanOf(a) === 'ja' ? '; nach den Texten und vor dem Rauchtest Schritt 6b, den Spielplan einrichten, siehe docs/SPIELPLAN.md' : ''}). Halte Annahmen in packs/${a.id}/ARBEITSSTAND.md fest, committe nach jedem Schritt und melde am Ende, was geprüft ist und was offen bleibt.`;
 }
 
 function nextSteps(a) {
@@ -272,7 +279,12 @@ ${prompt.replace(/(.{1,92})(\s|$)/g, '   │ $1\n').trimEnd()}
    ${buildCmd(a)}
    Ansehen: dist/${a.id}/index.html (Doppelklick genügt)
    Optional Browser-Rauchtest: npm run smoke -- ${a.id} --quick   (braucht Playwright, siehe: npm run doctor)
-
+${spielplanOf(a) === 'ja' ? `
+3. Spielplan (du hast ihn gewünscht; nach dem freigegebenen Plan und den Texten, die KI übernimmt es laut BRIEFING.md):
+   node tools/spielplan-aus-plan.mjs ${a.id} --auto
+   node tools/check-spielplan.mjs ${a.id} --streng --bericht
+   Alles dazu: docs/SPIELPLAN.md
+` : ''}
 Hinweis: Der Plan ist noch leer; die Prüfung meldet das („Plan noch leer“), bis Schritt 1 und 2 erledigt sind. Das ist gewollt, es ist die erste Aufgabe des Agenten.`;
 }
 

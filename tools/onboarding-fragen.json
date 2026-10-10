@@ -8,6 +8,7 @@
     { "id": "aufbau", "titel": "Aufbau", "einleitung": "Du musst keine Zahlen nennen. Wie viele Reisen und Stationen es gibt, entscheidet der KI-Agent fachlich und zeigt dir den Plan, bevor er Texte schreibt." },
     { "id": "look", "titel": "Aussehen und Anschauung", "einleitung": "Wie sieht das Museum aus, und wie viel Bildhaftes und Ausprobierbares soll es enthalten?" },
     { "id": "sorgfalt", "titel": "Sorgfalt und Quellen", "einleitung": "Wo ist besondere Vorsicht nötig, und woher darf der Inhalt stammen?" },
+    { "id": "spielplan", "titel": "Spielgefühl (optional)", "einleitung": "Ein Spielplan lässt im Museum etwas aufgehen, wenn du vorankommst, und schlägt immer genau eine nächste Aufgabe vor. Das ist freiwillig und lässt sich auch später nachholen." },
     { "id": "recht", "titel": "Urheber, Lizenz, Impressum", "einleitung": "Wer steht im Fuß, unter welcher freien Lizenz stehen die Inhalte, und wo liegt das Impressum?" }
   ],
   "fragen": [
@@ -188,6 +189,36 @@
       "standard": "",
       "validierung": { "regel": "url", "fehler": { "ungueltig": "Bitte eine Adresse mit https:// und Domain, zum Beispiel https://www.beispiel.de/." } },
       "wirkung": "`MATERIAL_HOST` im Prüfbefehl"
+    },
+
+    {
+      "key": "spielplan", "block": "spielplan", "titel": "Soll das Museum einen Spielplan bekommen?", "typ": "auswahl",
+      "hilfe": "Mit Spielplan öffnen sich Reisen und Stationen nach und nach, kleine Überraschungen erscheinen dort, wo du gerade bist, und Wichtiges kommt nach Abständen wieder. Pausen kosten nichts, ein Schalter „Freier Zugang“ öffnet jederzeit alles, und nichts verlässt deinen Browser.",
+      "erklaerung": "„Später“ ist die vorsichtige Wahl: Das Museum wird zuerst ohne Spielplan gebaut, und du entscheidest danach (der Agent weist am Ende darauf hin). „Ja“ passt vor allem zu Lernangeboten wie Sprachen, in denen Üben und Wiederholen zählen. Ohne Spielplan bleibt das Museum, wie es ist: alles ist offen, und du stöberst frei. Mehr dazu: docs/SPIELPLAN.md.",
+      "standard": "spaeter",
+      "optionen": [
+        { "id": "ja", "label": "Ja, einrichten", "beschreibung": "nach der Freigabe des Plans richtet der Agent einen Spielplan ein", "aliases": ["j", "einrichten"],
+          "regel": "Richte nach der Freigabe des Plans und nach den Stationstexten einen **Spielplan** ein (`docs/AGENTEN.md`, Schritt 6b; Einzelheiten und Befehle in `docs/SPIELPLAN.md`)." },
+        { "id": "spaeter", "label": "Später entscheiden", "beschreibung": "nur ein Hinweis im Auftrag, nichts wird eingerichtet", "aliases": ["später", "spät", "vielleicht", "egal"],
+          "regel": "Ein Spielplan ist **noch nicht** gewünscht: Richte keinen ein. Weise den Auftraggeber im Abschlussbericht in einem Satz darauf hin, dass es ihn gibt und wie man ihn später einschaltet (`docs/SPIELPLAN.md`)." },
+        { "id": "nein", "label": "Nein", "beschreibung": "das Museum bleibt frei begehbar, ohne Freischalten", "aliases": ["n", "kein", "keinen"],
+          "regel": "Der Auftraggeber möchte **keinen** Spielplan: Richte keinen ein und frage nicht erneut danach." }
+      ],
+      "wirkung": "BRIEFING.md: bei „ja“ der Auftrag, nach der Freigabe des Plans einen Spielplan einzurichten (Schritte aus docs/SPIELPLAN.md) samt Eintrag in der Checkliste; bei „später“ ein Hinweis; bei „nein“ ein Satz. Alte Konfigurationen ohne dieses Feld gelten als „später“"
+    },
+    {
+      "key": "zugang", "block": "spielplan", "titel": "Wie soll der Zugang sein?", "typ": "auswahl",
+      "nurWenn": { "key": "spielplan", "gleich": "ja" },
+      "hilfe": "Frei als Standard: Alles ist von Anfang an offen, ohne Wartezeiten, und das Museum schlägt nur vor, was als Nächstes passt. Mit Freischalten: Manches öffnet sich erst, wenn du etwas geschafft hast. Den Schalter „Freier Zugang“ gibt es in beiden Fällen, jederzeit umlegbar.",
+      "erklaerung": "Bei Themen rund um Gesundheit und Psyche ist „frei als Standard“ die behutsamere Wahl: Niemand soll durch eine Sperre von dem ausgeschlossen werden, was er gerade sucht. Der Vorschlag richtet sich danach, ob du oben „Gesundheit“ als heikles Thema angekreuzt hast.",
+      "standard": { "abhaengig": { "key": "heikel", "enthaelt": "gesundheit", "dann": "frei", "sonst": "freischalten" } },
+      "optionen": [
+        { "id": "frei", "label": "Frei als Standard", "beschreibung": "alles von Anfang an offen, keine Wartezeiten; der Spielplan schlägt nur die nächste Aufgabe vor", "aliases": ["frei-als-standard", "freier-zugang", "offen"],
+          "regel": "Zugang **frei als Standard**: In `pack.json` steht schon `\"spielFrei\": true` (der Schalter „Freier Zugang“ ist am Anfang an; jede Person kann ihn ausschalten). Halte die Sperren im Plan knapp: keine Wartezeiten, den Takt nie als Tor, `offen: [...]` für alles, was Menschen am ehesten suchen." },
+        { "id": "freischalten", "label": "Mit Freischalten", "beschreibung": "manches öffnet sich erst, wenn du etwas geschafft hast; der Freie Zugang bleibt als Schalter", "aliases": ["mit-freischalten", "sperren", "gesperrt"],
+          "regel": "Zugang **mit Freischalten** (so arbeitet die Automatik). Der Schalter „Freier Zugang“ steht trotzdem immer bereit (Eingang und jedes Hinweisbild); eine gesperrte Reise bekommt mindestens zwei Wege, sie zu öffnen." }
+      ],
+      "wirkung": "nur bei Spielplan „ja“. Briefing (Regel zum Zugang); bei „frei“ setzt das Onboarding `\"spielFrei\": true` in pack.json (wirkt nur mit spielplan.json)"
     },
 
     {
