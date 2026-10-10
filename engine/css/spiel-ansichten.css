@@ -42,3 +42,9 @@
 @media (max-width: 560px) {
   .gm-sp-box { padding: .9rem 1rem; }
 }
+
+/* SVG-Knoten (Netzplan, Linienplan): gesperrt = grau und angedeutet, Stufenzeichen = kleine Striche unter dem Haltepunkt */
+g.gm-sp-gesperrt { opacity: .42; filter: grayscale(1); }
+g.gm-sp-gesperrt .gm-karte-hv, g.gm-sp-gesperrt .gm-karte-kn { stroke-dasharray: 3 2; }
+g.gm-sp-gesperrt:focus-visible, g.gm-sp-gesperrt:hover { opacity: .9; }
+.gm-sp-stufe rect { fill: var(--ink); stroke: var(--bg); stroke-width: .6; }

@@ -1012,6 +1012,7 @@
     host.appendChild(V.root);
     build();
     if (!V.unsub && M.store && M.store.onChange) V.unsub = M.store.onChange(onStore);
+    if (spAn() && !V.spOff) V.spOff = M.spiel.bei('aenderung', function () { try { spAlle(); } catch (e) { /* egal */ } });
     if (!V.themeBound) {
       V.themeBound = true;
       doc.addEventListener('gm:theme', function () { paintOn(); });
@@ -1211,6 +1212,7 @@
       var tx = svgEl('text', { text: n.label }, inv);
       n.lab = { g: lg, bg: bg, text: tx, w: 0, key: '', on: false };
       V.labelEls[n.id] = lg;
+      spMark(g, 'inhalt/' + n.id, 12);
     });
 
     vp.appendChild(svg);
@@ -1281,7 +1283,44 @@
     if (n.myth) s += ' Mythos.';
     if (n.exhibit) s += (' Mit ' + M.t('exhibit') + ' zum Ausprobieren.');
     if (M.store && M.store.isVisited(n.id)) s += ' Besucht.';
-    return s;
+    return s + spSuffix('inhalt/' + n.id);
+  }
+
+  /* ---------- Spielplan (nur mit packs/<paket>/spielplan.json; sonst tut nichts davon etwas) ---------- */
+
+  var SP_STUFE = ['', '', 'Grundverständnis', 'Anwendung', 'Transfer'];
+  function spAn() { return !!(M.spiel && M.spiel.aktiv); }
+  function spSuffix(uid) {
+    if (!spAn()) return '';
+    var z = M.spiel.zugang(uid);
+    if (!z.sichtbar) return '';
+    if (!z.offen) return '. Noch verschlossen' + (z.bedingung ? '. ' + z.bedingung : '');
+    var e = M.spiel.einheit(uid);
+    return e && e.stufe >= 2 ? '. Stufe ' + (e.stufe - 1) + ' von 3: ' + SP_STUFE[Math.min(4, e.stufe)] : '';
+  }
+  /** Markiert einen SVG-Knoten: verborgen = weg, gesperrt = grau und angedeutet (mit Titel), sonst Stufenzeichen (Striche, nicht nur Farbe). */
+  function spMark(g, uid, dy) {
+    if (!spAn() || !g) return;
+    var z = M.spiel.zugang(uid), old = g.querySelector(':scope > .gm-sp-stufe, :scope > title.gm-sp-titel');
+    while ((old = g.querySelector(':scope > .gm-sp-stufe, :scope > .gm-sp-titel'))) g.removeChild(old);
+    g.style.display = z.sichtbar ? '' : 'none';
+    g.classList.toggle('gm-sp-gesperrt', z.sichtbar && !z.offen);
+    if (!z.sichtbar) return;
+    if (!z.offen) {
+      var t = svgEl('title', { class: 'gm-sp-titel' }, g); t.textContent = 'Noch verschlossen' + (z.bedingung ? ': ' + z.bedingung : '');
+      return;
+    }
+    if (dy === null) return;
+    var e = M.spiel.einheit(uid), n = e ? Math.min(3, Math.max(0, e.stufe - 1)) : 0;
+    if (!n) return;
+    var m = svgEl('g', { class: 'gm-sp-stufe', 'aria-hidden': 'true' }, g);
+    for (var i = 0; i < n; i++) svgEl('rect', { x: (i - (n - 1) / 2) * 5 - 1.5, y: dy || 11, width: 3, height: 3, rx: .8 }, m);
+  }
+  function spAlle() {
+    if (!spAn() || !V.model) return;
+    V.model.list.forEach(function (n) { if (n.el) { spMark(n.el, 'inhalt/' + n.id, 12); n.el.setAttribute('aria-label', nodeLabel(n)); } });
+    if (RV && RV.stEls) Object.keys(RV.stEls).forEach(function (id) { var o = RV.stEls[id]; if (!o.base) o.base = o.g.getAttribute('aria-label') || ''; spMark(o.g, 'inhalt/' + id, 17); o.g.setAttribute('aria-label', o.base + spSuffix('inhalt/' + id)); });
+    if (RV && RV.nodes) Object.keys(RV.nodes).forEach(function (jid) { var o = RV.nodes[jid]; if (o && o.g) spMark(o.g, 'episode/' + jid, null); });
   }
 
   /* ---------- Liste ---------- */
@@ -1381,6 +1420,7 @@
         n.el.setAttribute('aria-label', nodeLabel(n));
       }
     });
+    spAlle();
     if (V.summary) V.summary.innerHTML = '<b>' + done + '</b> von <b>' + total + ('</b> ' + M.t('stations') + ' besucht');
     V.model.journeys.forEach(function (jj) {
       var p = M.store ? M.store.progress(jj.id) : { done: 0, total: jj.order.length };
@@ -2242,6 +2282,7 @@
         else if (e.key === 'Escape' && V.selJ) { e.preventDefault(); e.stopPropagation(); selectJourney(null); }
       });
       RV.nodes[jj.id] = { g: g, arc: arc, jj: jj, title: tt };
+      spMark(g, 'episode/' + jj.id, null);
       RV.on.push([g, jj.id]);
     });
     RV.conBox.innerHTML = '';
@@ -2422,7 +2463,9 @@
       var open = function () { if (M.nav) M.nav.openStation(n.id, jid); };
       g.addEventListener('click', open);
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
-      RV.stEls[n.id] = { g: g, kn: kn, cy: cy, x: lx };
+      g.setAttribute('aria-label', lab + spSuffix('inhalt/' + n.id));
+      RV.stEls[n.id] = { g: g, kn: kn, cy: cy, x: lx, base: lab };
+      spMark(g, 'inhalt/' + n.id, 17);
     });
     box.appendChild(svg);
     RV.svgPlan = svg;
@@ -2441,7 +2484,7 @@
       RV.stEls[id].kn.classList.toggle('is-visited', !!vis);
       var lab = RV.stEls[id].g.getAttribute('aria-label') || '';
       lab = lab.replace(/\. Besucht$/, '');
-      RV.stEls[id].g.setAttribute('aria-label', vis ? lab + '. Besucht' : lab);
+      if (!spAn()) RV.stEls[id].g.setAttribute('aria-label', vis ? lab + '. Besucht' : lab);
     });
   }
 
