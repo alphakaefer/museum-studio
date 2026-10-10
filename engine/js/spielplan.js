@@ -6,18 +6,18 @@
    Keine Fachbezüge: weiß nichts vom Museum. Das Museum hängt sich über engine/js/spiel.js an.
 
    API (alles auf window.Spielplan):
-     spielstand(plan, ereignisse, jetzt[, opts])  reine Funktion -> Spielstand (Abschnitt 8 des Standards)
+     spielstand(plan, ereignisse, jetzt[, opts])  reine Funktion -> Spielstand (wie der Standard ihn beschreibt)
          plan        das Spielplan-Objekt (aus JSON oder YAML)
-         ereignisse  Liste von Ereignissen in der Kurzform (6.2); Ungültiges wird übersprungen und in "ignoriert" genannt
+         ereignisse  Liste von Ereignissen in der Kurzform des Standards; Ungültiges wird übersprungen und in "ignoriert" genannt
          jetzt       Zeitpunkt: ISO-8601-Text (mit oder ohne Offset; ohne Offset gilt UTC), Date oder Millisekunden.
                      Ein reines Datum "2026-10-09" gilt als 00:00 UTC. Ohne jetzt gilt die Uhr (einzige Unreinheit).
                      Wer Stunden braucht (wartezeit), übergibt einen vollen Zeitpunkt.
          opts        { wer: nur Ereignisse dieser Kennung, ohneWartezeit: true = Pausen überspringen (Freier Zugang),
                        bis: höchste Stufe, die das Angebot vergibt (überschreibt plan.stufen.bis) }
-     verbinde({ plan, app, speicher, praefix, jetzt, lager })  die Brücke (Abschnitt 7), siehe unten
+     verbinde({ plan, app, speicher, praefix, jetzt, lager })  die Brücke, siehe unten
      pruefe(plan)                                 -> { fehler: [], warnungen: [], info: {} }
-     nachXapi(ereignis, plan, opts)               reine Übersetzung nach xAPI (6.3), kein Netzwerk
-     abgeleiteteEreignisse(stand, opts)           die Freischaltungen als Ereignisse "freigeschaltet" (6.1)
+     nachXapi(ereignis, plan, opts)               reine Übersetzung nach xAPI, kein Netzwerk
+     abgeleiteteEreignisse(stand, opts)           die Freischaltungen als Ereignisse "freigeschaltet" (abgeleitet, von keiner App gemeldet)
      kompiliere(plan)                             vorbereiteter Plan (schneller bei vielen Aufrufen)
      wurzelStufe(plan, stand)                     Stufe der Wurzel-Einheit (für SCORM completed)
      zeitMs(x), isoZeit(ms), STUFEN, ARTEN, VERBEN, FORMAT
@@ -38,7 +38,7 @@
    Rechenweg (Kern, Entscheidungen in docs/spielplan-auslegung.md):
      Jede Stufe jeder Einheit bekommt einen ZEITPUNKT, an dem sie erreicht wurde (aus den Ereignissen; Sammel-Einheiten aus
      ihren Mitgliedern), jede Freischaltung ebenfalls (aus den Regeln). Der Spielstand zu einem jetzt vergleicht nur
-     Zeitpunkte mit jetzt. Daraus folgen 5.2 (nur wahr werdende Bedingungen, Reihenfolge egal), die Zeit-Bausteine mit
+     Zeitpunkte mit jetzt. Daraus folgen die Regel, dass Bedingungen nur wahr werden können (Reihenfolge egal), die Zeit-Bausteine mit
      Stunden-Genauigkeit und das "seit" jeder Freischaltung ohne Zusatzspeicher.
    ========================================================================== */
 (function () {
@@ -68,7 +68,7 @@
     geteilt: 'http://adlnet.gov/expapi/verbs/shared',
     freigeschaltet: SP_IRI + 'verben/freigeschaltet'
   };
-  /** Verben, die an Werkzeuge weitergereicht werden, wenn eine Einheit sie "mit" dem Werkzeug meldet (4.2, erweitert, siehe Auslegung). */
+  /** Verben, die an Werkzeuge weitergereicht werden, wenn eine Einheit sie "mit" dem Werkzeug meldet (Durchreichen an Werkzeuge, erweitert, siehe Auslegung). */
   var DURCHGEREICHT = { geschafft: 1, bestanden: 1, angewendet: 1 };
   var BEGRIFFE = {
     gebiet: { art: 'das', sg: 'Gebiet', pl: 'Gebiete' },
@@ -215,7 +215,7 @@
       u.eltern.forEach(function (p) { mitglied(u.id, p); });
       u.uebt.forEach(function (s) {
         if (!K.by[s]) { m('fehler', 'Einheit ' + u.id + ': uebt verweist auf unbekannte Einheit „' + s + '“.'); return; }
-        if (K.by[s].art !== 'skill') { m('warnung', 'Einheit ' + u.id + ': uebt verweist auf ' + s + ', das kein skill ist (3.1); es zählt nicht für dessen Stufe.'); return; }
+        if (K.by[s].art !== 'skill') { m('warnung', 'Einheit ' + u.id + ': uebt verweist auf ' + s + ', das kein skill ist; es zählt nicht für dessen Stufe.'); return; }
         mitglied(u.id, s);
       });
     });
@@ -275,7 +275,7 @@
       }
     }
 
-    // --- Regeln (Abschnitt 5) und Kurzformen (5.4)
+    // --- Regeln und ihre Kurzformen
     var regeln = Array.isArray(plan.regeln) ? plan.regeln : [];
     if (plan.regeln !== undefined && !Array.isArray(plan.regeln)) m('fehler', 'regeln muss eine Liste sein.');
     var regelIds = neu();
@@ -288,7 +288,7 @@
       var ziele = [];
       if (!Array.isArray(r.schaltet) || !r.schaltet.length) m('fehler', 'Regel ' + rid + ': schaltet fehlt oder ist leer (Liste von Einheiten).');
       textListe(r.schaltet).forEach(function (z) { if (K.by[z]) ziele.push(z); else m('fehler', 'Regel ' + rid + ': schaltet verweist auf unbekannte Einheit „' + z + '“.'); });
-      if (!istText(r.enthuellung)) m('warnung', 'Regel ' + rid + ': enthuellung fehlt (Grundsatz 6: der Moment des Freischaltens braucht einen Satz).');
+      if (!istText(r.enthuellung)) m('warnung', 'Regel ' + rid + ': enthuellung fehlt (Grundsatz „der Moment zählt“: der Moment des Freischaltens braucht einen Satz).');
       K.regeln.push({ id: rid, ziele: einzigartig(ziele).sort(vergleiche), wenn: normiere(K, r.wenn, 'Regel ' + rid), enthuellung: istText(r.enthuellung) ? r.enthuellung.trim() : null, kurz: false, nr: i });
     });
     K.list.forEach(function (u) {
@@ -300,7 +300,7 @@
       if (u.braucht.length) {
         u.braucht.forEach(function (w) {
           if (!K.by[w]) { m('fehler', 'Einheit ' + u.id + ': braucht verweist auf unbekannte Einheit „' + w + '“.'); return; }
-          if (K.by[w].art !== 'werkzeug') m('warnung', 'Einheit ' + u.id + ': braucht verweist auf ' + w + ', das kein werkzeug ist (3.1).');
+          if (K.by[w].art !== 'werkzeug') m('warnung', 'Einheit ' + u.id + ': braucht verweist auf ' + w + ', das kein werkzeug ist.');
           teile.push({ t: 'b', einheit: w, art: null, in: null, stufe: 1, mindestens: 1, offen: true, match: [w] });
         });
       }
@@ -367,7 +367,7 @@
 
   function nie(grund) { return { t: 'nie', grund: grund }; }
 
-  /** Bedingung (5.1) in einen Baum aus b, alle, eine, min, takt, ab, warte, nie verwandeln. */
+  /** Bedingung in einen Baum aus b, alle, eine, min, takt, ab, warte, nie verwandeln. */
   function normiere(K, raw, wo) {
     if (!istObj(raw)) { K.m('fehler', wo + ': wenn fehlt oder ist kein Objekt.'); return nie('keine Bedingung'); }
     Object.keys(raw).forEach(function (k) { if (KNOTEN_FELDER.indexOf(k) < 0) K.m('warnung', wo + ': unbekanntes Feld „' + k + '“ in der Bedingung (Tippfehler?). Bekannt: ' + KNOTEN_FELDER.join(', ') + '.'); });
@@ -416,7 +416,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Ereignisse aufbereiten (6.2) und Stufen-Zeitpunkte (Abschnitt 4)
+   * Ereignisse aufbereiten (Kurzform) und Stufen-Zeitpunkte
    * ------------------------------------------------------------------ */
 
   function falltext(f) {
@@ -428,7 +428,7 @@
   function leseEreignis(K, e) {
     if (!istObj(e)) return { grund: 'kein Objekt' };
     if (typeof e.verb !== 'string' || !hat(VERBEN, e.verb)) return { grund: 'Verb „' + e.verb + '“ unbekannt' };
-    if (e.verb === 'freigeschaltet') return { grund: 'freigeschaltet ist abgeleitet; der Spielstand liest es nicht (6.1)' };
+    if (e.verb === 'freigeschaltet') return { grund: 'freigeschaltet ist abgeleitet; der Spielstand liest es nicht' };
     if (!istText(e.objekt) || !K.by[e.objekt]) return { grund: 'objekt „' + e.objekt + '“ steht nicht im Spielplan' };
     var z = zeitMs(e.zeit);
     if (isNaN(z)) return { grund: 'zeit fehlt oder ist nicht lesbar' };
@@ -483,7 +483,7 @@
     return Math.min(n, Math.max(1, Math.ceil(n * K.anteil.zahl - 1e-9)));
   }
 
-  /** Zeitpunkt, ab dem eine Sammel-Einheit die Stufe s (0-basiert) aus ihren Mitgliedern erreicht (4.1). */
+  /** Zeitpunkt, ab dem eine Sammel-Einheit die Stufe s (0-basiert) aus ihren Mitgliedern erreicht (Sammel-Regel). */
   function sammelZeit(K, id, s, T) {
     var kr = [], ws = [], mem = K.members[id];
     for (var i = 0; i < mem.length; i++) {
@@ -523,7 +523,7 @@
   function stufeZeit(T, id, s) { if (s <= 0) return -INF; var a = T[id]; return a ? a[s - 1] : INF; }
 
   /* ------------------------------------------------------------------ *
-   * Takt (5.5)
+   * Takt
    * ------------------------------------------------------------------ */
 
   function taktRechner(K, erstesEreignis) {
@@ -550,7 +550,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Zugang: Zeitpunkt, ab dem jede Regel und jede Einheit offen ist (Abschnitt 5)
+   * Zugang: Zeitpunkt, ab dem jede Regel und jede Einheit offen ist
    * ------------------------------------------------------------------ */
 
   function bedingungZeit(K, kn, T, takt, O, ohneWartezeit) {
@@ -617,7 +617,7 @@
     A.ev.forEach(function (e) {
       if (e.z < erstes) erstes = e.z;
       stecke(e.objekt, e);
-      if (DURCHGEREICHT[e.verb]) e.mit.forEach(function (w) { stecke(w, { z: e.z, verb: e.verb, objekt: w, beleg: e.beleg, fall: e.fall }); });   // Werkzeuge über mit (4.2)
+      if (DURCHGEREICHT[e.verb]) e.mit.forEach(function (w) { stecke(w, { z: e.z, verb: e.verb, objekt: w, beleg: e.beleg, fall: e.fall }); });   // Werkzeuge über mit (Durchreichen)
     });
     var T = stufenZeiten(K, dir);
     var takt = taktRechner(K, erstes);
@@ -640,7 +640,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Sätze: Bedingung als deutscher Satz, mit dem, was fehlt (Abschnitt 8)
+   * Sätze: Bedingung als deutscher Satz, mit dem, was fehlt
    * ------------------------------------------------------------------ */
 
   var PARTIZIP = ['erreicht', 'begonnen', 'geschafft', 'angewendet', 'gemeistert'];
@@ -648,7 +648,7 @@
   var TAKT_WORT = { tag: 'Tag', woche: 'Woche', monat: 'Monat' };
 
   function nenne(K, id) { return zitat(K.by[id].name); }
-  /** Wie nenne, aber eine gesperrte, wirksam verborgene Einheit bleibt ungenannt (Grundsatz 5: Überraschungen bleiben Überraschungen). */
+  /** Wie nenne, aber eine gesperrte, wirksam verborgene Einheit bleibt ungenannt (Grundsatz: Überraschungen bleiben Überraschungen). */
   function nenneR(R, id) { return R.S && !R.S.offen[id] && verborgenWirksam(R, R.S, id, 0) ? 'etwas Verborgenes' : nenne(R.K, id); }
   function mitArtikel(K, art) { var b = K.begriffe[art] || K.begriffe.inhalt; return b.art + ' ' + b.sg; }
   function gross(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -919,7 +919,7 @@
     return 'Ein Schritt weiter in ' + nenne(K, u.id) + '.';
   }
 
-  /** Genau eine nächste Aufgabe (5.6): fällige Wiederkehr, sonst nächste Freischaltung, sonst nächste nach Gewicht. Dazu die laufenden Pausen. */
+  /** Genau eine nächste Aufgabe: fällige Wiederkehr, sonst nächste Freischaltung, sonst nächste nach Gewicht. Dazu die laufenden Pausen. */
   function waehleAufgabe(R, S, wk, letzte) {
     var K = R.K, jetzt = R.jetzt, bis = R.bis, vgl = vergleicheAufgabe(R, S);
     R.vgl = vgl; R.letzte = letzte;
@@ -948,7 +948,7 @@
     kand.sort(function (a, b) { return a.c.n - b.c.n || vgl(a.schritt.einheit, b.schritt.einheit) || vergleiche(a.r.id, b.r.id); });
 
     // 1. fällige Wiederkehr, die am längsten fällige zuerst
-    // (fällig nach der Wiederkehr oder verwittert nach 4.3: „die Einheit kann als Wiederkehr-Aufgabe erscheinen“; seit wann, entscheidet die Reihenfolge)
+    // (fällig nach der Wiederkehr oder verwittert (Verwitterung): die Einheit kann als Wiederkehr-Aufgabe erscheinen; seit wann, entscheidet die Reihenfolge)
     var faellig = [], inFuer = null;
     if (K.wiederkehr) { inFuer = neu(); K.wiederkehr.fuer.forEach(function (x) { inFuer[x] = true; }); }
     K.list.forEach(function (u) {
@@ -1002,7 +1002,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Der Spielstand (Abschnitt 8)
+   * Der Spielstand
    * ------------------------------------------------------------------ */
 
   function leseJetzt(jetzt) {
@@ -1090,13 +1090,13 @@
     };
   }
 
-  /** Der Spielstand: reine Funktion von Plan, Ereignissen und jetzt (Abschnitt 1 und 8). */
+  /** Der Spielstand: reine Funktion von Plan, Ereignissen und jetzt (Grundsatz: reine Funktion). */
   function spielstand(plan, ereignisse, jetzt, opts) {
     var K = kompiliere(plan);
     return baueStand(rechne(K, ereignisse, leseJetzt(jetzt), opts));
   }
 
-  /** Die Freischaltungen eines Spielstands als Ereignisse der Kurzform (Verb freigeschaltet, 6.1). */
+  /** Die Freischaltungen eines Spielstands als Ereignisse der Kurzform (Verb freigeschaltet). */
   function abgeleiteteEreignisse(stand, opts) {
     opts = opts || {};
     return ((stand && stand.freigeschaltet) || []).map(function (f) {
@@ -1107,7 +1107,7 @@
     });
   }
 
-  /** Stufe der Wurzel (ohne in, Art gebiet oder episode); mehrere Wurzeln zählen wie ein Gebiet über sie (Sammel-Regel 4.1). */
+  /** Stufe der Wurzel (ohne in, Art gebiet oder episode); mehrere Wurzeln zählen wie ein Gebiet über sie (Sammel-Regel). */
   function wurzelStufe(plan, stand) {
     var K = kompiliere(plan);
     var wurzeln = K.list.filter(function (u) { return !u.eltern.length && (u.art === 'gebiet' || u.art === 'episode'); });
@@ -1124,7 +1124,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Prüfung (Abschnitt 10): formale Fehler, Verweise, Erreichbarkeit
+   * Prüfung: formale Fehler, Verweise, Erreichbarkeit
    * ------------------------------------------------------------------ */
 
   /** Ereignisse, mit denen eine Einheit bis zur Stufe bis gespielt wäre (für die Erreichbarkeitsrechnung). */
@@ -1201,7 +1201,7 @@
     if (!istText(p.id)) f('id fehlt (der Spielplan braucht eine Kennung, nach der die Brücke ihren Speicher benennt).');
     else if (!/^[a-z0-9][a-z0-9\-]*$/.test(p.id)) w('id „' + p.id + '“: besser nur Kleinbuchstaben, Ziffern und Bindestriche.');
     if (!istText(p.name)) w('name fehlt.');
-    if (!istText(p.basis)) w('basis fehlt: ohne sie lassen sich Einheiten nicht als Adressen nach xAPI übersetzen (6.3).');
+    if (!istText(p.basis)) w('basis fehlt: ohne sie lassen sich Einheiten nicht als Adressen nach xAPI übersetzen.');
     else if (!/^[a-z][a-z0-9+.\-]*:/i.test(p.basis)) f('basis „' + p.basis + '“ ist keine Adresse (IRI).');
     if (p.vokabular !== undefined && !(istText(p.vokabular) && /^[a-z][a-z0-9+.\-]*:\S*[\/:]$/i.test(p.vokabular))) f('vokabular muss eine Adresse (IRI) sein, die mit „/“ oder „:“ endet.');
     if (p.nur_lokal !== undefined && typeof p.nur_lokal !== 'boolean') f('nur_lokal muss true oder false sein.');
@@ -1215,29 +1215,29 @@
     K.list.forEach(function (u) {
       var r = u.roh, wo = 'Einheit ' + u.id + ': ';
       if (ARTEN.indexOf(u.art) < 0) f(wo + 'art „' + u.art + '“ unbekannt (erlaubt: ' + ARTEN.join(', ') + ').'); else zahl[u.art]++;
-      if (!ID_MUSTER.test(u.id)) f(wo + 'id darf nur Kleinbuchstaben, Ziffern, - und / enthalten (3).');
+      if (!ID_MUSTER.test(u.id)) f(wo + 'id darf nur Kleinbuchstaben, Ziffern, - und / enthalten.');
       else if (ARTEN.indexOf(u.art) >= 0 && u.id.split('/')[0] !== u.art) w(wo + 'die id beginnt üblicherweise mit der Art („' + u.art + '/…“).');
       if (!istText(r.name)) f(wo + 'name fehlt.');
       if (u.art === 'skill') {
-        if (!u.kann) f(wo + 'skill ohne kann: das Pflichtfeld „Ich kann …“ fehlt (3.1).');
-        else if (!/^Ich kann\b/.test(u.kann)) w(wo + 'kann beginnt nicht mit „Ich kann“ (3.1).');
-      } else if (r.kann !== undefined) w(wo + 'kann gehört nur an skill (3.1).');
+        if (!u.kann) f(wo + 'skill ohne kann: das Pflichtfeld „Ich kann …“ fehlt.');
+        else if (!/^Ich kann\b/.test(u.kann)) w(wo + 'kann beginnt nicht mit „Ich kann“.');
+      } else if (r.kann !== undefined) w(wo + 'kann gehört nur an skill.');
       if (u.art === 'episode') {
-        if (r.etappe === undefined) w(wo + 'episode ohne etappe (3.3: ' + ETAPPEN.join(', ') + ').');
+        if (r.etappe === undefined) w(wo + 'episode ohne etappe (' + ETAPPEN.join(', ') + ').');
         else if (ETAPPEN.indexOf(r.etappe) < 0) f(wo + 'etappe „' + r.etappe + '“ unbekannt (erlaubt: ' + ETAPPEN.join(', ') + ').');
-      } else if (r.etappe !== undefined) w(wo + 'etappe gehört nur an episode (3.1).');
+      } else if (r.etappe !== undefined) w(wo + 'etappe gehört nur an episode.');
       if (u.art === 'quest') {
-        if (r.staerke === undefined) w(wo + 'quest ohne staerke (1 bis 3, 3.1).');
+        if (r.staerke === undefined) w(wo + 'quest ohne staerke (1 bis 3).');
         else if ([1, 2, 3].indexOf(r.staerke) < 0) f(wo + 'staerke „' + r.staerke + '“ muss 1, 2 oder 3 sein.');
-      } else if (r.staerke !== undefined) w(wo + 'staerke gehört nur an quest (3.1).');
+      } else if (r.staerke !== undefined) w(wo + 'staerke gehört nur an quest.');
       if (u.art === 'werkzeug') {
         if (r.sorte !== undefined && SORTEN.indexOf(r.sorte) < 0) w(wo + 'sorte „' + r.sorte + '“ gehört nicht zu den vorgesehenen Sorten (' + SORTEN.join(', ') + ')' + (r.sorte === 'baustein' ? '; „baustein“ nennt nur der Standard-Entwurf (Absatz unter der Artentabelle in 3)' : '') + '. Die Sorte ändert nichts an der Rechnung.');
-      } else if (r.sorte !== undefined) w(wo + 'sorte gehört nur an werkzeug (3).');
-      if (u.art === 'gebiet' && r.gewicht !== undefined) w(wo + 'gewicht gilt nicht für gebiet (3.1).');
-      if (u.uebt.length && ['quest', 'erlebnis', 'inhalt', 'episode'].indexOf(u.art) < 0) w(wo + 'uebt ist für quest, erlebnis, inhalt und episode vorgesehen (3.1).');
-      if (r.braucht !== undefined && u.art !== 'quest') w(wo + 'braucht ist nach 3.1 nur für quest vorgesehen; es wird trotzdem gerechnet.');
-      if (r.nach !== undefined && ['episode', 'quest', 'erlebnis'].indexOf(u.art) < 0) w(wo + 'nach ist für episode, quest und erlebnis vorgesehen (3.1).');
-      if ((r.auftakt !== undefined || r.abschluss !== undefined) && u.art !== 'episode' && u.art !== 'gebiet') w(wo + 'auftakt und abschluss sind für episode und gebiet vorgesehen (3.1).');
+      } else if (r.sorte !== undefined) w(wo + 'sorte gehört nur an werkzeug.');
+      if (u.art === 'gebiet' && r.gewicht !== undefined) w(wo + 'gewicht gilt nicht für gebiet.');
+      if (u.uebt.length && ['quest', 'erlebnis', 'inhalt', 'episode'].indexOf(u.art) < 0) w(wo + 'uebt ist für quest, erlebnis, inhalt und episode vorgesehen.');
+      if (r.braucht !== undefined && u.art !== 'quest') w(wo + 'braucht ist nur für quest vorgesehen; es wird trotzdem gerechnet.');
+      if (r.nach !== undefined && ['episode', 'quest', 'erlebnis'].indexOf(u.art) < 0) w(wo + 'nach ist für episode, quest und erlebnis vorgesehen.');
+      if ((r.auftakt !== undefined || r.abschluss !== undefined) && u.art !== 'episode' && u.art !== 'gebiet') w(wo + 'auftakt und abschluss sind für episode und gebiet vorgesehen.');
       ['auftakt', 'abschluss', 'adresse', 'aufgabe'].forEach(function (k) { if (r[k] !== undefined && !istText(r[k]) && !(k === 'aufgabe' && istObj(r[k]))) f(wo + k + ' muss ein Text sein.'); });
       if (r.material !== undefined && !(Array.isArray(r.material) && r.material.every(istText))) f(wo + 'material muss eine Liste von Verweisen (Texten) sein.');
       if (r.reihenfolge !== undefined && !istZahl(r.reihenfolge)) f(wo + 'reihenfolge muss eine Zahl sein.');
@@ -1252,7 +1252,7 @@
 
     Object.keys(ungewoehnlich).sort().forEach(function (pid) {
       var l = ungewoehnlich[pid];
-      w('Einheit ' + pid + ' (Art ' + K.by[pid].art + ') enthält ' + l.length + ' Einheit(en) (' + l.slice(0, 3).join(', ') + (l.length > 3 ? ', …' : '') + '); üblich sind episode und gebiet als übergeordnete Einheit (3.1). Gerechnet wird trotzdem.');
+      w('Einheit ' + pid + ' (Art ' + K.by[pid].art + ') enthält ' + l.length + ' Einheit(en) (' + l.slice(0, 3).join(', ') + (l.length > 3 ? ', …' : '') + '); üblich sind episode und gebiet als übergeordnete Einheit. Gerechnet wird trotzdem.');
     });
     // --- Sammel-Einheiten
     K.list.forEach(function (u) {
@@ -1262,11 +1262,11 @@
       if (!mem.length) { w(wo + 'Sammel-Einheit ohne Inhalt (nichts liegt in ihr' + (u.art === 'skill' ? ' und nichts übt sie' : '') + '): ihre Stufe kommt nur aus direkten Ereignissen.'); return; }
       var kr = 0, ws = 0;
       mem.forEach(function (m) { var g = K.by[m].gewicht; if (g === 'kritisch') kr++; else if (g === 'wesentlich') ws++; });
-      if (!kr && !ws) w(wo + 'enthält nur optionale Einheiten (Nebenquests): ihre Stufe steigt nie aus dem Inhalt (3.2, 4.1).');
-      if (u.art === 'episode' && u.roh.etappe === 'endgame' && !mem.some(function (m) { return K.by[m].art === 'quest' && K.by[m].staerke === 3; })) w(wo + 'etappe endgame ohne Quest der Stärke 3 darin (3.3).');
-      if (u.art === 'episode' && u.roh.etappe === 'onboarding' && !mem.some(function (m) { return K.by[m].art === 'quest' && K.by[m].staerke === 1; })) w(wo + 'etappe onboarding ohne Quest der Stärke 1 darin (3.3: kurzer Einstieg mit schneller Belohnung).');
+      if (!kr && !ws) w(wo + 'enthält nur optionale Einheiten (Nebenquests): ihre Stufe steigt nie aus dem Inhalt.');
+      if (u.art === 'episode' && u.roh.etappe === 'endgame' && !mem.some(function (m) { return K.by[m].art === 'quest' && K.by[m].staerke === 3; })) w(wo + 'etappe endgame ohne Quest der Stärke 3 darin.');
+      if (u.art === 'episode' && u.roh.etappe === 'onboarding' && !mem.some(function (m) { return K.by[m].art === 'quest' && K.by[m].staerke === 1; })) w(wo + 'etappe onboarding ohne Quest der Stärke 1 darin (kurzer Einstieg mit schneller Belohnung).');
     });
-    if (K.list.length && verborgen * 3 > K.list.length) w('mehr als ein Drittel der Einheiten ist verborgen (' + verborgen + ' von ' + K.list.length + '): Grundsatz 5 sagt, Gesperrtes ist angedeutet; nur Überraschungen bleiben ganz verborgen.');
+    if (K.list.length && verborgen * 3 > K.list.length) w('mehr als ein Drittel der Einheiten ist verborgen (' + verborgen + ' von ' + K.list.length + '): der Grundsatz „Überraschungen bleiben Überraschungen“ sagt, Gesperrtes ist angedeutet; nur Überraschungen bleiben ganz verborgen.');
     if (K.anteil.zahl > 0.66 && K.anteil.zahl < 0.68 && !K.anteil.exakt) w('stufen.anteil ' + K.anteil.zahl + ' ist nicht zwei Drittel: bei 3 wesentlichen Einheiten verlangt er 3 statt 2. Schreibe "2/3" oder lass das Feld weg.');
 
     // --- Erreichbarkeit
@@ -1285,7 +1285,7 @@
         kanten[id] = einzigartig(ziele);
       });
       var zyklen = findeZyklen(wurzel, kanten), imKreis = neu();
-      zyklen.forEach(function (z) { z.forEach(function (x) { if (!imKreis[x]) imKreis[x] = 'Zyklus ohne Einstieg: ' + z.join(' → ') + ' (jede dieser Einheiten wird erst nach einer anderen offen, 5.3)'; }); });
+      zyklen.forEach(function (z) { z.forEach(function (x) { if (!imKreis[x]) imKreis[x] = 'Zyklus ohne Einstieg: ' + z.join(' → ') + ' (jede dieser Einheiten wird erst nach einer anderen offen)'; }); });
       wurzel.forEach(function (id) {
         var u = K.by[id], gruende = imKreis[id] ? [imKreis[id]] : [];
         (K.regelVon[id] || []).forEach(function (r) {
@@ -1301,12 +1301,12 @@
         });
         f('Einheit ' + id + ': geht nie auf' + (gruende.length ? ' (' + einzigartig(gruende).join('; ') + ')' : ' (die Bedingung lässt sich im Spiel nie erfüllen)') + '.');
       });
-      // kritische Einheiten, die nie aufgehen, blockieren ihre Sammlungen für immer (4.1)
+      // kritische Einheiten, die nie aufgehen, blockieren ihre Sammlungen für immer (Sammel-Regel)
       nie.forEach(function (id) {
         var u = K.by[id];
         if (u.gewicht !== 'kritisch') return;
         var sammlungen = u.eltern.concat(u.uebt.filter(function (x) { return K.by[x] && K.by[x].art === 'skill'; }));
-        if (sammlungen.length) f('Einheit ' + id + ': kritisch, geht aber nie auf – kein Spieler kann ' + sammlungen.join(', ') + ' je über Stufe 0 bringen (4.1).');
+        if (sammlungen.length) f('Einheit ' + id + ': kritisch, geht aber nie auf – kein Spieler kann ' + sammlungen.join(', ') + ' je über Stufe 0 bringen.');
       });
       // Folgen: ohne eigene Sperre, nur weil ein Elter nie aufgeht
       var folge = nie.filter(function (id) { return wurzel.indexOf(id) < 0; });
@@ -1327,7 +1327,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Übersetzung nach xAPI (6.3): rein, ohne Netzwerk. Die Seite sendet damit nichts.
+   * Übersetzung nach xAPI: rein, ohne Netzwerk. Die Seite sendet damit nichts.
    * ------------------------------------------------------------------ */
 
   /** 128 Bit aus einem Text: fest, ohne Zufall (für gleiche Statement-ids bei gleichem Ereignis, damit Nachreichen nichts doppelt macht). */
@@ -1356,7 +1356,7 @@
   }
 
   /**
-   * Ein Ereignis der Kurzform als xAPI-Statement (6.3).
+   * Ein Ereignis der Kurzform als xAPI-Statement.
    * opts: { homePage, activityId, registration (UUID), actor (fertiger Actor, z. B. aus cmi5), kontext (z. B. cmi5-contextTemplate), id,
    *         vokabular (Wurzel der Adressen für eigene Verben, Erweiterungen und Arten; sonst plan.vokabular, sonst urn:spielplan:) }
    * Wirft TypeError bei unbrauchbaren Ereignissen (kein Verb, kein objekt, keine Zeit, kein wer).
@@ -1419,7 +1419,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Die Brücke (Abschnitt 7): nur der Speicher "lokal" gehört dazu. Adapter (xAPI, SCORM) hängen sich über
+   * Die Brücke: nur der Speicher "lokal" gehört dazu. Adapter (xAPI, SCORM) hängen sich über
    * speicher: [ 'lokal', adapter ] an; sie liegen in spielplan-adapter.js, das die Seite nicht lädt.
    * ------------------------------------------------------------------ */
 
@@ -1495,7 +1495,7 @@
     // --- Adapter
     arten.forEach(function (a) {
       if (a === 'lokal') return;
-      if (K.plan.nur_lokal === true) { sp.verweigert.push((typeof a === 'string' ? a : (istObj(a) ? (a.adapter || a.name || 'adapter') : 'adapter')) + ': der Spielplan setzt nur_lokal (7.2)'); return; }
+      if (K.plan.nur_lokal === true) { sp.verweigert.push((typeof a === 'string' ? a : (istObj(a) ? (a.adapter || a.name || 'adapter') : 'adapter')) + ': der Spielplan setzt nur_lokal'); return; }
       var ad = a;
       if (typeof a === 'string' || (istObj(a) && typeof a.adapter === 'string' && typeof a.melde !== 'function')) {
         var spec = typeof a === 'string' ? { adapter: a } : a, fabrik = global.Spielplan && global.Spielplan.adapter && global.Spielplan.adapter[spec.adapter];
@@ -1551,7 +1551,7 @@
       o = istObj(o) ? o : {};
       sp.letzterFehler = '';
       if (typeof verb !== 'string' || !hat(VERBEN, verb)) return fehler('Verb „' + verb + '“ unbekannt (erlaubt: ' + Object.keys(VERBEN).filter(function (v) { return v !== 'freigeschaltet'; }).join(', ') + ')');
-      if (verb === 'freigeschaltet') return fehler('freigeschaltet schreibt nur der Spielstand, nie eine App (6.1)');
+      if (verb === 'freigeschaltet') return fehler('freigeschaltet schreibt nur der Spielstand, nie eine App');
       if (!istText(objekt) || !K.by[objekt]) return fehler('objekt „' + objekt + '“ steht nicht im Spielplan');
       var z = o.zeit !== undefined ? zeitMs(o.zeit) : zeitMs(jetztFn());
       if (isNaN(z)) return fehler('zeit ist nicht lesbar');

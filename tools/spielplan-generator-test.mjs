@@ -252,7 +252,7 @@ test('Zuordnung: gewicht, uebt, staerke, name und reihenfolge an Stationen und a
   const kern2 = { werkzeuge: [{ id: 'werkzeug/w', name: 'W', sorte: 'methode' }], regeln: [{ id: 'w-offen', schaltet: ['werkzeug/w'], wenn: { einheit: 'inhalt/s1-1', stufe: 2 }, enthuellung: 'Ein Werkzeug.' }], skills: kern.skills };
   const r2 = leiteAb(resolvePack(dir), { auto: true, kern: kern2 });
   gleich(r2.spielplan.einheiten.find(u => u.id === 'quest/s1-3-mythos').braucht, ['werkzeug/w']);
-  wahr(r2.R.warnings.some(w => /s1-4: braucht gilt laut Standard 3.1 für Mythos-Karten/.test(w)), r2.R.warnings.join(' | '));
+  wahr(r2.R.warnings.some(w => /s1-4: braucht ist laut Standard nur für Quests vorgesehen/.test(w)), r2.R.warnings.join(' | '));
 });
 
 test('Texte: Enthüllungen nennen Namen aus den Paketdaten, enden mit Satzzeichen und enthalten kein Fachwort des Generators', () => {

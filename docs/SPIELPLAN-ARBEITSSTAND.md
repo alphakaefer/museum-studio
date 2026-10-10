@@ -24,7 +24,7 @@ Für Lernende gilt immer: Es gibt einen **Freien Zugang** (ein Schalter), **Paus
 - **Der Adapter (`engine/js/spielplan-adapter.js`, xAPI und SCORM) wird nie eingebunden.** Er ist eine Schnittstelle für Anwendungen, die ihn selbst laden.
 - Deutsch mit Du-Ansprache, barrierefrei, hell und dunkel, alle vier Looks (`themes/`), vom Handy bis zum Desktop.
 - **Der Standard bleibt unverändert.** Der Spielplan folgt einem Standard-Entwurf (Format `spielplan/0`), der nicht Teil dieses Repositorys ist. Wo er offen war oder sich widersprach, steht die Entscheidung
-  in `docs/spielplan-auslegung.md` (Auslegungen A, Befunde B, Gestaltungsentscheidungen G, Hygiene H); Abschnittsnummern dort meinen die Gliederung des Entwurfs.
+  in `docs/spielplan-auslegung.md` (Auslegungen A, Befunde B, Gestaltungsentscheidungen G, Hygiene H); jeder Eintrag sagt in der Zeile „Worum es geht“, welche Stelle des Entwurfs gemeint ist (die Datei `spielplan-standard.md` liegt nicht in diesem Repository).
 
 ## Was fertig ist
 
@@ -88,7 +88,7 @@ node tools/build.mjs <paket> --skins=all --out=dist/<name>             # bauen, 
 - Lies zuerst den Kopfkommentar von `engine/js/spielplan.js` (API) und `docs/spielplan-auslegung.md` (alle Entscheidungen). Die Abschnitte A1 bis A13 sind die Rechenregeln, auf die jede Umsetzung gleich antworten muss.
 - Committe gezielt (`git add <Datei>`, nie `git add -A`); an gemeinsamen Dateien (`engine/js/*.js`, `engine/css/*.css`, `tools/build.mjs`, `docs/*.md`) nur kleine Änderungen, nie komplett neu schreiben.
 - Neue Entscheidungen, Erfindungen und Vorschläge an den Standard kommen als **neuer Abschnitt** ans Ende von `docs/spielplan-auslegung.md` und `docs/SPIELPLAN-ERFAHRUNGEN.md`; bestehende Einträge anderer bleiben unverändert.
-- Schreibe in öffentliche Dokumente eigene Beschreibungen, keine wörtlichen Passagen aus dem Standard-Entwurf; verweise mit Abschnittsnummer.
+- Schreibe in öffentliche Dokumente eigene Beschreibungen, keine wörtlichen Passagen aus dem Standard-Entwurf; verweise nicht mit Abschnittsnummern, sondern sage kurz, worum es inhaltlich geht.
 
 ## Nachtrag Onboarding und Doku (10. Oktober 2026)
 

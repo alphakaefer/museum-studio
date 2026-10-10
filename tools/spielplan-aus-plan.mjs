@@ -256,7 +256,7 @@ export function autoKern(D, hinweis = () => {}) {
     else hinweis(`Etappe: „${journeys[letzteFunktional].name}“ ist die letzte Reise, hat aber keine Mythos-Karte zu Hause; sie bleibt scaffolding (endgame braucht eine Quest der Stärke 3).`);
   }
   const staerkeVon = e => (e === 'endgame' ? 3 : e === 'scaffolding' ? 2 : 1);
-  if (n && !mythosVon(0).length) hinweis(`Etappe onboarding: In „${journeys[0].name}“ ist keine Mythos-Karte zu Hause; die Prüfung warnt dann (3.3: kurzer Einstieg mit Quest der Stärke 1). Eine Mythos-Karte (Feld myth) in einer der ersten Stationen behebt das.`);
+  if (n && !mythosVon(0).length) hinweis(`Etappe onboarding: In „${journeys[0].name}“ ist keine Mythos-Karte zu Hause; die Prüfung warnt dann (der Einstieg soll eine Quest der Stärke 1 haben). Eine Mythos-Karte (Feld myth) in einer der ersten Stationen behebt das.`);
   const quests = [];
   for (const s of stationen) if (istMythos(s, text)) { const h = heimat(s); quests.push({ id: 'quest/' + s.id + '-mythos', staerke: h >= 0 ? staerkeVon(etappe[h]) : 1 }); }
 
@@ -577,7 +577,7 @@ export function leiteAb(P, { skelett = false, auto = false, kern = null, kernDat
       if (t.braucht.length) {
         const ziel = inhalt.art === 'quest' ? inhalt : (quest || erlebnis || inhalt);
         ziel.braucht = uniq(list(ziel.braucht).concat(t.braucht.map(normWerk)));
-        if (ziel.art !== 'quest') W(`spielplan-zuordnung: ${k}: braucht gilt laut Standard 3.1 für Mythos-Karten; hier an ${ziel.id} gesetzt.`);
+        if (ziel.art !== 'quest') W(`spielplan-zuordnung: ${k}: braucht ist laut Standard nur für Quests vorgesehen (Mythos-Karten); hier an ${ziel.id} gesetzt.`);
       }
     }
   }

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Spielplan – js/spielplan-adapter.js   (Stufe C des Standards: „spricht xAPI“; Abschnitt 7.1)
+   Spielplan – js/spielplan-adapter.js   (Stufe C des Standards: „spricht xAPI“)
 
    NICHT Teil des Museums: tools/build.mjs bindet diese Datei nicht ein, die Seite sendet nichts.
    Sie beschreibt und testet die Schnittstelle (tools/spielplan-test.mjs, Mock-LRS und Attrappen-SCORM-API in Node) für den Tag,
@@ -10,7 +10,7 @@
      var sp = Spielplan.verbinde({ plan: plan, app: 'kurs/x',
                                    speicher: ['lokal', { adapter: 'xapi', start: location.search }] });     // cmi5-Start aus einem Lernsystem
      var sp = Spielplan.verbinde({ plan: plan, app: 'kurs/x', speicher: ['lokal', { adapter: 'scorm' }] });   // SCORM 1.2 oder 2004
-   Mit nur_lokal: true im Spielplan verweigert die Brücke beide (7.2).
+   Mit nur_lokal: true im Spielplan verweigert die Brücke beide (Zusage „nur lokal“).
 
    Spielplan.adapter.xapi(opt)    Learning Record Store. opt: start (Suchtext oder Objekt mit den cmi5-Startparametern endpoint, fetch, actor,
                                   registration, activityId) oder direkt endpoint, auth (Text oder Funktion), actor, registration, activityId;
@@ -264,7 +264,7 @@
    * Ereignisse oder (wenn zu lang) Stufen und Freischaltungen in einen Text höchstens `grenze` Zeichen. Drei Formen, die kürzeste, die passt, in dieser Reihenfolge:
    *   E  SP0|E|<Minuten des ersten>|<Einheiten>|<Fälle>|<Ereignisse>   Einheiten als Tabelle der benutzten ids (unabhängig vom Plan lesbar); Ereignis v.u.d[.m1+2][.bAF]
    *   X  SP0|X|<Hash der Einheiten>|<Minuten>|<Fälle>|<Ereignisse>     Einheiten als Nummer in id-Reihenfolge (viel kürzer bei großen Plänen; nur lesbar, solange die Einheiten dieselben sind)
-   *   S  SP0|S|<Hash der Einheiten>|<eine Ziffer 0-4 je Einheit>|<Freischaltungen als Nummern>   nur Stufen und Freischaltungen (7.1), ohne Zeit
+   *   S  SP0|S|<Hash der Einheiten>|<eine Ziffer 0-4 je Einheit>|<Freischaltungen als Nummern>   nur Stufen und Freischaltungen, ohne Zeit
    * Verb v: 0 begonnen … 5 geteilt; u, m: Einheit; d: Minuten seit dem vorigen Ereignis; b: Belegart (0 messung, 1 bestaetigung, 2 eigen) und Fall (Nummer oder -). Alles base36.
    */
   function kompakt(plan, ereignisse, grenze, stand) {
@@ -294,7 +294,7 @@
     if (textE.length <= grenze) return textE;
     var textX = bauen(true);
     if (textX.length <= grenze) return textX;
-    // zu lang: Stufen und Freischaltungen genügen für die Anzeige (7.1)
+    // zu lang: Stufen und Freischaltungen genügen für die Anzeige
     var st = stand || SP.spielstand(K, ereignisse, new Date().toISOString());
     var ziffern = K.list.map(function (u) { var e = st.einheiten[u.id]; return e ? String(e.stufe) : '0'; }).join('');
     var frei = (st.freigeschaltet || []).map(function (f) { return f.einheit in reihe ? reihe[f.einheit].toString(36) : null; }).filter(function (x) { return x !== null; });

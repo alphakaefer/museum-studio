@@ -228,7 +228,7 @@ test('Anfang: Röstkurve, Röstung, Handel, Weltmarkt gesperrt und angedeutet mi
   gleich(s.einheiten['erlebnis/roestung'].bedingung, 'Zum Öffnen: „Röstkurve“ ausprobiert.');
   gleich(s.freigeschaltet, []);
 });
-test('Die erste Aufgabe ist genau eine, mit Satz „was sie bringt“ (Grundsatz 4, 5.6)', () => {
+test('Die erste Aufgabe ist genau eine, mit Satz „was sie bringt“ (Grundsatz: Vorschläge statt Zwang; Regel der einen nächsten Aufgabe)', () => {
   const s = ST(KAFFEE, [], T(10));
   gleich(s.aufgabe.einheit, 'quest/kaldi-mythos');
   wahr(s.aufgabe.bringt.includes('Röstkurve'), s.aufgabe.bringt);
@@ -243,7 +243,7 @@ test('Mythos geschafft: Regel „roestkurve“ geht auf, Enthüllung wörtlich a
   gleich(s.aufgabe.einheit, 'werkzeug/roestkurve');
   gleich(stufe(s, 'skill/quellen'), 2, 'Skill hebt sich über uebt');
 });
-test('Die Röstung braucht die Röstkurve: offen und schon einmal benutzt (5.4)', () => {
+test('Die Röstung braucht die Röstkurve: offen und schon einmal benutzt (Kurzform braucht)', () => {
   const mythos = KA('geschafft', 'quest/kaldi-mythos', T(10, 12));
   gleich(zugang(ST(KAFFEE, [mythos], T(11)), 'erlebnis/roestung'), 'gesperrt', 'offen, aber noch nicht benutzt');
   gleich(zugang(ST(KAFFEE, [mythos, KA('begonnen', 'werkzeug/roestkurve', T(11, 5))], T(11, 10)), 'erlebnis/roestung'), 'offen');
@@ -299,7 +299,7 @@ test('Wiederkehr beginnt erst bei Stufe 2; nur Berührtes (Stufe 1) wird nicht �
   s = ST(p, ['a', 'b', 'c'].map(i => E('geschafft', 'quest/' + i, T(10, 0, 1))).concat(E('erkundet', 'quest/c', '2026-10-28T00:00:00Z')), '2026-10-30T00:00:00Z');
   gleich(s.einheiten['episode/e'].verwittert, false, 'ein Ereignis an einem Mitglied frischt die Sammel-Einheit auf');
 });
-test('Verwitterte Einheiten kommen als Wiederkehr-Aufgabe zurück (4.3), auch wenn die Wiederkehr schon eingelöst ist; ohne Wiederkehr-Angabe genügt verfall_tage', () => {
+test('Verwitterte Einheiten kommen als Wiederkehr-Aufgabe zurück (Verwitterung), auch wenn die Wiederkehr schon eingelöst ist; ohne Wiederkehr-Angabe genügt verfall_tage', () => {
   const ev = [KA('geschafft', 'quest/kaldi-mythos', T(10, 0, 1)), KA('geschafft', 'quest/kaldi-mythos', T(10, 0, 4)), KA('geschafft', 'quest/kaldi-mythos', T(10, 0, 12)), KA('geschafft', 'quest/kaldi-mythos', '2026-11-02T10:00:00Z')];
   let s = ST(KAFFEE, ev, '2026-11-20T00:00:00Z');
   gleich([s.einheiten['skill/quellen'].wiederkehr.eingeloest, s.einheiten['skill/quellen'].verwittert, s.aufgabe && s.aufgabe.art === 'wiederkehr'], [true, false, false]);
@@ -317,7 +317,7 @@ test('Takt: erstes Ereignis beginnt Takt 1, jede Woche ein weiterer; Rückblick 
   s = ST(KAFFEE, ev, T(11, 0, 16)); gleich(s.takt, 2); gleich(s.rueckblick.aufgegangen, []); gleich(s.rueckblick.vorher.aufgegangen, ['werkzeug/roestkurve']);
   gleich(ST(KAFFEE, [], T(11)).takt, 0, 'ohne Ereignis kein Takt');
 });
-test('Verwitterung: nach 35 Tagen ohne Ereignis; Stufe und Freischaltung bleiben (Grundsatz 3)', () => {
+test('Verwitterung: nach 35 Tagen ohne Ereignis; Stufe und Freischaltung bleiben (Grundsatz: nichts geht verloren)', () => {
   const ev = [KA('geschafft', 'quest/kaldi-mythos', T(10, 0, 1))];
   const s0 = ST(KAFFEE, ev, '2026-10-20T00:00:00Z'), s1 = ST(KAFFEE, ev, '2026-12-31T00:00:00Z');
   gleich(s0.einheiten['quest/kaldi-mythos'].verwittert, false); gleich(s1.einheiten['quest/kaldi-mythos'].verwittert, true);
@@ -388,7 +388,7 @@ test('Direkte Ereignisse an einer Sammel-Einheit zählen zusätzlich: die höher
   gleich(stufe(ST(p, [E('begonnen', 'episode/e', T(10)), E('geschafft', 'inhalt/x0', T(10)), E('geschafft', 'inhalt/x1', T(10))], T(12)), 'episode/e'), 2);
   gleich(stufe(ST(p, [E('geschafft', 'episode/e', T(10)), E('geschafft', 'inhalt/x0', T(10))], T(12)), 'gebiet/g'), 2, 'und reicht nach oben durch');
 });
-test('Stufen an einer Einheit: begonnen/erkundet 1, geschafft/bestanden 2, angewendet mit Beleg 3 (Abschnitt 4)', () => {
+test('Stufen an einer Einheit: begonnen/erkundet 1, geschafft/bestanden 2, angewendet mit Beleg 3 (Stufentabelle)', () => {
   const p = plan([U('quest/q')]);
   const s = v => stufe(ST(p, v, T(12)), 'quest/q');
   gleich(s([]), 0); gleich(s([E('begonnen', 'quest/q', T(10))]), 1); gleich(s([E('erkundet', 'quest/q', T(10))]), 1);
@@ -536,7 +536,7 @@ test('Bedingung als Satz: alle, eine, mindestens-von, Takt, Datum', () => {
   gleich(s.einheiten['werkzeug/y'].bedingung, 'Zum Öffnen: ab dem 24.12.2026 und noch 1 von: „b“ geschafft.');
   gleich(ST(p, [], T(11)).einheiten['werkzeug/x'].bedingung, 'Zum Öffnen: „a“ geschafft oder ab Woche 4.');
 });
-test('Nächste Aufgabe 5.6: Wiederkehr vor Freischaltung vor Gewicht; immer mit „bringt“; genau eine', () => {
+test('Nächste Aufgabe: Wiederkehr vor Freischaltung vor Gewicht; immer mit „bringt“; genau eine', () => {
   const p = plan([U('episode/e', { reihenfolge: 1 }), U('inhalt/h1', { in: 'episode/e', gewicht: 'optional', reihenfolge: 1 }), U('inhalt/h2', { in: 'episode/e', gewicht: 'kritisch', reihenfolge: 2 }), U('inhalt/h3', { in: 'episode/e', gewicht: 'wesentlich', reihenfolge: 1 }),
     U('quest/q', { reihenfolge: 9 }), U('werkzeug/w'), U('skill/s', { kann: 'Ich kann etwas.' })].map(u => u.id === 'quest/q' ? Object.assign(u, { uebt: ['skill/s'] }) : u),
     [{ id: 'r', schaltet: ['werkzeug/w'], wenn: { einheit: 'quest/q' }, enthuellung: 'x' }], { rhythmus: { wiederkehr: { abstand_tage: [1, 3], fuer: { art: 'skill' } } } });
