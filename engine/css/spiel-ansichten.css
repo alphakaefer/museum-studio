@@ -48,3 +48,11 @@ g.gm-sp-gesperrt { opacity: .42; filter: grayscale(1); }
 g.gm-sp-gesperrt .gm-karte-hv, g.gm-sp-gesperrt .gm-karte-kn { stroke-dasharray: 3 2; }
 g.gm-sp-gesperrt:focus-visible, g.gm-sp-gesperrt:hover { opacity: .9; }
 .gm-sp-stufe rect { fill: var(--ink); stroke: var(--bg); stroke-width: .6; }
+
+/* Zeitstrahl und Listen: Gesperrtes abgedunkelt, aber lesbar und per Tastatur erreichbar */
+li.gm-sp-gesperrt { opacity: .6; }
+li.gm-sp-gesperrt .gm-zeit-disc, li.gm-sp-gesperrt .gm-zeit-node { filter: grayscale(1); }
+li.gm-sp-gesperrt:focus-within, li.gm-sp-gesperrt:hover { opacity: 1; }
+li.gm-sp-gesperrt .gm-sp-bedingung { color: var(--ink); }
+.gm-zeit-sheet .gm-sp-bedingung { margin: .6rem 0; }
+@media (forced-colors: active) { g.gm-sp-gesperrt, li.gm-sp-gesperrt { opacity: 1; filter: none; } }

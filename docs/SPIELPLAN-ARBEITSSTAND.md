@@ -94,3 +94,8 @@ node tools/build.mjs <paket> --skins=all --out=dist/<name>             # bauen, 
 
 Fertig: Fragen Spielplan und Zugang (Terminal, `onboarding.html`, Briefing, Test grün), `docs/SPIELPLAN.md`, Schritt 6b in `docs/AGENTEN.md`, Abschnitt 9b in `docs/ARCHITEKTUR.md`, README, `docs/NEUE-TESTTHEMEN.md`, beide Beispielkonfigurationen (Probelauf grün).
 Offen: `docs/ONBOARDING.md` (Fragenliste um Spielplan und Zugang ergänzen), `docs/DESIGNER.md` (Spielplan-Klassen in `spiel.css`), `AGENTS.md` (ein Verweis). Die Abschnitte zu Reisepass und Ansichten in `docs/SPIELPLAN.md` gelten, sobald die Ansichten committet sind.
+
+## Ansichten (Anbindung B), vorläufiger Stand
+
+Fertig: Reisepass (`engine/js/passport.js`, Abschnitt `buildSpiel`): die eine nächste Aufgabe, „Was aufgegangen ist“ mit der Enthüllung als Satz, „Wartet auf ein Wiedersehen“ ohne Strafton, kurzer Rückblick des Takts, Schalter Freier Zugang; weitere Vorschläge nur aufgeklappt. Netzplan (`map.js`): gesperrte Haltepunkte grau und gestrichelt, Bedingung im Vorlesetext und Titel, Stufenzeichen (kleine Striche), verborgene Knoten ausgeblendet. Zeitstrahl (`timeline.js`): Gesperrtes abgedunkelt mit Satz zur Bedingung (Liste, senkrechte Ansicht, Vorschau). Stile in `engine/css/spiel-ansichten.css`, nur mit Spielplan eingebunden.
+Lücken: Stufenzeichen und Gesperrt-Zustand fehlen in der Listenansicht des Netzplans; verborgene Knoten bleiben in der Tab-Reihenfolge des Gesamtnetzes (Fokus ins Leere) und die Linien laufen weiter; Reisepass-Stempel zeigen keine eigene Spielplan-Kennzeichnung; Screenshots nur für Skin „halle“ geprüft (hell/dunkel, 390 und 1280 Pixel), Kabinett, Ma und Quelltext nicht einzeln angesehen; Reisen-Knoten gesperrter Reisen im Linienplan ungeprüft.

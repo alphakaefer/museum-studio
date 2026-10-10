@@ -1790,14 +1790,31 @@
     if (S.vertEl) syncViewVisibility();
   }
 
+  // Spielplan (nur mit packs/<paket>/spielplan.json): Gesperrtes bleibt sichtbar, ist abgedunkelt und sagt, was fehlt; Verborgenes fehlt ganz
+  function spZ(id) { return M.spiel && M.spiel.aktiv ? M.spiel.zugang('inhalt/' + id) : null; }
+  function spTxt(z) { return z && z.sichtbar && !z.offen ? ' Noch verschlossen.' + (z.bedingung ? ' ' + z.bedingung : '') : ''; }
+  function spLi(li, z) {
+    if (!z) return;
+    li.classList.toggle('gm-sp-gesperrt', z.sichtbar && !z.offen);
+    li.hidden = !z.sichtbar;
+    var b = li.querySelector('.gm-sp-bedingung');
+    if (z.sichtbar && !z.offen && z.bedingung) {
+      if (!b) { b = el('p', { class: 'gm-sp-bedingung' }); (li.querySelector('.gm-zeit-v-card') || li).appendChild(b); }
+      b.textContent = 'Noch verschlossen. ' + z.bedingung;
+    } else if (b) b.parentNode.removeChild(b);
+  }
+
   function syncVisited() {
     if (!M.store) return;
     S.items.forEach(function (it) {
-      var v = M.store.isVisited(it.id);
+      var v = M.store.isVisited(it.id), z = spZ(it.id);
       (it.insts || []).forEach(function (inst) {
         inst.li.classList.toggle('is-visited', v);
-        inst.vis.textContent = v ? ' Von dir besucht.' : '';
+        inst.vis.textContent = (v ? ' Von dir besucht.' : '') + spTxt(z);
+        if (z) { inst.li.classList.toggle('gm-sp-gesperrt', z.sichtbar && !z.offen); inst.li.hidden = !z.sichtbar; }
       });
+      if (z && S.vertEl) { var vl = S.vertEl.querySelector('.gm-zeit-v-li[data-id="' + it.id + '"]'); if (vl) spLi(vl, z); }
+      if (z && S.listEl) { var ll = S.listEl.querySelector('.gm-zeit-li[data-id="' + it.id + '"]'); if (ll) spLi(ll, z); }
     });
     if (S.vertEl) {
       [].forEach.call(S.vertEl.querySelectorAll('.gm-zeit-v-li'), function (li) {
@@ -1983,6 +2000,8 @@
       on: { click: function () { hideSheet(true); } }
     }));
     sh.appendChild(previewEl(it, true));
+    var spz = spZ(it.id);
+    if (spz && spz.sichtbar && !spz.offen) sh.appendChild(el('p', { class: 'gm-sp-bedingung' }, 'Noch verschlossen. ' + (spz.bedingung || '')));
     var act = el('div', { class: 'gm-zeit-sheet-act' });
     act.appendChild(el('button', {
       type: 'button', class: 'gm-btn gm-btn-primary',
@@ -2290,6 +2309,7 @@
     else window.addEventListener('resize', onResize);
 
     if (M.store && M.store.onChange) M.store.onChange(syncVisited);
+    if (M.spiel && M.spiel.aktiv) { M.spiel.bei('aenderung', function () { try { syncVisited(); } catch (e) { /* egal */ } }); try { syncVisited(); } catch (e) { /* egal */ } }
     doc.addEventListener('gm:visited', syncVisited);
     window.addEventListener('scroll', function () { if (S.phone && S.visible && !onPhoneScroll.t) onPhoneScroll.t = requestAnimationFrame(function () { onPhoneScroll.t = 0; onPhoneScroll(); }); }, { passive: true });
     doc.addEventListener('gm:theme', function () { if (S.visible && S.mode === 'strahl') { /* Farben laufen über CSS-Variablen */ } });
