@@ -1,0 +1,59 @@
+{
+  "_hinweis": "Metadaten und Wortschatz. Felder mit _ am Anfang sind Kommentare. Alle TODO-Stellen ersetzen; Muster: packs/_vorlage/pack.json. Prüfen: node tools/check-pack.mjs adhs",
+  "id": "adhs",
+  "title": "ADHS verstehen",
+  "eyebrow": "Bildung, keine Beratung und keine Diagnose",
+  "tagline": "Aufmerksamkeit, Alltag und was die Forschung weiß",
+  "lang": "de",
+  "defaultSkin": "halle",
+  "vocab": {
+    "journey": "Reise",
+    "journeys": "Reisen",
+    "station": "Station",
+    "stations": "Stationen",
+    "interchange": "Kreuzung",
+    "interchanges": "Kreuzungen",
+    "transfer": "Umsteigen",
+    "passport": "Reisepass",
+    "grandTour": "Große Rundreise",
+    "networkMap": "Netzplan",
+    "timeline": "Zeitstrahl"
+  },
+  "journeyTypes": {
+    "funktional": "Funktionale Reisen",
+    "historisch": "Historische Reisen"
+  },
+  "exhibits": [
+    "klick-streuung",
+    "zehn-sekunden"
+  ],
+  "limits": {
+    "min": 11,
+    "max": 28,
+    "visualShare": 0.35
+  },
+  "requireVisualPlan": true,
+  "footer": {
+    "columns": [
+      {
+        "title": "Hinweis",
+        "paragraphs": [
+          "Dieses Museum bietet Bildung, keine medizinische, psychologische oder therapeutische Beratung und keine Diagnose. Bei Beschwerden oder Sorgen wende dich an eine Ärztin, einen Arzt oder eine Beratungsstelle.",
+          "Es setzt keine Cookies, verfolgt niemanden und lädt nichts von Dritten nach. Der Reisepass bleibt nur in deinem Browser."
+        ]
+      },
+      {
+        "title": "Wenn es ernst ist",
+        "paragraphs": [
+          "Telefonseelsorge (Deutschland, kostenfrei, rund um die Uhr): 0800 111 0 111 oder 0800 111 0 222, Chat unter [online.telefonseelsorge.de](https://online.telefonseelsorge.de). In Lebensgefahr: Notruf 112."
+        ],
+        "classes": [
+          "gm-foot-help"
+        ]
+      }
+    ]
+  },
+  "license": "Inhalte: CC BY 4.0. Code: MIT (Museum Studio).",
+  "credits": "Karl Hosang. Erstellt mit Museum Studio.",
+  "author": "Karl Hosang"
+}

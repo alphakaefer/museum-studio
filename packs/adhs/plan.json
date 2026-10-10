@@ -1,0 +1,837 @@
+{
+ "journeys": [
+  {
+   "id": "verstehen",
+   "typ": "funktional",
+   "name": "Was ist ADHS? Und was nicht"
+  },
+  {
+   "id": "gehirn",
+   "typ": "funktional",
+   "name": "Wie steuert das Gehirn Aufmerksamkeit?"
+  },
+  {
+   "id": "alltag",
+   "typ": "funktional",
+   "name": "Wie zeigt sich ADHS im Alltag?"
+  },
+  {
+   "id": "behandlung",
+   "typ": "funktional",
+   "name": "Diagnose, Behandlung und Streitfragen"
+  },
+  {
+   "id": "geschichte",
+   "typ": "historisch",
+   "name": "Wie die Diagnose entstand"
+  }
+ ],
+ "stations": [
+  {
+   "id": "praesentationen",
+   "title": "Zwei Kinder, zwei Arten, nicht anzukommen",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Der Einstieg per Szene: ADHS zeigt sich als überwiegend unaufmerksam, überwiegend hyperaktiv-impulsiv oder gemischt; man lernt, dass es nicht „das eine Bild“ gibt.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Umschalter zwischen den drei Präsentationen mit einem Schema der zwei Symptombereiche (Aufmerksamkeit; Hyperaktivität und Impulsivität); ausdrücklich ein Bild, kein Test und keine Auswertung."
+   }
+  },
+  {
+   "id": "kontinuum",
+   "title": "Eine Grenze mitten im Kontinuum",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Aufmerksamkeitsmerkmale sind in der Bevölkerung fließend verteilt; die Diagnosegrenze beruht auf Beeinträchtigung und Konvention, nicht auf einem Messwert.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Glockenkurve der Ausprägung mit Regler für eine Schwelle; zeigt, wie sich der Anteil jenseits der Linie verschiebt (Veranschaulichung, keine Messwerte)."
+   }
+  },
+  {
+   "id": "beeintraechtigung",
+   "title": "Anders reicht nicht: Wann Beeinträchtigung zählt",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Klärt, dass Symptome allein nicht genügen: Es braucht Beeinträchtigung in mehreren Lebensbereichen und Beginn in der Kindheit, und dass andere Erklärungen geprüft werden.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Begriffsklärung; ein Bild würde zum Selbsttest einladen, der hier ausdrücklich nicht gewollt ist. Der erste Absatz trägt eine Szene."
+   }
+  },
+  {
+   "id": "haeufigkeit",
+   "title": "Wie viele Menschen sind betroffen?",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Zahlen aus Meta-Analysen für Kinder und Erwachsene mit ihren Unsicherheiten; schafft den Maßstab für den späteren Streit um Diagnosehäufigkeit.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Balken mit Prävalenzschätzungen aus Meta-Analysen (Kinder, Erwachsene), Unsicherheitsspanne und Hinweis auf Methodenunterschiede."
+   }
+  },
+  {
+   "id": "verlauf-reifung",
+   "title": "Wächst es sich raus? Verlauf und Reifung",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen",
+    "gehirn"
+   ],
+   "why": "Hyperaktivität nimmt oft ab, Aufmerksamkeits- und Organisationsprobleme bleiben häufiger; Befunde zur verzögerten Hirnreifung erklären Teile des Verlaufs.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Schematische Kurve der Symptomausprägung über das Lebensalter mit Umschalter (Hyperaktivität / Unaufmerksamkeit); Veranschaulichung, keine Messwerte."
+   }
+  },
+  {
+   "id": "begleiter",
+   "title": "Selten allein: Begleiterkrankungen",
+   "kind": "konzept",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Angst, Depression, Lernstörungen, Schlafprobleme treten gehäuft mit ADHS auf; das erklärt, warum Abklärung gründlich sein muss.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Aufzählung von Häufigkeiten ohne Mechanismus; ohne belastbare, einheitliche Zahlen wäre eine Grafik Scheingenauigkeit."
+   }
+  },
+  {
+   "id": "mythos-zucker",
+   "title": "Mythos: Zucker macht Kinder hyperaktiv",
+   "kind": "mythos",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Der populärste Alltagsmythos; kontrollierte Studien finden keinen Effekt, aber die Erwartung der Erwachsenen verändert, was sie sehen.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte mit „Was man glaubte / Was wir heute wissen“ leistet die Gegenüberstellung."
+   }
+  },
+  {
+   "id": "mythos-erziehung",
+   "title": "Mythos: Schlechte Erziehung und Faulheit",
+   "kind": "mythos",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Entlastet Eltern und Kinder von Schuld; Erziehung beeinflusst den Verlauf, verursacht ADHS aber nach heutigem Stand nicht.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte; es gibt nichts zu messen oder zu verstellen."
+   }
+  },
+  {
+   "id": "mythos-modediagnose",
+   "title": "Mythos: ADHS ist eine Modediagnose von heute",
+   "kind": "mythos",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Beschreibungen ähnlicher Muster reichen weit zurück, und nach den vorliegenden Meta-Analysen ist die Häufigkeit bei gleichen Kriterien kaum gestiegen, die Diagnosezahlen dagegen schon; Überdiagnose wird zugleich real diskutiert.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte; die Geschichte zeigt die Reise „Geschichte“."
+   }
+  },
+  {
+   "id": "mythos-nur-kinder",
+   "title": "Mythos: ADHS gibt es nur bei Kindern",
+   "kind": "mythos",
+   "journeys": [
+    "verstehen"
+   ],
+   "why": "Bei einem erheblichen Teil bleibt ADHS im Erwachsenenalter bestehen; Erwachsene werden oft spät oder gar nicht erkannt.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte; Zahlen zum Verlauf stehen schon in der Station zum Verlauf."
+   }
+  },
+  {
+   "id": "konsens-2021",
+   "title": "208 Aussagen: Der internationale Konsens",
+   "kind": "ereignis",
+   "journeys": [
+    "verstehen",
+    "geschichte"
+   ],
+   "year": 2021,
+   "yearLabel": "2021",
+   "why": "Ein Konsensdokument der World Federation of ADHD mit 208 evidenzbasierten Aussagen als Anker dafür, was gesichert ist und was nicht.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ein Dokument mit vielen Aussagen; eine Abbildung wäre Dekoration, die Station verlinkt auf die Quelle."
+   }
+  },
+  {
+   "id": "aufmerksamkeit-typen",
+   "title": "Aufmerksamkeit ist kein einzelner Schalter",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Wachsamkeit, Orientierung und Handlungskontrolle sind unterscheidbare Systeme; gibt den Rahmen, in dem ADHS später verortet wird.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Drei Systeme (Wachsamkeit, Orientierung, Handlungskontrolle) als anklickbares Schema mit je einer Alltagsszene."
+   }
+  },
+  {
+   "id": "exekutive",
+   "title": "Exekutive Funktionen: Die Zentrale hinter der Stirn",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn",
+    "alltag"
+   ],
+   "why": "Planen, Arbeitsgedächtnis, Hemmung; zeigt, welche Teilleistungen bei ADHS besonders betroffen sein können und wo der Befund uneinheitlich ist.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Eine Frühstücksaufgabe in Schritten; je Schritt wird sichtbar, welche Funktion gefordert ist."
+   }
+  },
+  {
+   "id": "belohnung-verzoegerung",
+   "title": "Warten ist schwer: Belohnung und Verzögerung",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Erklärt, warum spätere Belohnungen weniger zählen können und wie das Motivation beeinflusst.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Kurve: Wert einer Belohnung über die Wartezeit mit Regler für die Steilheit (Modell, keine Messwerte)."
+   }
+  },
+  {
+   "id": "dopamin",
+   "title": "Botenstoffe: Dopamin und Noradrenalin",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn",
+    "behandlung"
+   ],
+   "why": "Befunde zu Botenstoffsystemen und zur Wirkweise der Stimulanzien; verbindet Gehirn und Behandlung und warnt vor dem Kurzschluss „Dopaminmangel“.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Schema einer Synapse in Schritten: Signal, Aufnahme, Wirkung von Medikamenten (vereinfacht, keine Dosisangaben)."
+   }
+  },
+  {
+   "id": "default-mode",
+   "title": "Abschweifen: Das Ruhe-Netzwerk",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Hypothese zum Zusammenspiel von Ruhe- und Aufgabennetzwerken; ehrlich als unsichere Forschung einordnen.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Zwei Netzwerke als Schema: Schalter „Aufgabe / Ruhe“ zeigt, welche aktiver ist (vereinfachtes Schema)."
+   }
+  },
+  {
+   "id": "reaktionsvariabilitaet",
+   "title": "Mal schnell, mal langsam: Schwankende Leistung",
+   "kind": "instrument",
+   "journeys": [
+    "gehirn"
+   ],
+   "exhibit": "klick-streuung",
+   "why": "Reaktionszeiten schwanken bei ADHS im Mittel stärker; ein Exponat zeigt, dass jeder Mensch schwankt, ohne etwas zu bewerten.",
+   "visual": {
+    "kind": "exponat",
+    "idea": "Klick-Streuung: zwanzig Reaktionsrunden, Streuung als Punkte; kein Ergebnis, keine Einstufung, ausdrücklich keine Diagnose."
+   }
+  },
+  {
+   "id": "schlaf-uhr",
+   "title": "Schlaf und innere Uhr",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Schlafprobleme und späte innere Uhr sind bei ADHS häufig; erklärt Zusammenhänge in beide Richtungen.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Tageskurve der Wachheit mit Regler für den Chronotyp (Veranschaulichung)."
+   }
+  },
+  {
+   "id": "bildgebung",
+   "title": "Was Gehirnscans zeigen und was nicht",
+   "kind": "methode",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Gruppenunterschiede sind klein und überlappen stark; Scans taugen nicht zur Diagnose des Einzelfalls.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Zwei überlappende Verteilungen mit Regler für den Gruppenunterschied; zeigt, warum Gruppe nicht Einzelfall ist."
+   }
+  },
+  {
+   "id": "erblichkeit",
+   "title": "Gene: Wie viel erklärt Vererbung?",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Zwillingsstudien zeigen hohe Erblichkeit, doch viele Gene mit kleinem Effekt; Erblichkeit ist kein Schicksal.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Eine Zahl und eine Erklärung; ein Balken würde Erblichkeit mit Vorhersagbarkeit verwechseln lassen."
+   }
+  },
+  {
+   "id": "umwelt",
+   "title": "Vor und nach der Geburt: Risikofaktoren",
+   "kind": "konzept",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Welche vor- und nachgeburtlichen Risikofaktoren untersucht sind und warum Korrelation hier nicht Ursache heißt.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Korrelationen ohne einheitlichen Maßstab; Grafik würde Ursache suggerieren."
+   }
+  },
+  {
+   "id": "mythos-defekt",
+   "title": "Mythos: Das ADHS-Gehirn ist kaputt",
+   "kind": "mythos",
+   "journeys": [
+    "gehirn"
+   ],
+   "why": "Gruppenunterschiede sind keine Defekte; der Begriff „kaputt“ ist weder medizinisch noch fair.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte."
+   }
+  },
+  {
+   "id": "morgen",
+   "title": "Der Morgen: Schuhe, Schlüssel, Schultasche",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Szenische Einstiegsstation: Alltag besteht aus vielen kleinen Schritten, an denen Aufmerksamkeit ständig gebraucht wird.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Ablaufkette eines Morgens; per Klick sieht man, an welchen Stellen Ablenkung die Kette bricht (Szenario)."
+   }
+  },
+  {
+   "id": "zeitgefuehl",
+   "title": "Zeit spüren: Warum „gleich“ schwerfällt",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "exhibit": "zehn-sekunden",
+   "why": "Zeitwahrnehmung und Zeitplanung als Alltagsproblem; Befunde zu Zeitschätzung werden vorsichtig eingeordnet.",
+   "visual": {
+    "kind": "exponat",
+    "idea": "Zehn Sekunden schätzen: Man drückt Start und Stopp, sieht die eigene Abweichung; Veranschaulichung, keine Auswertung."
+   }
+  },
+  {
+   "id": "emotionen",
+   "title": "Emotionen: Schnell hoch, schwer runter",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Emotionale Dysregulation gehört nicht zu den Kernkriterien, wird aber häufig berichtet; Streit um ihren Status.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Welle: Intensität einer Reaktion über die Zeit, Regler für Anstieg und Abklingen (Schema)."
+   }
+  },
+  {
+   "id": "schule",
+   "title": "Schule: Wenn Stillsitzen zur Hauptaufgabe wird",
+   "kind": "ort",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Schulalltag aus Sicht des Kindes und der Lehrkraft; Leistung und Verhalten werden nicht verwechselt.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Die Szene trägt; ein Bild würde Klischees (zappelndes Kind) verstärken."
+   }
+  },
+  {
+   "id": "familie",
+   "title": "Familie: Wenn ein Kind den Takt vorgibt",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Wechselwirkungen in der Familie, Schuldgefühle, Geschwister; ohne Schuldzuweisung.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Beziehungsdynamik lässt sich nicht verstellen, ohne zu vereinfachen."
+   }
+  },
+  {
+   "id": "beziehungen",
+   "title": "Beziehungen: Zuhören, Zuspätkommen, Missverständnisse",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Zeigt, wie dasselbe Verhalten aus zwei Perspektiven Verschiedenes bedeutet.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Szene mit Umschalter „Sicht A / Sicht B“: dieselbe Situation, zwei Deutungen."
+   }
+  },
+  {
+   "id": "beruf",
+   "title": "Beruf: Passung statt Dauerkampf",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Arbeitsumfelder, Stärken und Hürden; Befunde zu Erwerbsbiografien mit Vorsicht.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Heterogene Lebenswege; keine Grafik ohne Verkürzung."
+   }
+  },
+  {
+   "id": "selbstwert",
+   "title": "Selbstbild und Stigma: Wenn Kritik zur Gewohnheit wird",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Wie wiederholte Kritik das Selbstbild prägt und wie Stigma wirkt, auch gegenüber Medikation.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Innerer Prozess ohne messbaren Parameter."
+   }
+  },
+  {
+   "id": "risiken",
+   "title": "Unfälle, Sucht, Abbruch: Risiken ernst nehmen, nicht dramatisieren",
+   "kind": "konzept",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Erhöhte Risiken in Gruppen, gemeinsam mit schützenden Faktoren; ohne Alarmismus.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Relative Risiken ohne Einzelfallaussage; Grafik würde Panik fördern."
+   }
+  },
+  {
+   "id": "superkraft",
+   "title": "Mythos: ADHS ist eine Superkraft (und das Gegenteil)",
+   "kind": "mythos",
+   "journeys": [
+    "alltag"
+   ],
+   "why": "Weder reine Defizit- noch reine Begabungserzählung hält der Evidenz stand.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte."
+   }
+  },
+  {
+   "id": "maedchen-und-frauen",
+   "title": "Mädchen und Frauen: Später und leiser erkannt",
+   "kind": "konzept",
+   "journeys": [
+    "alltag",
+    "verstehen"
+   ],
+   "why": "Mädchen werden seltener und später erkannt; erklärt Verzerrungen in Diagnosezahlen und räumt mit dem Mythos „Jungenkrankheit“ auf.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Kein belastbares Zahlenbild; die Verzerrung beruht auf Mechanismen, die der Text erzählt."
+   }
+  },
+  {
+   "id": "diagnose-weg",
+   "title": "Wie eine Abklärung abläuft",
+   "kind": "methode",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Der Weg: Gespräch, Fragebögen, Beobachtung, Ausschluss anderer Ursachen; macht deutlich, warum es kein Online-Test ersetzen kann.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Ablauf in Schritten zum Durchklicken (Anamnese, Verhaltensbeobachtung, körperliche Abklärung); kein Fragebogen, keine Auswertung."
+   }
+  },
+  {
+   "id": "anpassungen",
+   "title": "Anpassungen: Struktur, Nachteilsausgleich, Arbeitsplatz",
+   "kind": "methode",
+   "journeys": [
+    "behandlung",
+    "alltag"
+   ],
+   "why": "Wie Schule und Betrieb Rahmenbedingungen verändern können; knüpft an Schul- und Berufsalltag an.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Praxiswissen in Text, Beispiele wären erfunden."
+   }
+  },
+  {
+   "id": "elterntraining",
+   "title": "Elterntraining und Psychoedukation",
+   "kind": "methode",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Was Leitlinien bei Kindern zuerst empfehlen; Verhaltenstherapie und Information.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Verfahren, keine Zahlen."
+   }
+  },
+  {
+   "id": "medikation-wirkung",
+   "title": "Medikamente: Was Studien zur Wirkung zeigen",
+   "kind": "konzept",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Wirksamkeit von Stimulanzien und Nicht-Stimulanzien in Meta-Analysen, mit Unterschieden zwischen Kindern und Erwachsenen.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Balken mit Effektstärken aus einer Netzwerk-Meta-Analyse, mit Hinweis auf Unsicherheit und Studiendauer."
+   }
+  },
+  {
+   "id": "medikation-risiken",
+   "title": "Nebenwirkungen und Abwägen: Was man weiß und was nicht",
+   "kind": "konzept",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Häufige Nebenwirkungen, Langzeitdaten mit Lücken; ausdrücklich ohne Dosierung.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Abwägung statt Zahl."
+   }
+  },
+  {
+   "id": "mythos-ritalin",
+   "title": "Mythos: Ritalin macht süchtig und verändert die Persönlichkeit",
+   "kind": "mythos",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Klärt, was zu Missbrauchsrisiko, Abhängigkeit und Persönlichkeit belegt ist.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Mythos-Karte."
+   }
+  },
+  {
+   "id": "ohne-medikament",
+   "title": "Was ohne Tabletten hilft: Training, Bewegung, Diäten, Neurofeedback",
+   "kind": "konzept",
+   "journeys": [
+    "behandlung"
+   ],
+   "why": "Bewertet nicht-medikamentöse Ansätze nach Evidenz, mit unterschiedlicher Stärke.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Vergleich von Effekten, die schlecht vergleichbar sind."
+   }
+  },
+  {
+   "id": "ueberdiagnose",
+   "title": "Zu viel oder zu wenig diagnostiziert?",
+   "kind": "konzept",
+   "journeys": [
+    "behandlung",
+    "verstehen"
+   ],
+   "why": "Der Streit um die Häufigkeit: Diagnosen steigen, Prävalenz weniger; beide Fehlerarten gleichzeitig möglich.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Zwei Regler (Schwelle, Sorgfalt) zeigen, wie Über- und Unterdiagnose gleichzeitig vorkommen können (Gedankenmodell)."
+   }
+  },
+  {
+   "id": "mta",
+   "title": "Die MTA-Studie: Medikation oder Verhaltenstherapie?",
+   "kind": "ereignis",
+   "journeys": [
+    "behandlung",
+    "geschichte"
+   ],
+   "year": 1999,
+   "yearLabel": "1999",
+   "why": "Große Vergleichsstudie 1999 und ihre Nachbeobachtung; zeigt, was Studien leisten und wo Langzeiteffekte offenbleiben.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Balken mit den vier Behandlungsarmen und Ergebnissen nach 14 Monaten; Quelle und Stichprobe in der Bildunterschrift."
+   }
+  },
+  {
+   "id": "leitlinien",
+   "title": "Leitlinien: NICE 2018 und die deutsche S3-Leitlinie",
+   "kind": "ereignis",
+   "journeys": [
+    "behandlung",
+    "geschichte"
+   ],
+   "year": 2018,
+   "yearLabel": "2018",
+   "why": "Zeigt, wie Evidenz in Empfehlungen übersetzt wird und worin sich Länder unterscheiden.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Dokumentenstation; Inhalte als Text."
+   }
+  },
+  {
+   "id": "dsm5",
+   "title": "DSM-5: Kriterien für Erwachsene und späterer Beginn",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte",
+    "behandlung"
+   ],
+   "year": 2013,
+   "yearLabel": "2013",
+   "why": "Wichtiger Wendepunkt: Beginn bis 12 Jahre, geringere Schwelle bei Erwachsenen.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Kriterienliste als Tabelle: DSM-IV gegen DSM-5 nebeneinander; Hervorhebung der Änderungen."
+   }
+  },
+  {
+   "id": "icd11",
+   "title": "ICD-11: Ein Regelwerk der WHO",
+   "kind": "ereignis",
+   "journeys": [
+    "behandlung",
+    "geschichte"
+   ],
+   "year": 2022,
+   "yearLabel": "2022",
+   "why": "Zeigt, wie sich WHO und APA im Aufbau unterscheiden.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Zwei Regelwerke im Text vergleichen; Tabelle würde DSM-5 doppeln."
+   }
+  },
+  {
+   "id": "neurodiversitaet",
+   "title": "Neurodiversität: Eine andere Sicht und ihre Kritik",
+   "kind": "konzept",
+   "journeys": [
+    "behandlung",
+    "geschichte"
+   ],
+   "year": 1998,
+   "yearLabel": "1998",
+   "why": "Das Wort und das Paradigma; fair gegen das medizinische Modell gestellt.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Zwei Sichtweisen im Gespräch; eine Grafik würde sie vereinfachen."
+   }
+  },
+  {
+   "id": "crichton",
+   "title": "Crichton 1798: Eine frühe Beschreibung",
+   "kind": "person",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1798,
+   "yearLabel": "1798",
+   "why": "Ein schottischer Arzt beschreibt „Aufmerksamkeitskrankheiten“, früher als alle Diagnoseregeln.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Eine Person und ein Zitat; nichts zu messen."
+   }
+  },
+  {
+   "id": "zappelphilipp",
+   "title": "Der Zappel-Philipp (1845)",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1845,
+   "yearLabel": "1845",
+   "why": "Eine Kinderbuchfigur als kulturelles Bild; offen, ob das ADHS ist.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Das Bild des Buches wäre urheberrechtlich zu prüfen; Text trägt."
+   }
+  },
+  {
+   "id": "still",
+   "title": "George Still 1902: „Mangel an moralischer Kontrolle“",
+   "kind": "person",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1902,
+   "yearLabel": "1902",
+   "why": "Der Moment, der oft als Anfang genannt wird, und warum seine Wortwahl heute irritiert.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Person und Vortragsreihe."
+   }
+  },
+  {
+   "id": "bradley",
+   "title": "Bradley 1937: Ein Zufallsfund",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1937,
+   "yearLabel": "1937",
+   "why": "Benzedrin beruhigte Kinder in einer Klinik; Wendepunkt der medikamentösen Behandlung.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Einzelereignis."
+   }
+  },
+  {
+   "id": "dsm2",
+   "title": "DSM-II 1968: Die hyperkinetische Reaktion",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1968,
+   "yearLabel": "1968",
+   "why": "Erste Aufnahme in das Klassifikationssystem der APA.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Ein Name in einem Handbuch."
+   }
+  },
+  {
+   "id": "dsm3",
+   "title": "DSM-III 1980: Aus Hyperaktivität wird Aufmerksamkeitsstörung",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1980,
+   "yearLabel": "1980",
+   "why": "Fokus verschiebt sich auf Aufmerksamkeit; 1987 kommt Hyperaktivität zurück in den Namen.",
+   "visual": {
+    "kind": "abbildung",
+    "idea": "Namensleiste: Hyperkinetische Reaktion, ADD, ADHS mit Jahr; anklickbar."
+   }
+  },
+  {
+   "id": "dsm4",
+   "title": "DSM-IV 1994: Drei Präsentationen",
+   "kind": "ereignis",
+   "journeys": [
+    "geschichte"
+   ],
+   "year": 1994,
+   "yearLabel": "1994",
+   "why": "Einführung der Typen, die bis heute das Bild prägen.",
+   "visual": {
+    "kind": "keine",
+    "reason": "Verweist auf die Station zu den Präsentationen."
+   }
+  }
+ ],
+ "orders": {
+  "verstehen": [
+   "praesentationen",
+   "kontinuum",
+   "beeintraechtigung",
+   "haeufigkeit",
+   "ueberdiagnose",
+   "maedchen-und-frauen",
+   "verlauf-reifung",
+   "begleiter",
+   "mythos-zucker",
+   "mythos-erziehung",
+   "mythos-modediagnose",
+   "mythos-nur-kinder",
+   "konsens-2021"
+  ],
+  "gehirn": [
+   "aufmerksamkeit-typen",
+   "exekutive",
+   "belohnung-verzoegerung",
+   "dopamin",
+   "default-mode",
+   "reaktionsvariabilitaet",
+   "schlaf-uhr",
+   "bildgebung",
+   "erblichkeit",
+   "umwelt",
+   "verlauf-reifung",
+   "mythos-defekt"
+  ],
+  "alltag": [
+   "morgen",
+   "exekutive",
+   "zeitgefuehl",
+   "emotionen",
+   "schule",
+   "anpassungen",
+   "familie",
+   "beziehungen",
+   "beruf",
+   "maedchen-und-frauen",
+   "selbstwert",
+   "risiken",
+   "superkraft"
+  ],
+  "behandlung": [
+   "diagnose-weg",
+   "dsm5",
+   "icd11",
+   "leitlinien",
+   "ueberdiagnose",
+   "elterntraining",
+   "anpassungen",
+   "medikation-wirkung",
+   "dopamin",
+   "mta",
+   "medikation-risiken",
+   "mythos-ritalin",
+   "ohne-medikament",
+   "neurodiversitaet"
+  ],
+  "geschichte": [
+   "crichton",
+   "zappelphilipp",
+   "still",
+   "bradley",
+   "dsm2",
+   "dsm3",
+   "dsm4",
+   "neurodiversitaet",
+   "mta",
+   "dsm5",
+   "leitlinien",
+   "konsens-2021",
+   "icd11"
+  ]
+ }
+}

@@ -1,0 +1,37 @@
+{
+  "_hinweis": "Maschinenlesbarer Auftrag, erzeugt vom Museum-Studio-Onboarding (Terminal: tools/onboarding.mjs, Browser: onboarding.html). Dieselben Felder verträgt `node tools/onboarding.mjs --config=<datei>`. Lesbare Fassung: BRIEFING.md.",
+  "schema": 2,
+  "erstellt": "2026-10-10",
+  "werkzeug": "tools/onboarding.mjs",
+  "name": "ADHS verstehen",
+  "id": "adhs",
+  "untertitel": "Aufmerksamkeit, Alltag und was die Forschung weiß",
+  "thema": "ADHS bei Kindern und Erwachsenen: wie das Gehirn Aufmerksamkeit steuert, wie sich ADHS im Alltag zeigt, was Forschung und Leitlinien zu Diagnose und Behandlung sagen, verbreitete Mythen und die Sicht der Neurodiversität. Bildung, keine Beratung und keine Diagnosehilfe.",
+  "zielgruppe": "gemischt",
+  "sprache": "de",
+  "anrede": "du",
+  "geschichte": "agent",
+  "groesse": "agent",
+  "reisenamen": [],
+  "skin": "halle",
+  "skinWahl": true,
+  "anschauung": "viel",
+  "heikel": [
+    "gesundheit"
+  ],
+  "quellen": [
+    "offen"
+  ],
+  "materialHost": "",
+  "urheber": "Karl Hosang",
+  "lizenz": "cc-by-4.0",
+  "impressumUrl": "",
+  "abgeleitet": {
+    "anschauungMindestanteil": 0.35,
+    "baubefehl": "node tools/build.mjs adhs --skins=all",
+    "pruefbefehl": "node tools/check-pack.mjs adhs"
+  },
+  "standardUebernommen": [
+    "impressumUrl"
+  ]
+}
