@@ -641,6 +641,16 @@ weil der Build nur die feste Liste `ENGINE_JS` kopiert und `map.js` seine Ansich
 
 ---
 
+## 9b. Spielplan (optional)
+
+Ein Paket mit `packs/<id>/spielplan.json` bekommt die Mechanik für Freischalten, Rhythmus und Fortschritt; ohne die Datei ändert sich nichts (alles Neue hängt an `MUSEUM.data.spielplan`). Bedienung: `docs/SPIELPLAN.md`; Entscheidungen: `docs/spielplan-auslegung.md`.
+
+- **Dateien:** `engine/js/spielplan.js` (reine Regelrechnung und Brücke mit lokalem Speicher, Präfix `gm:sp:`), `engine/js/spiel.js` (Anbindung ans Museum, `window.MUSEUM.spiel`), `engine/css/spiel.css`, `engine/js/spielplan-adapter.js` (xAPI und SCORM, vom Museum nie geladen).
+  Werkzeuge: `tools/spielplan-aus-plan.mjs` (Generator), `tools/check-spielplan.mjs`, `tools/spielplan-test.mjs`, `tools/yaml-lite.mjs`.
+- **Datenfluss:** Oberfläche (Station geöffnet, Karte, Exponat, Reisepass-Stempel) löst Ereignisse mit Einheiten-IDs aus (`inhalt/<id>`, `episode/<id>`, …) -> `MUSEUM.spiel.melde` -> Regelrechnung -> `zugang()`, `naechsteAufgabe()` und die Rückmeldung am Ort. Nur Kennungen, nie Eingaben; nichts wird gesendet.
+- **API:** `MUSEUM.spiel` mit `aktiv`, `stand()`, `melde(verb, objekt, opts)`, `bei(...)`, `zugang(einheitId)`, `naechsteAufgabe()`, `frei`, `setFrei(b)`; Kopfkommentar in `engine/js/spiel.js`.
+- **Build:** nur mit `spielplan.json` werden `data/spielplan.js`, `js/spielplan.js`, `js/spiel.js` und `css/spiel.css` eingebunden; sonst ist die Ausgabe unverändert.
+
 ## 10. Entwurfsentscheidungen
 
 - **Warum klassische Skripte statt ES-Module?** Die Seite soll per Doppelklick laufen. Browser laden Module unter `file://` nicht (CORS-Sperre für `file://`-Ursprünge), `fetch()` ebenso nicht. Darum sind alle Dateien klassische Skripte,

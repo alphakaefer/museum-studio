@@ -196,6 +196,21 @@ Ergebnis: `bestätigt`, `korrigiert`, `abgeschwächt` oder `gestrichen`. Über d
 Wenn der Auftraggeber ein eigenes Register/Blog hat, respektiere dessen Rechte-Angaben (nur öffentlich Freigegebenes verlinken).
 `check-material.mjs <id>` prüft die Form.
 
+### 6b. Spielplan einrichten (optional, nur wenn das Briefing es verlangt)
+Erst nach Freigabe des Plans und nach den Stationstexten. Ohne `spielplan.json` bleibt das Museum, wie es ist.
+```
+node tools/spielplan-aus-plan.mjs <id> --auto                          # spielbarer Standard: packs/<id>/spielplan.json
+# kuratierte Schicht: packs/<id>/spielplan-kern.yaml (Vorlage: docs/spielplan-vorlage-kern.yaml), danach --auto erneut
+node tools/check-spielplan.mjs <id> --streng --bericht --wege
+```
+Einzelheiten, Ausprobieren (Zeitreise-Hook) und Fehlersuche: `docs/SPIELPLAN.md`. Qualitätskriterien (benenne sie im Abschlussbericht):
+- **Geschichte:** jede Reise hat Auftakt und Abschluss im Ton des Museums.
+- **Moment:** etwas geht dort auf, wo man gerade handelt; Enthüllungstexte sind geschrieben, nicht nur Standardtexte.
+- **Rhythmus:** Wiedersehen und Verwitterung, keine Serien, die reißen; Pausen kosten nichts.
+- **Rückmeldung am Ort:** keine Statistik, kein Punktestand, kein zusätzlicher Reiter.
+- **Freier Zugang** ist immer erreichbar (bei sensiblen Themen als Standard); genau eine nächste Aufgabe, nie eine Pflicht.
+- **Keine erfundenen „Ich kann …“-Sätze:** nur aus anerkannten Kompetenzbeschreibungen oder den Texten des Auftraggebers; sonst weglassen und in `ARBEITSSTAND.md` als Annahme vermerken.
+
 ### 7. Layout, Bau, Rauchtest
 ```
 node tools/layout-map.mjs <id>        # Netzplan-Layout berechnen (schreibt packs/<id>/layout.js)
@@ -240,6 +255,7 @@ ein Hinweis auf Hilfsangebote in `pack.json.footer`, wenn Besucher betroffen sei
 - **Weltanschauliche Schlagseite** ohne es zu merken (siehe Regel 3). Der Auftraggeber hat im Gehirnmuseum genau das bemerkt: eine Reise über die Philosophie des Geistes ließ Idealismus fast aus. Prüfe am Ende bewusst: Welche Schulen fehlen?
 
 ## Fertig ist ein Paket, wenn …
+- [ ] Nur bei gewünschtem Spielplan: `node tools/check-spielplan.mjs <id> --streng` grün und die Kriterien aus Schritt 6b im Abschlussbericht benannt.
 - [ ] `node tools/check-pack.mjs <id>` ohne Fehler (Warnungen begründet).
 - [ ] **Anschauung:** jede Station hat `visual`; der Anteil erreicht `limits.visualShare`; die geplanten Abbildungen und Exponate sind **gebaut oder bewusst verschoben** (dokumentiert in `ARBEITSSTAND.md`); „Anschauung: X geplant, Y gebaut“ in der Prüfausgabe passt zum Bericht.
 - [ ] Faktencheck ist in `FAKTENCHECK.md` dokumentiert, mit Prüfstufe je Station; bei Stufe 2 oder 3 steht der Hinweis in der Übergabe.

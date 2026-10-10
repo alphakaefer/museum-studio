@@ -17,6 +17,7 @@ the vocabulary is configurable per pack.
 - **Netzplan** der Reisen mit Umsteigestationen (Liniennummern, Zoom, Liste), **Zeitstrahl** für historische Reisen, **Reise-Modus**, **Reisepass** (Stempel nur im Browser), **Suche**.
 - **Skins (Themes):** `halle` (Standard), `kabinett` (organisch, historisch), `ma` (Zen, Bauhaus), `quelltext` (Computer-Code). Zur Laufzeit umschaltbar, hell und dunkel.
 - **Pakete:** `packs/_vorlage` (kleines Muster), `packs/beispiel-gehirn` (Ausschnitt aus dem Gehirnmuseum), eigene Pakete über `npm run setup` (Einrichtung mit Fragen) oder `tools/new-pack.mjs`.
+- **Spielplan (optional, Branch `experiment/spielplan`):** Freischalten, Rhythmus und eine nächste Aufgabe, mit Freiem Zugang und nur lokal gespeichert; ein Paket ohne `spielplan.json` bleibt unverändert: [`docs/SPIELPLAN.md`](docs/SPIELPLAN.md).
 - **Kein Tracking, keine Cookies, keine externen Abrufe, Systemschriften.** Läuft per Doppelklick (`file://`) und auf jedem Webspace.
 
 ## Ohne Terminal
@@ -70,6 +71,7 @@ Screenshots landen standardmäßig in `dist/<paket>/_shots/` (`--shots=<ordner>`
 | `docs/ONBOARDING.md` | **Einrichtung**: Fragen und ihre Wirkung, `onboarding.html`, Konfiguration ohne Fragen, „Ohne Werkzeuge“ |
 | `docs/VEROEFFENTLICHEN.md` | **Veröffentlichen**: GitHub Pages ohne Terminal, rsync/SSH, Upload auf beliebigen Webspace |
 | `docs/AGENTEN.md` | **KI-Agenten und Redaktion**: Schritt für Schritt ein neues Wissensgebiet einrichten, Regeln, Qualitätstore |
+| `docs/SPIELPLAN.md` | **Spielplan** (optional): Freischalten, Rhythmus, Freier Zugang; einschalten, ausprobieren, Grenzen |
 | `docs/INHALT-SCHREIBEN.md` | Wer Stationen schreibt: Schema, Stil, Beispiele, Checkliste |
 | `docs/DESIGNER.md` | **Gestalter**: eigene Skins entwerfen, Tokens, Komponenten, Prüfung |
 | `docs/ARCHITEKTUR.md` | Entwickler: Verzeichnisse, Datenformate (alle `pack.json`-Felder), Namespace-API, Build, Prüfwerkzeuge |
