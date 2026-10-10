@@ -1,0 +1,44 @@
+/* ==========================================================================
+   Museum Studio – css/spiel-ansichten.css
+   Spielplan in den Ansichten (Reisepass, Netzplan, Zeitstrahl). Wird nur mit packs/<paket>/spielplan.json eingebunden.
+   Nur Tokens aus engine.css; Präfix gm-sp-. Kein Rot, keine Warnfarben. Bewegung nur ohne prefers-reduced-motion.
+   ========================================================================== */
+
+/* ---------- Reisepass ---------- */
+.gm-sp-host { margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+.gm-sp { display: grid; gap: 1rem; }
+.gm-sp-box { padding: 1.1rem 1.3rem; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink); }
+.gm-sp-aufgabe { border-color: var(--warm); }
+.gm-sp-k { margin: 0 0 .25rem; font: 700 .72rem/1.3 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.gm-sp-t { margin: 0 0 .3rem; font: 600 clamp(1.1rem, 1rem + .5vw, 1.3rem)/1.35 var(--font-display); text-wrap: balance; }
+.gm-sp-b { margin: 0 0 .7rem; color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
+.gm-sp-h { font-size: clamp(1.2rem, 1rem + .8vw, 1.5rem); margin-bottom: .6rem; }
+.gm-sp-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
+.gm-sp-eintrag { display: flex; gap: .7rem; align-items: flex-start; }
+.gm-sp-ico { flex: none; color: var(--warm); margin-top: .1rem; }
+.gm-sp-et { min-width: 0; }
+.gm-sp-name { margin: 0 0 .1rem; font-weight: 600; }
+.gm-sp-et .gm-sp-b { margin: 0; }
+.gm-sp-link { color: var(--ink); text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+.gm-sp-link:hover { text-decoration-thickness: 2px; }
+.gm-sp-link:focus-visible, .gm-sp-chip:focus-visible, .gm-sp-mehr summary:focus-visible { outline: 3px solid var(--warm); outline-offset: 2px; }
+.gm-sp-chips { list-style: none; margin: 0 0 .5rem; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.gm-sp-chip { display: inline-block; padding: .3rem .8rem; border: 1px dashed var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; font-size: .9rem; opacity: .85; }
+.gm-sp-chip:hover { opacity: 1; border-style: solid; }
+.gm-sp-rueck { margin: 0; color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
+.gm-sp-mehr { margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+.gm-sp-mehr summary { cursor: pointer; padding: .6rem 0; color: var(--ink-2); font-weight: 600; }
+.gm-sp .gm-spiel-frei { margin-top: 0; padding: .9rem 1.3rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
+
+/* ---------- Netzplan und Zeitstrahl: gesperrt, aber angedeutet ---------- */
+.gm-sp-gesperrt { opacity: .5; filter: grayscale(1); }
+.gm-sp-gesperrt:focus-visible { opacity: 1; }
+.gm-sp-schloss { font-size: .8rem; color: var(--ink-2); }
+.gm-sp-bedingung { margin: .5rem 0 0; padding: .5rem .7rem; border-left: 3px solid var(--line); color: var(--ink-2); font-size: .92rem; line-height: 1.45; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gm-sp-chip { transition: opacity .2s, border-color .2s; }
+}
+@media (max-width: 560px) {
+  .gm-sp-box { padding: .9rem 1rem; }
+}

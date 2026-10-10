@@ -187,6 +187,8 @@ if (spielplan) {   // nur mit Spielplan: Kern, Anbindung und Stile (nie der Adap
   for (const n of ['spielplan', 'spiel']) { const f = path.join(ENGINE, 'js', n + '.js'); if (!exists(f)) die(`engine/js/${n}.js fehlt`); copyFile(f, path.join(OUT, 'js', n + '.js')); }
   if (!exists(path.join(ENGINE, 'css', 'spiel.css'))) die('engine/css/spiel.css fehlt');
   copyFile(path.join(ENGINE, 'css', 'spiel.css'), path.join(OUT, 'css', 'spiel.css'));
+  if (!exists(path.join(ENGINE, 'css', 'spiel-ansichten.css'))) die('engine/css/spiel-ansichten.css fehlt');
+  copyFile(path.join(ENGINE, 'css', 'spiel-ansichten.css'), path.join(OUT, 'css', 'spiel-ansichten.css'));
 }
 
 // Skins
@@ -218,7 +220,7 @@ for (const f of visualFiles) { copyFile(path.join(PACK_DIR, 'visuals', f), path.
 // index.html
 const tpl = path.join(ENGINE, 'index.template.html');
 if (!exists(tpl)) die('engine/index.template.html fehlt');
-const styles = ['css/engine.css', 'css/exhibits.css', ...(spielplan ? ['css/spiel.css'] : []), 'css/journey-colors.css', ...skins.map(s => `skins/${s.id}/theme.css`)]
+const styles = ['css/engine.css', 'css/exhibits.css', ...(spielplan ? ['css/spiel.css', 'css/spiel-ansichten.css'] : []), 'css/journey-colors.css', ...skins.map(s => `skins/${s.id}/theme.css`)]
   .map(h => `<link rel="stylesheet" href="${h}">`).join('\n');
 const scripts = ['data/pack.js', 'data/skins.js', 'js/core.js', 'js/icons.js', 'js/viz.js', ...dataScripts, ...(spielplan ? ['js/spielplan.js', 'js/spiel.js'] : []), 'js/hero.js', 'js/map.js', 'js/journey.js', 'js/timeline.js', 'js/passport.js', 'js/search.js', 'js/app.js']
   .map(s => `<script src="${s}"></script>`).join('\n');

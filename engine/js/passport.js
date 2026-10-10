@@ -720,6 +720,87 @@
   }
 
   function buildNext(m) {
+    if (!spielAn()) return buildNextRoh(m);
+    // Spielplan: genau EINE Aufgabe steht oben (buildSpiel); weitere Vorschläge nur auf Nachfrage
+    var d = el('details', { class: 'gm-sp-mehr' }, el('summary', null, 'Mehr Vorschläge, wenn du magst'));
+    d.appendChild(buildNextRoh(m));
+    if (ST.mehrOffen) d.open = true;
+    d.addEventListener('toggle', function () { ST.mehrOffen = d.open; });
+    return d;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Spielplan im Reisepass: Freischaltungen, die eine Aufgabe, Takt, Wiedersehen, Freier Zugang (nur mit Spielplan, sonst nie aufgerufen)
+   * ------------------------------------------------------------------ */
+
+  function spName(uid) { var a = M.spiel.anzeige(uid); return a && a.titel ? a.titel : uid; }
+  function spLink(uid, text, cls) {
+    var t = String(uid).split('/'), art = t[0], rest = t.slice(1).join('/'), href = '';
+    if (art === 'episode') href = '#/reise/' + rest; else if (art === 'inhalt') href = '#/station/' + rest; else if (art === 'quest') href = '#/station/' + rest.replace(/-mythos$/, '');
+    return href ? el('a', { class: cls || 'gm-sp-link', href: href }, text) : el('span', null, text);
+  }
+  function buildSpiel(m) {
+    var S = M.spiel, s = S.stand(), sec = el('div', { class: 'gm-sp' });
+    if (!s) return sec;
+    // 1. Die eine nächste Aufgabe
+    var a = S.naechsteAufgabe();
+    var box = el('section', { class: 'gm-sp-box gm-sp-aufgabe', 'aria-label': 'Dein nächster Schritt' });
+    box.appendChild(el('p', { class: 'gm-sp-k' }, a && a.art === 'wiederkehr' ? 'Ein Wiedersehen' : 'Dein nächster Schritt'));
+    var satz = a ? String(a.text || '').replace(/^Wiedersehen:\s*/, '') : 'Gerade ist nichts Bestimmtes dran. Stöbere, wohin du magst, oder komm später wieder.';
+    box.appendChild(el('p', { class: 'gm-sp-t' }, satz));
+    if (a && a.bringt) box.appendChild(el('p', { class: 'gm-sp-b' }, a.bringt));
+    var ziel = a ? (a.adresse || '') : '';
+    if (a && !/^#\//.test(ziel)) { var t = String(a.einheit).split('/'); ziel = t[0] === 'episode' ? '#/reise/' + t.slice(1).join('/') : (t[0] === 'inhalt' ? '#/station/' + t.slice(1).join('/') : (t[0] === 'quest' ? '#/station/' + t.slice(1).join('/').replace(/-mythos$/, '') : '')); }
+    if (ziel && /^#\//.test(ziel)) box.appendChild(el('a', { class: 'gm-btn gm-btn-warm', href: ziel }, 'Los geht’s'));
+    sec.appendChild(box);
+
+    // 2. Was aufgegangen ist (neueste zuerst; die Enthüllung als Satz)
+    var fr = (s.freigeschaltet || []).slice().reverse().filter(function (f) { return S.zugang(f.einheit).sichtbar; });
+    if (fr.length) {
+      var open = el('section', { class: 'gm-sp-box', 'aria-labelledby': 'gm-sp-auf-h' });
+      open.appendChild(el('h3', { class: 'gm-pass-h gm-sp-h', id: 'gm-sp-auf-h' }, 'Was aufgegangen ist'));
+      var ul = el('ul', { class: 'gm-sp-liste' });
+      fr.forEach(function (f) {
+        var li = el('li', { class: 'gm-sp-eintrag' }, el('span', { class: 'gm-sp-ico', 'aria-hidden': 'true', html: ico('unlock', 20) || ico('star', 20) }));
+        var txt = el('div', { class: 'gm-sp-et' }, el('p', { class: 'gm-sp-name' }, spLink(f.einheit, f.name)), f.enthuellung ? el('p', { class: 'gm-sp-b' }, f.enthuellung) : null);
+        li.appendChild(txt); ul.appendChild(li);
+      });
+      open.appendChild(ul);
+      sec.appendChild(open);
+    }
+
+    // 3. Wiedersehen: was schon länger ruht, ohne Strafton
+    var ruht = [];
+    Object.keys(s.einheiten).forEach(function (id) { var e = s.einheiten[id]; if (wartetAufWiedersehen(e) && e.art !== 'gebiet' && S.zugang(id).sichtbar && S.zugang(id).offen) ruht.push(id); });
+    if (ruht.length) {
+      var w = el('section', { class: 'gm-sp-box', 'aria-labelledby': 'gm-sp-wd-h' });
+      w.appendChild(el('h3', { class: 'gm-pass-h gm-sp-h', id: 'gm-sp-wd-h' }, 'Wartet auf ein Wiedersehen'));
+      w.appendChild(el('p', { class: 'gm-sp-b' }, 'Das hier hast du eine Weile nicht angeschaut. Nichts davon ist verloren; ein kurzer Blick frischt es wieder auf.'));
+      var wl = el('ul', { class: 'gm-sp-chips' });
+      ruht.slice(0, 6).forEach(function (id) { wl.appendChild(el('li', null, spLink(id, spName(id), 'gm-sp-chip is-verwittert'))); });
+      w.appendChild(wl);
+      if (ruht.length > 6) w.appendChild(el('p', { class: 'gm-sp-b' }, 'und ' + (ruht.length - 6) + ' weitere'));
+      sec.appendChild(w);
+    }
+
+    // 4. Rückblick des Takts
+    var rb = s.rueckblick;
+    if (rb && ((rb.aufgegangen || []).length || (rb.gestiegen || []).length)) {
+      var na = (rb.aufgegangen || []).length, ng = (rb.gestiegen || []).length, teile = [];
+      if (na) teile.push(na + ' ' + plural(na, 'Ding ist', 'Dinge sind') + ' aufgegangen');
+      if (ng) teile.push('bei ' + ng + ' ' + plural(ng, 'Sache', 'Sachen') + ' bist du weitergekommen');
+      sec.appendChild(el('p', { class: 'gm-sp-rueck' }, el('strong', null, 'Zuletzt: '), teile.join(', ') + '.'));
+    }
+
+    // 5. Freier Zugang
+    if (S.freiSchalter) {
+      var hat = Object.keys(s.einheiten).some(function (id) { return s.einheiten[id].zugang === 'gesperrt'; }) || S.frei;
+      if (hat) sec.appendChild(S.freiSchalter({ nach: function () { ST.dirty = true; scheduleRender(); } }));
+    }
+    return sec;
+  }
+
+  function buildNextRoh(m) {
     var r = recommend(m);
     var sec = el('div', { class: 'gm-pass-nextsec' });
     var lead = {
@@ -929,6 +1010,7 @@
       host.appendChild(node);
     }
     put('cover', buildCover(m));
+    if (ST.sec.spiel) put('spiel', buildSpiel(m));
     put('stamps', buildStamps(m, fresh));
     put('next', buildNext(m));
     put('visited', buildVisited(m));
@@ -993,14 +1075,15 @@
     ST.host = host;
     ST.root = el('div', { class: 'gm-pass gm-container' });
     ST.root.insertAdjacentHTML('afterbegin', defsSvg());
-    ['cover', 'stamps', 'next', 'visited'].forEach(function (k) {
-      var cls = k === 'cover' ? 'gm-pass-cover-host' : 'gm-pass-sec gm-pass-' + k + '-host';
+    ['cover'].concat(spielAn() ? ['spiel'] : [], ['stamps', 'next', 'visited']).forEach(function (k) {
+      var cls = k === 'cover' ? 'gm-pass-cover-host' : 'gm-pass-sec gm-pass-' + k + '-host' + (k === 'spiel' ? ' gm-sp-host' : '');
       ST.sec[k] = el('div', { class: cls });
       ST.root.appendChild(ST.sec[k]);
     });
     ST.root.appendChild(buildFoot());
     host.appendChild(ST.root);
     if (M.store && M.store.onChange) ST.off = M.store.onChange(onStore);
+    if (spielAn()) M.spiel.bei('aenderung', function () { ST.dirty = true; if (ST.shown) scheduleRender(); });
     ST.dirty = true;
     try { render(); } catch (err) { if (window.console) console.warn(('[Museum Studio] ' + M.t('passport')), err); }
     ST.root.classList.add('is-in');
